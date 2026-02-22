@@ -71,9 +71,9 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-docker安装-国外服务器" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+    <article id="post-docker安装-国内服务器" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
-    <a href="/2025/02/23/docker%E5%AE%89%E8%A3%85-%E5%9B%BD%E5%A4%96%E6%9C%8D%E5%8A%A1%E5%99%A8/" class="article-date">
+    <a href="/2025/02/23/docker%E5%AE%89%E8%A3%85-%E5%9B%BD%E5%86%85%E6%9C%8D%E5%8A%A1%E5%99%A8/" class="article-date">
   <time class="dt-published" datetime="2025-02-23T16:42:00.000Z" itemprop="datePublished">2025-02-23</time>
 </a>
     
@@ -89,7 +89,7 @@
         
   
     <h1 itemprop="name">
-      <a class="p-name article-title" href="/2025/02/23/docker%E5%AE%89%E8%A3%85-%E5%9B%BD%E5%A4%96%E6%9C%8D%E5%8A%A1%E5%99%A8/">docker安装-国外服务器</a>
+      <a class="p-name article-title" href="/2025/02/23/docker%E5%AE%89%E8%A3%85-%E5%9B%BD%E5%86%85%E6%9C%8D%E5%8A%A1%E5%99%A8/">docker安装-国内服务器</a>
     </h1>
   
 
@@ -99,19 +99,25 @@
       
         <h3 id="1-更新系统包"><a href="#1-更新系统包" class="headerlink" title="1. 更新系统包"></a>1. 更新系统包</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt update</span><br><span class="line"><span class="built_in">sudo</span> apt upgrade -y</span><br></pre></td></tr></table></figure>
 
-<h3 id="2-安装依赖包"><a href="#2-安装依赖包" class="headerlink" title="2. 安装依赖包"></a>2. 安装依赖包</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt install -y apt-transport-https ca-certificates curl software-properties-common</span><br></pre></td></tr></table></figure>
+<h3 id="2-安装依赖包"><a href="#2-安装依赖包" class="headerlink" title="2. 安装依赖包"></a>2. 安装依赖包</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt install curl vim wget gnupg dpkg apt-transport-https lsb-release ca-certificates</span><br></pre></td></tr></table></figure>
 
-<h3 id="3-添加Docker官方GPG密钥"><a href="#3-添加Docker官方GPG密钥" class="headerlink" title="3. 添加Docker官方GPG密钥"></a>3. 添加Docker官方GPG密钥</h3><p>添加Docker的官方GPG密钥以确保下载的软件包是安全的：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -fsSL https://download.docker.com/linux/ubuntu/gpg | <span class="built_in">sudo</span> gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg</span><br></pre></td></tr></table></figure>
+<h3 id="3-添加Docker官方GPG密钥"><a href="#3-添加Docker官方GPG密钥" class="headerlink" title="3. 添加Docker官方GPG密钥"></a>3. 添加Docker官方GPG密钥</h3><p>添加阿里云的GPG密钥</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -fsSL https://mirrors.aliyun.com/docker-ce/linux/ubuntu/gpg | <span class="built_in">sudo</span> gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg</span><br></pre></td></tr></table></figure>
 
-<h3 id="4-添加Docker仓库"><a href="#4-添加Docker仓库" class="headerlink" title="4. 添加Docker仓库"></a>4. 添加Docker仓库</h3><p>将Docker的APT仓库添加到系统中：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">&quot;deb [arch=<span class="subst">$(dpkg --print-architecture)</span> signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu <span class="subst">$(lsb_release -cs)</span> stable&quot;</span> | <span class="built_in">sudo</span> <span class="built_in">tee</span> /etc/apt/sources.list.d/docker.list &gt; /dev/null</span><br></pre></td></tr></table></figure>
+<p>或者添加官方的GPG密钥</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-添加Docker仓库"><a href="#4-添加Docker仓库" class="headerlink" title="4. 添加Docker仓库"></a>4. 添加Docker仓库</h3><p>将阿里云的APT仓库添加到系统中：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">&quot;deb [arch=<span class="subst">$(dpkg --print-architecture)</span> signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://mirrors.aliyun.com/docker-ce/linux/ubuntu <span class="subst">$(lsb_release -cs)</span> stable&quot;</span> | <span class="built_in">sudo</span> <span class="built_in">tee</span> /etc/apt/sources.list.d/docker.list &gt; /dev/null</span><br></pre></td></tr></table></figure>
+
+<p>或者官方的APT仓库</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable&quot; | sudo tee /etc/apt/sources.list.d/docker.list &gt; /dev/null</span><br></pre></td></tr></table></figure>
 
 <h3 id="5-更新APT包索引"><a href="#5-更新APT包索引" class="headerlink" title="5. 更新APT包索引"></a>5. 更新APT包索引</h3><p>更新APT包索引以包含Docker仓库中的包：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt update</span><br></pre></td></tr></table></figure>
 
 <h3 id="6-安装Docker"><a href="#6-安装Docker" class="headerlink" title="6. 安装Docker"></a>6. 安装Docker</h3><p>安装Docker CE（社区版）：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt install -y docker-ce docker-ce-cli containerd.io</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin</span><br></pre></td></tr></table></figure>
 
 <h3 id="7-启动并启用Docker服务"><a href="#7-启动并启用Docker服务" class="headerlink" title="7. 启动并启用Docker服务"></a>7. 启动并启用Docker服务</h3><p>启动Docker服务并设置为开机自启：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> systemctl start docker</span><br><span class="line"><span class="built_in">sudo</span> systemctl <span class="built_in">enable</span> docker</span><br></pre></td></tr></table></figure>
@@ -126,20 +132,41 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> usermod -aG docker <span class="variable">$USER</span></span><br></pre></td></tr></table></figure>
 
 <p>然后，注销并重新登录以使更改生效。</p>
-<h3 id="10-测试Docker"><a href="#10-测试Docker" class="headerlink" title="10. 测试Docker"></a>10. 测试Docker</h3><p>运行一个简单的Docker容器来测试安装是否成功：</p>
+<h3 id="10-更换-DNS-服务器"><a href="#10-更换-DNS-服务器" class="headerlink" title="10.更换 DNS 服务器"></a>10.更换 DNS 服务器</h3><p>编辑 <code>/etc/resolv.conf</code>，添加可靠 DNS:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">nameserver 8.8.8.8</span><br><span class="line">nameserver 114.114.114.114</span><br></pre></td></tr></table></figure>
+
+<h3 id="11-配置代理"><a href="#11-配置代理" class="headerlink" title="11.配置代理"></a>11.配置代理</h3><ul>
+<li>创建代理配置文件</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> <span class="built_in">mkdir</span> -p /etc/systemd/system/docker.service.d</span><br><span class="line"><span class="built_in">sudo</span> nano /etc/systemd/system/docker.service.d/http-proxy.conf</span><br></pre></td></tr></table></figure>
+
+<p>添加内容（注意协议为 <code>http://</code>）：注意<code>HTTPS_PROXY</code>也是http,没有s</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[Service]</span><br><span class="line">Environment=<span class="string">&quot;HTTP_PROXY=http://127.0.0.1:7897&quot;</span></span><br><span class="line">Environment=<span class="string">&quot;HTTPS_PROXY=http://127.0.0.1:7897&quot;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>重启 Docker 服务</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> systemctl daemon-reload</span><br><span class="line"><span class="built_in">sudo</span> systemctl restart docker</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>验证配置生效</strong></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">systemctl show docker --property Environment</span><br><span class="line"><span class="comment"># 预期输出：</span></span><br><span class="line"><span class="comment"># Environment=HTTP_PROXY=http://127.0.0.1:7897 HTTPS_PROXY=http://127.0.0.1:7897</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="12-测试Docker"><a href="#12-测试Docker" class="headerlink" title="12. 测试Docker"></a>12. 测试Docker</h3><p>运行一个简单的Docker容器来测试安装是否成功：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run hello-world</span><br></pre></td></tr></table></figure>
 
 <p>如果一切正常，你应该会看到一条欢迎信息，表示Docker已经成功安装并运行。</p>
 <blockquote>
 <p>如果报错：这个错误表明当前用户没有权限访问 Docker 守护进程。通常，Docker 需要 root 权限或用户必须属于 <code>docker</code> 组才能运行 Docker 命令</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ubuntu@ip-172-31-23-31:~$ sudo usermod -aG docker $USER</span><br><span class="line">ubuntu@ip-172-31-23-31:~$ docker run hello-world</span><br><span class="line">docker: permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Head &quot;http://%2Fvar%2Frun%2Fdocker.sock/_ping&quot;: dial unix /var/run/docker.sock: connect: permission denied.</span><br><span class="line">See &#x27;docker run --help&#x27;.</span><br><span class="line">ubuntu@ip-172-31-23-31:~$ </span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ubuntu@ip-172-31-23-31:~$ <span class="built_in">sudo</span> usermod -aG docker <span class="variable">$USER</span></span><br><span class="line">ubuntu@ip-172-31-23-31:~$ docker run hello-world</span><br><span class="line">docker: permission denied <span class="keyword">while</span> trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Head <span class="string">&quot;http://%2Fvar%2Frun%2Fdocker.sock/_ping&quot;</span>: dial unix /var/run/docker.sock: connect: permission denied.</span><br><span class="line">See <span class="string">&#x27;docker run --help&#x27;</span>.</span><br><span class="line">ubuntu@ip-172-31-23-31:~$ </span><br></pre></td></tr></table></figure>
 <p>可能是使用ssh连接服务器，重新登录以应用组更改即可</p>
 </blockquote>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/02/23/docker%E5%AE%89%E8%A3%85-%E5%9B%BD%E5%A4%96%E6%9C%8D%E5%8A%A1%E5%99%A8/" data-id="cuiddWQrxogn9gGyIa_RiyuTh" data-title="docker安装-国外服务器" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/02/23/docker%E5%AE%89%E8%A3%85-%E5%9B%BD%E5%86%85%E6%9C%8D%E5%8A%A1%E5%99%A8/" data-id="cuiduCGPFZxYKP61uLzBkGHA-" data-title="docker安装-国内服务器" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -237,7 +264,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/02/23/Caddy%20%E5%AE%89%E8%A3%85%E4%B8%8E%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/" data-id="cuidPmPftohNTtludZpTkuT0u" data-title="Caddy 安装与基本使用指南" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/02/23/Caddy%20%E5%AE%89%E8%A3%85%E4%B8%8E%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/" data-id="cuidYRRFkvB78YabZTi5pxFHs" data-title="Caddy 安装与基本使用指南" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -359,7 +386,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/02/23/%5B%E8%BD%AC%E8%BD%BD%5D%20%E5%9C%A8%201Panel%20%E4%B8%8B%E6%90%AD%E5%BB%BA%20MyNodeQuery%20%E5%AE%9E%E6%97%B6%E7%9B%91%E6%8E%A7%20VPS/" data-id="cuidE8SEpjRu17_kSxQ3KVEk8" data-title="[转载] 在 1Panel 下搭建 MyNodeQuery 实时监控 VPS" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/02/23/%5B%E8%BD%AC%E8%BD%BD%5D%20%E5%9C%A8%201Panel%20%E4%B8%8B%E6%90%AD%E5%BB%BA%20MyNodeQuery%20%E5%AE%9E%E6%97%B6%E7%9B%91%E6%8E%A7%20VPS/" data-id="cuidw1skIjPBhP5fE3KX_YxgO" data-title="[转载] 在 1Panel 下搭建 MyNodeQuery 实时监控 VPS" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -510,7 +537,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/02/23/%5B%E8%BD%AC%E8%BD%BD%5D%20%E5%A6%82%E4%BD%95%E5%9C%A8serv00%E9%83%A8%E7%BD%B2%E8%87%AA%E5%B7%B1%E7%9A%84%E5%8D%9A%E5%AE%A2%E7%BD%91%E7%AB%99%E5%B9%B6%E4%B8%94follow%E8%AE%A4%E8%AF%81/" data-id="cuidBVGiWHgvmGIRfTz0j12Pe" data-title="[转载] 如何在serv00部署自己的博客网站并且follow认证" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/02/23/%5B%E8%BD%AC%E8%BD%BD%5D%20%E5%A6%82%E4%BD%95%E5%9C%A8serv00%E9%83%A8%E7%BD%B2%E8%87%AA%E5%B7%B1%E7%9A%84%E5%8D%9A%E5%AE%A2%E7%BD%91%E7%AB%99%E5%B9%B6%E4%B8%94follow%E8%AE%A4%E8%AF%81/" data-id="cuidy9NOoaj7UzdLgFUEwTFEv" data-title="[转载] 如何在serv00部署自己的博客网站并且follow认证" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       

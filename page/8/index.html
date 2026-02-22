@@ -265,7 +265,222 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/13/Qt%E5%92%8COpenSSL%E8%BF%9B%E8%A1%8Cbase64%E7%BC%96%E8%A7%A3%E7%A0%81%E5%BC%80%E5%8F%91/" data-id="cuiduzxOSuUXJDcMU2EiWY7RD" data-title="Qt和OpenSSL进行base64编解码开发" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/13/Qt%E5%92%8COpenSSL%E8%BF%9B%E8%A1%8Cbase64%E7%BC%96%E8%A7%A3%E7%A0%81%E5%BC%80%E5%8F%91/" data-id="cuidzE8tzuwIN5tNmPx8CE2ax" data-title="Qt和OpenSSL进行base64编解码开发" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Qt/" rel="tag">Qt</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/openssl/" rel="tag">openssl</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-Qt和OpenSSL进行RSA非对称加解密开发(3)--数据加解密" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/03/12/Qt%E5%92%8COpenSSL%E8%BF%9B%E8%A1%8CRSA%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E8%A7%A3%E5%AF%86%E5%BC%80%E5%8F%91(3)--%E6%95%B0%E6%8D%AE%E5%8A%A0%E8%A7%A3%E5%AF%86/" class="article-date">
+  <time class="dt-published" datetime="2025-03-12T14:13:00.000Z" itemprop="datePublished">2025-03-12</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/OpenSSL/">OpenSSL</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2025/03/12/Qt%E5%92%8COpenSSL%E8%BF%9B%E8%A1%8CRSA%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E8%A7%A3%E5%AF%86%E5%BC%80%E5%8F%91(3)--%E6%95%B0%E6%8D%AE%E5%8A%A0%E8%A7%A3%E5%AF%86/">Qt和OpenSSL进行RSA非对称加解密开发(3)--数据加解密</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h4 id="4-1使用公钥加密"><a href="#4-1使用公钥加密" class="headerlink" title="4.1使用公钥加密"></a>4.1使用公钥加密</h4><h5 id="4-1-1、EVP-PKEY-CTX-new"><a href="#4-1-1、EVP-PKEY-CTX-new" class="headerlink" title="4.1.1、EVP_PKEY_CTX_new"></a>4.1.1、EVP_PKEY_CTX_new</h5><p>用于创建与给定密钥对象（<code>EVP_PKEY</code>）相关联的密钥上下文（<code>EVP_PKEY_CTX</code>）。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">EVP_PKEY_CTX *<span class="title">EVP_PKEY_CTX_new</span><span class="params">(EVP_PKEY *pkey, ENGINE *e)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>参数解释：</p>
+<ul>
+<li><code>pkey</code>：与上下文关联的密钥对象。这可以是一个公钥、私钥或对称密钥对象，具体取决于使用场景。</li>
+<li><code>e</code>：可选参数，与上下文关联的引擎（Engine）。如果不需要使用特定引擎，可以传入 <code>NULL</code>。</li>
+</ul>
+<p>返回值</p>
+<ul>
+<li><code>EVP_PKEY_CTX</code> 类型的指针，即新创建的密钥上下文对象</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建加密数据的上下文对象</span></span><br><span class="line">EVP_PKEY_CTX* ctx = <span class="built_in">EVP_PKEY_CTX_new</span>(m_publicKey, <span class="literal">NULL</span>);</span><br><span class="line"><span class="built_in">assert</span>(ctx != <span class="literal">NULL</span>);</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>需要注意的是，使用完密钥上下文后应该调用 <code>EVP_PKEY_CTX_free</code> 函数来释放相应的资源，以避免内存泄漏。</p>
+</blockquote>
+<h5 id="4-1-2、EVP-PKEY-encrypt-init"><a href="#4-1-2、EVP-PKEY-encrypt-init" class="headerlink" title="4.1.2、EVP_PKEY_encrypt_init"></a>4.1.2、EVP_PKEY_encrypt_init</h5><p>用于初始化使用非对称密钥进行加密操作</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">EVP_PKEY_encrypt_init</span><span class="params">(EVP_PKEY_CTX *)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>参数解释：</p>
+<ul>
+<li>ctx：要进行加密操作的密钥上下文</li>
+</ul>
+<p>返回值</p>
+<ul>
+<li>1：成功</li>
+<li>0：失败</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> ret = <span class="built_in">EVP_PKEY_encrypt_init</span>(ctx);</span><br><span class="line"><span class="built_in">assert</span>(ret == <span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+
+<h5 id="4-1-3、EVP-PKEY-CTX-set-rsa-padding"><a href="#4-1-3、EVP-PKEY-CTX-set-rsa-padding" class="headerlink" title="4.1.3、EVP_PKEY_CTX_set_rsa_padding"></a>4.1.3、EVP_PKEY_CTX_set_rsa_padding</h5><p>用于设置 RSA 加密或解密操作的填充方式</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">EVP_PKEY_CTX_set_rsa_padding</span><span class="params">(EVP_PKEY_CTX *ctx, <span class="type">int</span> pad)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>参数解释：</p>
+<ul>
+<li><code>ctx</code>：RSA 加密或解密操作的上下文（<code>EVP_PKEY_CTX</code>）。</li>
+<li><code>pad</code>：要设置的加密填充（padding）方式，可以是以下值之一：<ul>
+<li><code>RSA_PKCS1_PADDING</code>：PKCS#1 填充方式，是最常见的 RSA 填充方式。</li>
+<li><code>RSA_PKCS1_OAEP_PADDING</code>：PKCS#1 OAEP 填充方式，带有随机性质的填充方式，安全性更高。</li>
+<li><code>RSA_NO_PADDING</code>：不进行填充操作，仅加密或解密数据。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>设置签名时，不能使用RSA_PKCS1_OAPE_PADDING这种填充方式，因为OAEP 是一种概率性加密填充，每次加密同一明文会产生不同的密文，但签名需要确定性，这样才能保证相同数据的签名结果可以被验证</p>
+</blockquote>
+<p>返回值</p>
+<ul>
+<li>1：成功</li>
+<li>0：失败</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ret = <span class="built_in">EVP_PKEY_CTX_set_rsa_padding</span>(ctx, RSA_PKCS1_PADDING);</span><br><span class="line"><span class="built_in">assert</span>(ret == <span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+
+<h5 id="4-1-4、EVP-PKEY-encrypt"><a href="#4-1-4、EVP-PKEY-encrypt" class="headerlink" title="4.1.4、EVP_PKEY_encrypt"></a>4.1.4、EVP_PKEY_encrypt</h5><p>使用非对称密钥进行加密操作</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">EVP_PKEY_encrypt</span><span class="params">(EVP_PKEY_CTX *ctx,</span></span></span><br><span class="line"><span class="params"><span class="function">         <span class="type">unsigned</span> <span class="type">char</span> *out, <span class="type">size_t</span> *outlen,</span></span></span><br><span class="line"><span class="params"><span class="function">         <span class="type">const</span> <span class="type">unsigned</span> <span class="type">char</span> *in, <span class="type">size_t</span> inlen)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>参数解释：</p>
+<ul>
+<li><code>ctx</code>：指向 EVP_PKEY_CTX 对象的指针，用于进行加密操作的上下文。</li>
+<li><code>out</code>：指向输出缓冲区的指针，用于存储加密后的数据。</li>
+<li><code>outlen</code>：指向保存输出数据长度的变量的指针，同时也作为输入来指定输出缓冲区的大小。</li>
+<li><code>in</code>：指向输入缓冲区的指针，包含需要加密的数据。</li>
+<li><code>inlen</code>：输入数据的长度。</li>
+</ul>
+<p>返回值</p>
+<ul>
+<li>1：成功</li>
+<li>0：失败</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">size_t</span> outLen = <span class="number">0</span>;</span><br><span class="line">ret = <span class="built_in">EVP_PKEY_encrypt</span>(</span><br><span class="line">ctx, <span class="literal">NULL</span>, &amp;outLen, <span class="built_in">reinterpret_cast</span>&lt;<span class="type">const</span> <span class="type">unsigned</span> <span class="type">char</span>*&gt;(data.<span class="built_in">data</span>()), data.<span class="built_in">size</span>());</span><br><span class="line"><span class="built_in">assert</span>(ret == <span class="number">1</span>);</span><br><span class="line"><span class="type">unsigned</span> <span class="type">char</span>* out = <span class="keyword">new</span> <span class="type">unsigned</span> <span class="type">char</span>[outLen];</span><br><span class="line"><span class="built_in">EVP_PKEY_encrypt</span>(</span><br><span class="line">ctx, out, &amp;outLen, <span class="built_in">reinterpret_cast</span>&lt;<span class="type">const</span> <span class="type">unsigned</span> <span class="type">char</span>*&gt;(data.<span class="built_in">data</span>()), data.<span class="built_in">size</span>());</span><br><span class="line"><span class="built_in">assert</span>(ret == <span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>使用公钥加密数据，由于不知道加密数据的大小，所以第一次调用EVP_PKEY_encrypt的目的是获取outLen，这是因为outLen记录着加密后数据的长度，通过这个长度就能创建出合适的内存大小</p>
+</blockquote>
+<h5 id="4-1-5、EVP-PKEY-CTX-free"><a href="#4-1-5、EVP-PKEY-CTX-free" class="headerlink" title="4.1.5、EVP_PKEY_CTX_free"></a>4.1.5、EVP_PKEY_CTX_free</h5><p>释放密钥对上下文对象</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">EVP_PKEY_CTX_free</span><span class="params">(EVP_PKEY_CTX *ctx)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>参数解释：</p>
+<ul>
+<li><code>ctx</code>：指向要释放内存的密钥对上下文对象的指针。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 释放资源</span></span><br><span class="line"><span class="keyword">delete</span>[] out;</span><br><span class="line"><span class="built_in">EVP_PKEY_CTX_free</span>(ctx);</span><br></pre></td></tr></table></figure>
+
+<h5 id="完整示例"><a href="#完整示例" class="headerlink" title="完整示例"></a>完整示例</h5><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">QByteArray <span class="title">RSACrypto::publicEncrypt</span><span class="params">(<span class="type">const</span> QByteArray&amp; data)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// 创建加密数据的上下文对象</span></span><br><span class="line">    EVP_PKEY_CTX* ctx = <span class="built_in">EVP_PKEY_CTX_new</span>(m_publicKey, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="built_in">assert</span>(ctx != <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 设置加密和填充模式</span></span><br><span class="line">    <span class="type">int</span> ret = <span class="built_in">EVP_PKEY_encrypt_init</span>(ctx);</span><br><span class="line">    <span class="built_in">assert</span>(ret == <span class="number">1</span>);</span><br><span class="line">    ret = <span class="built_in">EVP_PKEY_CTX_set_rsa_padding</span>(ctx, RSA_PKCS1_OAEP_PADDING);</span><br><span class="line">    <span class="built_in">assert</span>(ret == <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 使用公钥加密数据，由于不知道加密数据的大小，所以第一次调用EVP_PKEY_encrypt的目的是获取outLen，</span></span><br><span class="line">    <span class="comment">// 这是因为outLen记录着加密后数据的长度，通过这个长度就能创建出合适的内存大小</span></span><br><span class="line">    <span class="type">size_t</span> outLen = <span class="number">0</span>;</span><br><span class="line">    ret = <span class="built_in">EVP_PKEY_encrypt</span>(</span><br><span class="line">        ctx, <span class="literal">NULL</span>, &amp;outLen, <span class="built_in">reinterpret_cast</span>&lt;<span class="type">const</span> <span class="type">unsigned</span> <span class="type">char</span>*&gt;(data.<span class="built_in">data</span>()), data.<span class="built_in">size</span>());</span><br><span class="line">    <span class="built_in">assert</span>(ret == <span class="number">1</span>);</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">char</span>* out = <span class="keyword">new</span> <span class="type">unsigned</span> <span class="type">char</span>[outLen];</span><br><span class="line">    <span class="built_in">EVP_PKEY_encrypt</span>(</span><br><span class="line">        ctx, out, &amp;outLen, <span class="built_in">reinterpret_cast</span>&lt;<span class="type">const</span> <span class="type">unsigned</span> <span class="type">char</span>*&gt;(data.<span class="built_in">data</span>()), data.<span class="built_in">size</span>());</span><br><span class="line">    <span class="built_in">assert</span>(ret == <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="function">QByteArray <span class="title">encryptData</span><span class="params">(<span class="keyword">reinterpret_cast</span>&lt;<span class="type">char</span>*&gt;(out), outLen)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 释放资源</span></span><br><span class="line">    <span class="keyword">delete</span>[] out;</span><br><span class="line">    <span class="built_in">EVP_PKEY_CTX_free</span>(ctx);</span><br><span class="line">    <span class="keyword">return</span> encryptData;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-2-使用私钥解密"><a href="#4-2-使用私钥解密" class="headerlink" title="4.2 使用私钥解密"></a>4.2 使用私钥解密</h4><h5 id="4-2-1、EVP-PKEY-CTX-new"><a href="#4-2-1、EVP-PKEY-CTX-new" class="headerlink" title="4.2.1、EVP_PKEY_CTX_new"></a>4.2.1、EVP_PKEY_CTX_new</h5><p>用于创建与给定密钥对象（<code>EVP_PKEY</code>）相关联的密钥上下文（<code>EVP_PKEY_CTX</code>）。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">EVP_PKEY_CTX *<span class="title">EVP_PKEY_CTX_new</span><span class="params">(EVP_PKEY *pkey, ENGINE *e)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>参数解释：</p>
+<ul>
+<li><code>pkey</code>：与上下文关联的密钥对象。这可以是一个公钥、私钥或对称密钥对象，具体取决于使用场景。</li>
+<li><code>e</code>：可选参数，与上下文关联的引擎（Engine）。如果不需要使用特定引擎，可以传入 <code>NULL</code>。</li>
+</ul>
+<p>返回值</p>
+<ul>
+<li><code>EVP_PKEY_CTX</code> 类型的指针，即新创建的密钥上下文对象</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建加密数据的上下文对象</span></span><br><span class="line">EVP_PKEY_CTX* ctx = <span class="built_in">EVP_PKEY_CTX_new</span>(m_privateKey, <span class="literal">NULL</span>);</span><br><span class="line"><span class="built_in">assert</span>(ctx != <span class="literal">NULL</span>);</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>需要注意的是，使用完密钥上下文后应该调用 <code>EVP_PKEY_CTX_free</code> 函数来释放相应的资源，以避免内存泄漏。</p>
+</blockquote>
+<h5 id="4-2-2、EVP-PKEY-decrypt-init"><a href="#4-2-2、EVP-PKEY-decrypt-init" class="headerlink" title="4.2.2、EVP_PKEY_decrypt_init"></a>4.2.2、EVP_PKEY_decrypt_init</h5><p>用于初始化使用非对称密钥进行解密操作</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">EVP_PKEY_decrypt_init</span><span class="params">(EVP_PKEY_CTX *)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>参数解释：</p>
+<ul>
+<li>ctx：要进行加密操作的密钥上下文</li>
+</ul>
+<p>返回值</p>
+<ul>
+<li>1：成功</li>
+<li>0：失败</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> ret = <span class="built_in">EVP_PKEY_decrypt_init</span>(ctx);</span><br><span class="line"><span class="built_in">assert</span>(ret == <span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+
+<h5 id="4-2-3、EVP-PKEY-CTX-set-rsa-padding"><a href="#4-2-3、EVP-PKEY-CTX-set-rsa-padding" class="headerlink" title="4.2.3、EVP_PKEY_CTX_set_rsa_padding"></a>4.2.3、EVP_PKEY_CTX_set_rsa_padding</h5><p>用于设置 RSA 加密或解密操作的填充方式</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">EVP_PKEY_CTX_set_rsa_padding</span><span class="params">(EVP_PKEY_CTX *ctx, <span class="type">int</span> pad)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>参数解释：</p>
+<ul>
+<li><code>ctx</code>：RSA 加密或解密操作的上下文（<code>EVP_PKEY_CTX</code>）。</li>
+<li><code>pad</code>：要设置的加密填充（padding）方式，可以是以下值之一：<ul>
+<li><code>RSA_PKCS1_PADDING</code>：PKCS#1 填充方式，是最常见的 RSA 填充方式。</li>
+<li><code>RSA_PKCS1_OAEP_PADDING</code>：PKCS#1 OAEP 填充方式，带有随机性质的填充方式，安全性更高。</li>
+<li><code>RSA_NO_PADDING</code>：不进行填充操作，仅加密或解密数据。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>设置签名时，不能使用RSA_PKCS1_OAPE_PADDING这种填充方式，因为OAEP 是一种概率性加密填充，每次加密同一明文会产生不同的密文，但签名需要确定性，这样才能保证相同数据的签名结果可以被验证</p>
+</blockquote>
+<p>返回值</p>
+<ul>
+<li>1：成功</li>
+<li>0：失败</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ret = <span class="built_in">EVP_PKEY_CTX_set_rsa_padding</span>(ctx, RSA_PKCS1_PADDING);</span><br><span class="line"><span class="built_in">assert</span>(ret == <span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+
+<h5 id="4-2-4、EVP-PKEY-decrypt"><a href="#4-2-4、EVP-PKEY-decrypt" class="headerlink" title="4.2.4、EVP_PKEY_decrypt"></a>4.2.4、EVP_PKEY_decrypt</h5><p>使用非对称密钥进行加密操作</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">EVP_PKEY_decrypt</span><span class="params">(EVP_PKEY_CTX *ctx,</span></span></span><br><span class="line"><span class="params"><span class="function">         <span class="type">unsigned</span> <span class="type">char</span> *out, <span class="type">size_t</span> *outlen,</span></span></span><br><span class="line"><span class="params"><span class="function">         <span class="type">const</span> <span class="type">unsigned</span> <span class="type">char</span> *in, <span class="type">size_t</span> inlen)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>参数解释：</p>
+<ul>
+<li><code>ctx</code>：指向 EVP_PKEY_CTX 对象的指针，用于进行解密操作的上下文。</li>
+<li><code>out</code>：指向输出缓冲区的指针，用于存储解密后的数据。</li>
+<li><code>outlen</code>：指向保存输出数据长度的变量的指针，同时也作为输入来指定输出缓冲区的大小。</li>
+<li><code>in</code>：指向输入缓冲区的指针，包含需要解密的数据。</li>
+<li><code>inlen</code>：输入数据的长度。</li>
+</ul>
+<p>返回值</p>
+<ul>
+<li>1：成功</li>
+<li>0：失败</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">size_t</span> outLen = <span class="number">0</span>;</span><br><span class="line">ret = <span class="built_in">EVP_PKEY_decrypt</span>(</span><br><span class="line">ctx, <span class="literal">NULL</span>, &amp;outLen, <span class="built_in">reinterpret_cast</span>&lt;<span class="type">const</span> <span class="type">unsigned</span> <span class="type">char</span>*&gt;(data.<span class="built_in">data</span>()), data.<span class="built_in">size</span>());</span><br><span class="line"><span class="built_in">assert</span>(ret == <span class="number">1</span>);</span><br><span class="line"><span class="type">unsigned</span> <span class="type">char</span>* out = <span class="keyword">new</span> <span class="type">unsigned</span> <span class="type">char</span>[outLen];</span><br><span class="line"><span class="built_in">EVP_PKEY_decrypt</span>(</span><br><span class="line">ctx, out, &amp;outLen, <span class="built_in">reinterpret_cast</span>&lt;<span class="type">const</span> <span class="type">unsigned</span> <span class="type">char</span>*&gt;(data.<span class="built_in">data</span>()), data.<span class="built_in">size</span>());</span><br><span class="line"><span class="built_in">assert</span>(ret == <span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>使用私钥解密数据，由于不知道解密数据的大小，所以第一次调用EVP_PKEY_decrypt的目的是获取outLen，这是因为outLen记录着解密后数据的长度，通过这个长度就能创建出合适的内存大小</p>
+</blockquote>
+<h5 id="4-2-5、EVP-PKEY-CTX-free"><a href="#4-2-5、EVP-PKEY-CTX-free" class="headerlink" title="4.2.5、EVP_PKEY_CTX_free"></a>4.2.5、EVP_PKEY_CTX_free</h5><p>释放密钥对上下文对象</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">EVP_PKEY_CTX_free</span><span class="params">(EVP_PKEY_CTX *ctx)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>参数解释：</p>
+<ul>
+<li><code>ctx</code>：指向要释放内存的密钥对上下文对象的指针。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 释放资源</span></span><br><span class="line"><span class="keyword">delete</span>[] out;</span><br><span class="line"><span class="built_in">EVP_PKEY_CTX_free</span>(ctx);</span><br></pre></td></tr></table></figure>
+
+<h5 id="完整示例-1"><a href="#完整示例-1" class="headerlink" title="完整示例"></a>完整示例</h5><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">QByteArray <span class="title">RSACrypto::privateDecrypt</span><span class="params">(<span class="type">const</span> QByteArray&amp; data)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// 创建解密数据的上下文对象</span></span><br><span class="line">    EVP_PKEY_CTX* ctx = <span class="built_in">EVP_PKEY_CTX_new</span>(m_privateKey, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="built_in">assert</span>(ctx != <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 设置加密和填充模式</span></span><br><span class="line">    <span class="type">int</span> ret = <span class="built_in">EVP_PKEY_decrypt_init</span>(ctx);</span><br><span class="line">    <span class="built_in">assert</span>(ret == <span class="number">1</span>);</span><br><span class="line">    ret = <span class="built_in">EVP_PKEY_CTX_set_rsa_padding</span>(ctx, RSA_PKCS1_OAEP_PADDING);</span><br><span class="line">    <span class="built_in">assert</span>(ret == <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 使用私钥解密</span></span><br><span class="line">    <span class="type">size_t</span> outLen = <span class="number">0</span>;</span><br><span class="line">    ret = <span class="built_in">EVP_PKEY_decrypt</span>(</span><br><span class="line">        ctx, <span class="literal">NULL</span>, &amp;outLen, <span class="built_in">reinterpret_cast</span>&lt;<span class="type">const</span> <span class="type">unsigned</span> <span class="type">char</span>*&gt;(data.<span class="built_in">data</span>()), data.<span class="built_in">size</span>());</span><br><span class="line">    <span class="built_in">assert</span>(ret == <span class="number">1</span>);</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">char</span>* out = <span class="keyword">new</span> <span class="type">unsigned</span> <span class="type">char</span>[outLen];</span><br><span class="line">    ret = <span class="built_in">EVP_PKEY_decrypt</span>(</span><br><span class="line">        ctx, out, &amp;outLen, <span class="built_in">reinterpret_cast</span>&lt;<span class="type">const</span> <span class="type">unsigned</span> <span class="type">char</span>*&gt;(data.<span class="built_in">data</span>()), data.<span class="built_in">size</span>());</span><br><span class="line">    <span class="built_in">assert</span>(ret == <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="function">QByteArray <span class="title">decryptData</span><span class="params">(<span class="keyword">reinterpret_cast</span>&lt;<span class="type">char</span>*&gt;(out), outLen)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 释放资源</span></span><br><span class="line">    <span class="keyword">delete</span>[] out;</span><br><span class="line">    <span class="built_in">EVP_PKEY_CTX_free</span>(ctx);</span><br><span class="line">    <span class="keyword">return</span> decryptData;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://www.228610.xyz/2025/03/12/Qt%E5%92%8COpenSSL%E8%BF%9B%E8%A1%8CRSA%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E8%A7%A3%E5%AF%86%E5%BC%80%E5%8F%91(3)--%E6%95%B0%E6%8D%AE%E5%8A%A0%E8%A7%A3%E5%AF%86/" data-id="cuidLadi4fizokl1pZsERzQdE" data-title="Qt和OpenSSL进行RSA非对称加解密开发(3)--数据加解密" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -513,222 +728,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/12/Qt%E5%92%8COpenSSL%E8%BF%9B%E8%A1%8CRSA%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E8%A7%A3%E5%AF%86%E5%BC%80%E5%8F%91(4)--%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D%E5%92%8C%E6%A0%A1%E9%AA%8C/" data-id="cuidfRTUf6mGUEh5o_vRigUZS" data-title="Qt和OpenSSL进行RSA非对称加解密开发(4)--数字签名和校验" class="article-share-link"><span class="fa fa-share">Share</span></a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Qt/" rel="tag">Qt</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/openssl/" rel="tag">openssl</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-Qt和OpenSSL进行RSA非对称加解密开发(3)--数据加解密" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2025/03/12/Qt%E5%92%8COpenSSL%E8%BF%9B%E8%A1%8CRSA%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E8%A7%A3%E5%AF%86%E5%BC%80%E5%8F%91(3)--%E6%95%B0%E6%8D%AE%E5%8A%A0%E8%A7%A3%E5%AF%86/" class="article-date">
-  <time class="dt-published" datetime="2025-03-12T14:13:00.000Z" itemprop="datePublished">2025-03-12</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/OpenSSL/">OpenSSL</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2025/03/12/Qt%E5%92%8COpenSSL%E8%BF%9B%E8%A1%8CRSA%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E8%A7%A3%E5%AF%86%E5%BC%80%E5%8F%91(3)--%E6%95%B0%E6%8D%AE%E5%8A%A0%E8%A7%A3%E5%AF%86/">Qt和OpenSSL进行RSA非对称加解密开发(3)--数据加解密</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h4 id="4-1使用公钥加密"><a href="#4-1使用公钥加密" class="headerlink" title="4.1使用公钥加密"></a>4.1使用公钥加密</h4><h5 id="4-1-1、EVP-PKEY-CTX-new"><a href="#4-1-1、EVP-PKEY-CTX-new" class="headerlink" title="4.1.1、EVP_PKEY_CTX_new"></a>4.1.1、EVP_PKEY_CTX_new</h5><p>用于创建与给定密钥对象（<code>EVP_PKEY</code>）相关联的密钥上下文（<code>EVP_PKEY_CTX</code>）。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">EVP_PKEY_CTX *<span class="title">EVP_PKEY_CTX_new</span><span class="params">(EVP_PKEY *pkey, ENGINE *e)</span></span>;</span><br></pre></td></tr></table></figure>
-
-<p>参数解释：</p>
-<ul>
-<li><code>pkey</code>：与上下文关联的密钥对象。这可以是一个公钥、私钥或对称密钥对象，具体取决于使用场景。</li>
-<li><code>e</code>：可选参数，与上下文关联的引擎（Engine）。如果不需要使用特定引擎，可以传入 <code>NULL</code>。</li>
-</ul>
-<p>返回值</p>
-<ul>
-<li><code>EVP_PKEY_CTX</code> 类型的指针，即新创建的密钥上下文对象</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建加密数据的上下文对象</span></span><br><span class="line">EVP_PKEY_CTX* ctx = <span class="built_in">EVP_PKEY_CTX_new</span>(m_publicKey, <span class="literal">NULL</span>);</span><br><span class="line"><span class="built_in">assert</span>(ctx != <span class="literal">NULL</span>);</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>需要注意的是，使用完密钥上下文后应该调用 <code>EVP_PKEY_CTX_free</code> 函数来释放相应的资源，以避免内存泄漏。</p>
-</blockquote>
-<h5 id="4-1-2、EVP-PKEY-encrypt-init"><a href="#4-1-2、EVP-PKEY-encrypt-init" class="headerlink" title="4.1.2、EVP_PKEY_encrypt_init"></a>4.1.2、EVP_PKEY_encrypt_init</h5><p>用于初始化使用非对称密钥进行加密操作</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">EVP_PKEY_encrypt_init</span><span class="params">(EVP_PKEY_CTX *)</span></span>;</span><br></pre></td></tr></table></figure>
-
-<p>参数解释：</p>
-<ul>
-<li>ctx：要进行加密操作的密钥上下文</li>
-</ul>
-<p>返回值</p>
-<ul>
-<li>1：成功</li>
-<li>0：失败</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> ret = <span class="built_in">EVP_PKEY_encrypt_init</span>(ctx);</span><br><span class="line"><span class="built_in">assert</span>(ret == <span class="number">1</span>);</span><br></pre></td></tr></table></figure>
-
-<h5 id="4-1-3、EVP-PKEY-CTX-set-rsa-padding"><a href="#4-1-3、EVP-PKEY-CTX-set-rsa-padding" class="headerlink" title="4.1.3、EVP_PKEY_CTX_set_rsa_padding"></a>4.1.3、EVP_PKEY_CTX_set_rsa_padding</h5><p>用于设置 RSA 加密或解密操作的填充方式</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">EVP_PKEY_CTX_set_rsa_padding</span><span class="params">(EVP_PKEY_CTX *ctx, <span class="type">int</span> pad)</span></span>;</span><br></pre></td></tr></table></figure>
-
-<p>参数解释：</p>
-<ul>
-<li><code>ctx</code>：RSA 加密或解密操作的上下文（<code>EVP_PKEY_CTX</code>）。</li>
-<li><code>pad</code>：要设置的加密填充（padding）方式，可以是以下值之一：<ul>
-<li><code>RSA_PKCS1_PADDING</code>：PKCS#1 填充方式，是最常见的 RSA 填充方式。</li>
-<li><code>RSA_PKCS1_OAEP_PADDING</code>：PKCS#1 OAEP 填充方式，带有随机性质的填充方式，安全性更高。</li>
-<li><code>RSA_NO_PADDING</code>：不进行填充操作，仅加密或解密数据。</li>
-</ul>
-</li>
-</ul>
-<blockquote>
-<p>设置签名时，不能使用RSA_PKCS1_OAPE_PADDING这种填充方式，因为OAEP 是一种概率性加密填充，每次加密同一明文会产生不同的密文，但签名需要确定性，这样才能保证相同数据的签名结果可以被验证</p>
-</blockquote>
-<p>返回值</p>
-<ul>
-<li>1：成功</li>
-<li>0：失败</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ret = <span class="built_in">EVP_PKEY_CTX_set_rsa_padding</span>(ctx, RSA_PKCS1_PADDING);</span><br><span class="line"><span class="built_in">assert</span>(ret == <span class="number">1</span>);</span><br></pre></td></tr></table></figure>
-
-<h5 id="4-1-4、EVP-PKEY-encrypt"><a href="#4-1-4、EVP-PKEY-encrypt" class="headerlink" title="4.1.4、EVP_PKEY_encrypt"></a>4.1.4、EVP_PKEY_encrypt</h5><p>使用非对称密钥进行加密操作</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">EVP_PKEY_encrypt</span><span class="params">(EVP_PKEY_CTX *ctx,</span></span></span><br><span class="line"><span class="params"><span class="function">         <span class="type">unsigned</span> <span class="type">char</span> *out, <span class="type">size_t</span> *outlen,</span></span></span><br><span class="line"><span class="params"><span class="function">         <span class="type">const</span> <span class="type">unsigned</span> <span class="type">char</span> *in, <span class="type">size_t</span> inlen)</span></span>;</span><br></pre></td></tr></table></figure>
-
-<p>参数解释：</p>
-<ul>
-<li><code>ctx</code>：指向 EVP_PKEY_CTX 对象的指针，用于进行加密操作的上下文。</li>
-<li><code>out</code>：指向输出缓冲区的指针，用于存储加密后的数据。</li>
-<li><code>outlen</code>：指向保存输出数据长度的变量的指针，同时也作为输入来指定输出缓冲区的大小。</li>
-<li><code>in</code>：指向输入缓冲区的指针，包含需要加密的数据。</li>
-<li><code>inlen</code>：输入数据的长度。</li>
-</ul>
-<p>返回值</p>
-<ul>
-<li>1：成功</li>
-<li>0：失败</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">size_t</span> outLen = <span class="number">0</span>;</span><br><span class="line">ret = <span class="built_in">EVP_PKEY_encrypt</span>(</span><br><span class="line">ctx, <span class="literal">NULL</span>, &amp;outLen, <span class="built_in">reinterpret_cast</span>&lt;<span class="type">const</span> <span class="type">unsigned</span> <span class="type">char</span>*&gt;(data.<span class="built_in">data</span>()), data.<span class="built_in">size</span>());</span><br><span class="line"><span class="built_in">assert</span>(ret == <span class="number">1</span>);</span><br><span class="line"><span class="type">unsigned</span> <span class="type">char</span>* out = <span class="keyword">new</span> <span class="type">unsigned</span> <span class="type">char</span>[outLen];</span><br><span class="line"><span class="built_in">EVP_PKEY_encrypt</span>(</span><br><span class="line">ctx, out, &amp;outLen, <span class="built_in">reinterpret_cast</span>&lt;<span class="type">const</span> <span class="type">unsigned</span> <span class="type">char</span>*&gt;(data.<span class="built_in">data</span>()), data.<span class="built_in">size</span>());</span><br><span class="line"><span class="built_in">assert</span>(ret == <span class="number">1</span>);</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>使用公钥加密数据，由于不知道加密数据的大小，所以第一次调用EVP_PKEY_encrypt的目的是获取outLen，这是因为outLen记录着加密后数据的长度，通过这个长度就能创建出合适的内存大小</p>
-</blockquote>
-<h5 id="4-1-5、EVP-PKEY-CTX-free"><a href="#4-1-5、EVP-PKEY-CTX-free" class="headerlink" title="4.1.5、EVP_PKEY_CTX_free"></a>4.1.5、EVP_PKEY_CTX_free</h5><p>释放密钥对上下文对象</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">EVP_PKEY_CTX_free</span><span class="params">(EVP_PKEY_CTX *ctx)</span></span>;</span><br></pre></td></tr></table></figure>
-
-<p>参数解释：</p>
-<ul>
-<li><code>ctx</code>：指向要释放内存的密钥对上下文对象的指针。</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 释放资源</span></span><br><span class="line"><span class="keyword">delete</span>[] out;</span><br><span class="line"><span class="built_in">EVP_PKEY_CTX_free</span>(ctx);</span><br></pre></td></tr></table></figure>
-
-<h5 id="完整示例"><a href="#完整示例" class="headerlink" title="完整示例"></a>完整示例</h5><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">QByteArray <span class="title">RSACrypto::publicEncrypt</span><span class="params">(<span class="type">const</span> QByteArray&amp; data)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// 创建加密数据的上下文对象</span></span><br><span class="line">    EVP_PKEY_CTX* ctx = <span class="built_in">EVP_PKEY_CTX_new</span>(m_publicKey, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="built_in">assert</span>(ctx != <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 设置加密和填充模式</span></span><br><span class="line">    <span class="type">int</span> ret = <span class="built_in">EVP_PKEY_encrypt_init</span>(ctx);</span><br><span class="line">    <span class="built_in">assert</span>(ret == <span class="number">1</span>);</span><br><span class="line">    ret = <span class="built_in">EVP_PKEY_CTX_set_rsa_padding</span>(ctx, RSA_PKCS1_OAEP_PADDING);</span><br><span class="line">    <span class="built_in">assert</span>(ret == <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 使用公钥加密数据，由于不知道加密数据的大小，所以第一次调用EVP_PKEY_encrypt的目的是获取outLen，</span></span><br><span class="line">    <span class="comment">// 这是因为outLen记录着加密后数据的长度，通过这个长度就能创建出合适的内存大小</span></span><br><span class="line">    <span class="type">size_t</span> outLen = <span class="number">0</span>;</span><br><span class="line">    ret = <span class="built_in">EVP_PKEY_encrypt</span>(</span><br><span class="line">        ctx, <span class="literal">NULL</span>, &amp;outLen, <span class="built_in">reinterpret_cast</span>&lt;<span class="type">const</span> <span class="type">unsigned</span> <span class="type">char</span>*&gt;(data.<span class="built_in">data</span>()), data.<span class="built_in">size</span>());</span><br><span class="line">    <span class="built_in">assert</span>(ret == <span class="number">1</span>);</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">char</span>* out = <span class="keyword">new</span> <span class="type">unsigned</span> <span class="type">char</span>[outLen];</span><br><span class="line">    <span class="built_in">EVP_PKEY_encrypt</span>(</span><br><span class="line">        ctx, out, &amp;outLen, <span class="built_in">reinterpret_cast</span>&lt;<span class="type">const</span> <span class="type">unsigned</span> <span class="type">char</span>*&gt;(data.<span class="built_in">data</span>()), data.<span class="built_in">size</span>());</span><br><span class="line">    <span class="built_in">assert</span>(ret == <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="function">QByteArray <span class="title">encryptData</span><span class="params">(<span class="keyword">reinterpret_cast</span>&lt;<span class="type">char</span>*&gt;(out), outLen)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 释放资源</span></span><br><span class="line">    <span class="keyword">delete</span>[] out;</span><br><span class="line">    <span class="built_in">EVP_PKEY_CTX_free</span>(ctx);</span><br><span class="line">    <span class="keyword">return</span> encryptData;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="4-2-使用私钥解密"><a href="#4-2-使用私钥解密" class="headerlink" title="4.2 使用私钥解密"></a>4.2 使用私钥解密</h4><h5 id="4-2-1、EVP-PKEY-CTX-new"><a href="#4-2-1、EVP-PKEY-CTX-new" class="headerlink" title="4.2.1、EVP_PKEY_CTX_new"></a>4.2.1、EVP_PKEY_CTX_new</h5><p>用于创建与给定密钥对象（<code>EVP_PKEY</code>）相关联的密钥上下文（<code>EVP_PKEY_CTX</code>）。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">EVP_PKEY_CTX *<span class="title">EVP_PKEY_CTX_new</span><span class="params">(EVP_PKEY *pkey, ENGINE *e)</span></span>;</span><br></pre></td></tr></table></figure>
-
-<p>参数解释：</p>
-<ul>
-<li><code>pkey</code>：与上下文关联的密钥对象。这可以是一个公钥、私钥或对称密钥对象，具体取决于使用场景。</li>
-<li><code>e</code>：可选参数，与上下文关联的引擎（Engine）。如果不需要使用特定引擎，可以传入 <code>NULL</code>。</li>
-</ul>
-<p>返回值</p>
-<ul>
-<li><code>EVP_PKEY_CTX</code> 类型的指针，即新创建的密钥上下文对象</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建加密数据的上下文对象</span></span><br><span class="line">EVP_PKEY_CTX* ctx = <span class="built_in">EVP_PKEY_CTX_new</span>(m_privateKey, <span class="literal">NULL</span>);</span><br><span class="line"><span class="built_in">assert</span>(ctx != <span class="literal">NULL</span>);</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>需要注意的是，使用完密钥上下文后应该调用 <code>EVP_PKEY_CTX_free</code> 函数来释放相应的资源，以避免内存泄漏。</p>
-</blockquote>
-<h5 id="4-2-2、EVP-PKEY-decrypt-init"><a href="#4-2-2、EVP-PKEY-decrypt-init" class="headerlink" title="4.2.2、EVP_PKEY_decrypt_init"></a>4.2.2、EVP_PKEY_decrypt_init</h5><p>用于初始化使用非对称密钥进行解密操作</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">EVP_PKEY_decrypt_init</span><span class="params">(EVP_PKEY_CTX *)</span></span>;</span><br></pre></td></tr></table></figure>
-
-<p>参数解释：</p>
-<ul>
-<li>ctx：要进行加密操作的密钥上下文</li>
-</ul>
-<p>返回值</p>
-<ul>
-<li>1：成功</li>
-<li>0：失败</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> ret = <span class="built_in">EVP_PKEY_decrypt_init</span>(ctx);</span><br><span class="line"><span class="built_in">assert</span>(ret == <span class="number">1</span>);</span><br></pre></td></tr></table></figure>
-
-<h5 id="4-2-3、EVP-PKEY-CTX-set-rsa-padding"><a href="#4-2-3、EVP-PKEY-CTX-set-rsa-padding" class="headerlink" title="4.2.3、EVP_PKEY_CTX_set_rsa_padding"></a>4.2.3、EVP_PKEY_CTX_set_rsa_padding</h5><p>用于设置 RSA 加密或解密操作的填充方式</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">EVP_PKEY_CTX_set_rsa_padding</span><span class="params">(EVP_PKEY_CTX *ctx, <span class="type">int</span> pad)</span></span>;</span><br></pre></td></tr></table></figure>
-
-<p>参数解释：</p>
-<ul>
-<li><code>ctx</code>：RSA 加密或解密操作的上下文（<code>EVP_PKEY_CTX</code>）。</li>
-<li><code>pad</code>：要设置的加密填充（padding）方式，可以是以下值之一：<ul>
-<li><code>RSA_PKCS1_PADDING</code>：PKCS#1 填充方式，是最常见的 RSA 填充方式。</li>
-<li><code>RSA_PKCS1_OAEP_PADDING</code>：PKCS#1 OAEP 填充方式，带有随机性质的填充方式，安全性更高。</li>
-<li><code>RSA_NO_PADDING</code>：不进行填充操作，仅加密或解密数据。</li>
-</ul>
-</li>
-</ul>
-<blockquote>
-<p>设置签名时，不能使用RSA_PKCS1_OAPE_PADDING这种填充方式，因为OAEP 是一种概率性加密填充，每次加密同一明文会产生不同的密文，但签名需要确定性，这样才能保证相同数据的签名结果可以被验证</p>
-</blockquote>
-<p>返回值</p>
-<ul>
-<li>1：成功</li>
-<li>0：失败</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ret = <span class="built_in">EVP_PKEY_CTX_set_rsa_padding</span>(ctx, RSA_PKCS1_PADDING);</span><br><span class="line"><span class="built_in">assert</span>(ret == <span class="number">1</span>);</span><br></pre></td></tr></table></figure>
-
-<h5 id="4-2-4、EVP-PKEY-decrypt"><a href="#4-2-4、EVP-PKEY-decrypt" class="headerlink" title="4.2.4、EVP_PKEY_decrypt"></a>4.2.4、EVP_PKEY_decrypt</h5><p>使用非对称密钥进行加密操作</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">EVP_PKEY_decrypt</span><span class="params">(EVP_PKEY_CTX *ctx,</span></span></span><br><span class="line"><span class="params"><span class="function">         <span class="type">unsigned</span> <span class="type">char</span> *out, <span class="type">size_t</span> *outlen,</span></span></span><br><span class="line"><span class="params"><span class="function">         <span class="type">const</span> <span class="type">unsigned</span> <span class="type">char</span> *in, <span class="type">size_t</span> inlen)</span></span>;</span><br></pre></td></tr></table></figure>
-
-<p>参数解释：</p>
-<ul>
-<li><code>ctx</code>：指向 EVP_PKEY_CTX 对象的指针，用于进行解密操作的上下文。</li>
-<li><code>out</code>：指向输出缓冲区的指针，用于存储解密后的数据。</li>
-<li><code>outlen</code>：指向保存输出数据长度的变量的指针，同时也作为输入来指定输出缓冲区的大小。</li>
-<li><code>in</code>：指向输入缓冲区的指针，包含需要解密的数据。</li>
-<li><code>inlen</code>：输入数据的长度。</li>
-</ul>
-<p>返回值</p>
-<ul>
-<li>1：成功</li>
-<li>0：失败</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">size_t</span> outLen = <span class="number">0</span>;</span><br><span class="line">ret = <span class="built_in">EVP_PKEY_decrypt</span>(</span><br><span class="line">ctx, <span class="literal">NULL</span>, &amp;outLen, <span class="built_in">reinterpret_cast</span>&lt;<span class="type">const</span> <span class="type">unsigned</span> <span class="type">char</span>*&gt;(data.<span class="built_in">data</span>()), data.<span class="built_in">size</span>());</span><br><span class="line"><span class="built_in">assert</span>(ret == <span class="number">1</span>);</span><br><span class="line"><span class="type">unsigned</span> <span class="type">char</span>* out = <span class="keyword">new</span> <span class="type">unsigned</span> <span class="type">char</span>[outLen];</span><br><span class="line"><span class="built_in">EVP_PKEY_decrypt</span>(</span><br><span class="line">ctx, out, &amp;outLen, <span class="built_in">reinterpret_cast</span>&lt;<span class="type">const</span> <span class="type">unsigned</span> <span class="type">char</span>*&gt;(data.<span class="built_in">data</span>()), data.<span class="built_in">size</span>());</span><br><span class="line"><span class="built_in">assert</span>(ret == <span class="number">1</span>);</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>使用私钥解密数据，由于不知道解密数据的大小，所以第一次调用EVP_PKEY_decrypt的目的是获取outLen，这是因为outLen记录着解密后数据的长度，通过这个长度就能创建出合适的内存大小</p>
-</blockquote>
-<h5 id="4-2-5、EVP-PKEY-CTX-free"><a href="#4-2-5、EVP-PKEY-CTX-free" class="headerlink" title="4.2.5、EVP_PKEY_CTX_free"></a>4.2.5、EVP_PKEY_CTX_free</h5><p>释放密钥对上下文对象</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">EVP_PKEY_CTX_free</span><span class="params">(EVP_PKEY_CTX *ctx)</span></span>;</span><br></pre></td></tr></table></figure>
-
-<p>参数解释：</p>
-<ul>
-<li><code>ctx</code>：指向要释放内存的密钥对上下文对象的指针。</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 释放资源</span></span><br><span class="line"><span class="keyword">delete</span>[] out;</span><br><span class="line"><span class="built_in">EVP_PKEY_CTX_free</span>(ctx);</span><br></pre></td></tr></table></figure>
-
-<h5 id="完整示例-1"><a href="#完整示例-1" class="headerlink" title="完整示例"></a>完整示例</h5><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">QByteArray <span class="title">RSACrypto::privateDecrypt</span><span class="params">(<span class="type">const</span> QByteArray&amp; data)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// 创建解密数据的上下文对象</span></span><br><span class="line">    EVP_PKEY_CTX* ctx = <span class="built_in">EVP_PKEY_CTX_new</span>(m_privateKey, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="built_in">assert</span>(ctx != <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 设置加密和填充模式</span></span><br><span class="line">    <span class="type">int</span> ret = <span class="built_in">EVP_PKEY_decrypt_init</span>(ctx);</span><br><span class="line">    <span class="built_in">assert</span>(ret == <span class="number">1</span>);</span><br><span class="line">    ret = <span class="built_in">EVP_PKEY_CTX_set_rsa_padding</span>(ctx, RSA_PKCS1_OAEP_PADDING);</span><br><span class="line">    <span class="built_in">assert</span>(ret == <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 使用私钥解密</span></span><br><span class="line">    <span class="type">size_t</span> outLen = <span class="number">0</span>;</span><br><span class="line">    ret = <span class="built_in">EVP_PKEY_decrypt</span>(</span><br><span class="line">        ctx, <span class="literal">NULL</span>, &amp;outLen, <span class="built_in">reinterpret_cast</span>&lt;<span class="type">const</span> <span class="type">unsigned</span> <span class="type">char</span>*&gt;(data.<span class="built_in">data</span>()), data.<span class="built_in">size</span>());</span><br><span class="line">    <span class="built_in">assert</span>(ret == <span class="number">1</span>);</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">char</span>* out = <span class="keyword">new</span> <span class="type">unsigned</span> <span class="type">char</span>[outLen];</span><br><span class="line">    ret = <span class="built_in">EVP_PKEY_decrypt</span>(</span><br><span class="line">        ctx, out, &amp;outLen, <span class="built_in">reinterpret_cast</span>&lt;<span class="type">const</span> <span class="type">unsigned</span> <span class="type">char</span>*&gt;(data.<span class="built_in">data</span>()), data.<span class="built_in">size</span>());</span><br><span class="line">    <span class="built_in">assert</span>(ret == <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="function">QByteArray <span class="title">decryptData</span><span class="params">(<span class="keyword">reinterpret_cast</span>&lt;<span class="type">char</span>*&gt;(out), outLen)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 释放资源</span></span><br><span class="line">    <span class="keyword">delete</span>[] out;</span><br><span class="line">    <span class="built_in">EVP_PKEY_CTX_free</span>(ctx);</span><br><span class="line">    <span class="keyword">return</span> decryptData;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/12/Qt%E5%92%8COpenSSL%E8%BF%9B%E8%A1%8CRSA%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E8%A7%A3%E5%AF%86%E5%BC%80%E5%8F%91(3)--%E6%95%B0%E6%8D%AE%E5%8A%A0%E8%A7%A3%E5%AF%86/" data-id="cuidxHZOatjf14KDX8uu1Aec3" data-title="Qt和OpenSSL进行RSA非对称加解密开发(3)--数据加解密" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/12/Qt%E5%92%8COpenSSL%E8%BF%9B%E8%A1%8CRSA%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E8%A7%A3%E5%AF%86%E5%BC%80%E5%8F%91(4)--%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D%E5%92%8C%E6%A0%A1%E9%AA%8C/" data-id="cuidUBBjYtHBtPRKIAeIveyWB" data-title="Qt和OpenSSL进行RSA非对称加解密开发(4)--数字签名和校验" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -842,7 +842,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/12/Qt%E5%92%8COpenSSL%E8%BF%9B%E8%A1%8CRSA%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E8%A7%A3%E5%AF%86%E5%BC%80%E5%8F%91(2)--%E8%AF%BB%E5%8F%96%E6%88%96%E9%87%8A%E6%94%BE%E5%AF%86%E9%92%A5%E5%AF%B9/" data-id="cuidF6OT1hn0YdPmSNYhT0fDh" data-title="Qt和OpenSSL进行RSA非对称加解密开发(2)--读取或释放密钥对" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/12/Qt%E5%92%8COpenSSL%E8%BF%9B%E8%A1%8CRSA%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E8%A7%A3%E5%AF%86%E5%BC%80%E5%8F%91(2)--%E8%AF%BB%E5%8F%96%E6%88%96%E9%87%8A%E6%94%BE%E5%AF%86%E9%92%A5%E5%AF%B9/" data-id="cuid7KCQNM6dm5dbNkANt0J_K" data-title="Qt和OpenSSL进行RSA非对称加解密开发(2)--读取或释放密钥对" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -1010,7 +1010,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/12/Qt%E5%92%8COpenSSL%E8%BF%9B%E8%A1%8CRSA%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E8%A7%A3%E5%AF%86%E5%BC%80%E5%8F%91(1)--%E7%94%9F%E6%88%90%E5%AF%86%E9%92%A5%E5%AF%B9/" data-id="cuidl8jGQ7iYvHSohrEBnUZnC" data-title="Qt和OpenSSL进行RSA非对称加解密开发(1)--生成密钥对" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/12/Qt%E5%92%8COpenSSL%E8%BF%9B%E8%A1%8CRSA%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E8%A7%A3%E5%AF%86%E5%BC%80%E5%8F%91(1)--%E7%94%9F%E6%88%90%E5%AF%86%E9%92%A5%E5%AF%B9/" data-id="cuidtXIPfcBHdR4JuYJktLgTe" data-title="Qt和OpenSSL进行RSA非对称加解密开发(1)--生成密钥对" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -1633,7 +1633,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/11/Qt%E5%92%8COpenSSL%E8%BF%9B%E8%A1%8CRSA%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E8%A7%A3%E5%AF%86%E5%BC%80%E5%8F%91(%E6%80%BB)/" data-id="cuidGje5S9TEuqP2_ej9I2OPP" data-title="Qt和OpenSSL进行RSA非对称加解密开发(总)" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/11/Qt%E5%92%8COpenSSL%E8%BF%9B%E8%A1%8CRSA%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E8%A7%A3%E5%AF%86%E5%BC%80%E5%8F%91(%E6%80%BB)/" data-id="cuidCKHJ8iFqNaOc9yhOoahOM" data-title="Qt和OpenSSL进行RSA非对称加解密开发(总)" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -1754,7 +1754,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/10/Qt%E5%92%8COpenSSL%E8%BF%9B%E8%A1%8CAES%E5%AF%B9%E7%A7%B0%E5%8A%A0%E8%A7%A3%E5%AF%86%E5%BC%80%E5%8F%91/" data-id="cuid5PE7rDQRX5nUtYXn0a2SQ" data-title="Qt和OpenSSL进行AES对称加解密开发" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/10/Qt%E5%92%8COpenSSL%E8%BF%9B%E8%A1%8CAES%E5%AF%B9%E7%A7%B0%E5%8A%A0%E8%A7%A3%E5%AF%86%E5%BC%80%E5%8F%91/" data-id="cuidfes65jmXLIQs0xXURfc8m" data-title="Qt和OpenSSL进行AES对称加解密开发" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -1809,7 +1809,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/10/Qt%E8%87%AA%E5%AE%9A%E4%B9%89%E6%97%A5%E5%BF%97%E8%BE%93%E5%87%BA/" data-id="cuidIheq2uwlF6rwP8le2WO_l" data-title="Qt自定义日志输出" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/10/Qt%E8%87%AA%E5%AE%9A%E4%B9%89%E6%97%A5%E5%BF%97%E8%BE%93%E5%87%BA/" data-id="cuidEjZV2tM3CwcdWzZMCqvB6" data-title="Qt自定义日志输出" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -1852,7 +1852,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/09/vscode%20settings.json%E5%A4%87%E4%BB%BD/" data-id="cuidy9ZA3ibuFLruVTa4OwdF7" data-title="vscode settings.json备份" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/09/vscode%20settings.json%E5%A4%87%E4%BB%BD/" data-id="cuidQVQDFFaf-vLtfzyhGyfWI" data-title="vscode settings.json备份" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -1922,7 +1922,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/08/openssl%E5%AE%89%E8%A3%85%E5%92%8C%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/" data-id="cuidtBLQy1vgDPrZDdmeGWYDv" data-title="openssl安装和基本使用" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/08/openssl%E5%AE%89%E8%A3%85%E5%92%8C%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/" data-id="cuidFg6mJk9k7Lv4-DNOVXQ2j" data-title="openssl安装和基本使用" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
