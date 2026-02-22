@@ -5,7 +5,7 @@ tags: [CTP]
 ---
 API和文档下载：https://www.simnow.com.cn/static/apiDownload.action
 
-![image-20250814152725311](https://images.guangyin.blog/2025/08/0ac5abec79c0b4930fc02854f56d0b6b.png)
+![image-20250814152725311](https://images.228610.xyz/2025/08/0ac5abec79c0b4930fc02854f56d0b6b.png)
 
 将动态库继承到cmake时有点坑，simnow的动态库没有前缀lib,需要自行添加，否则cmake链接不到
 
@@ -37,7 +37,7 @@ TARGET_LINK_LIBRARIES(${PROJECT_NAME}
 
 CTP程序的Api请求，都会在Spi回调线程中处理
 
-![image-20250814154623940](https://images.guangyin.blog/2025/08/f84209f0842e5f83fccde14469e4aa90.png)
+![image-20250814154623940](https://images.228610.xyz/2025/08/f84209f0842e5f83fccde14469e4aa90.png)
 
 ### CTP通用参数
 
@@ -133,9 +133,9 @@ public:
 
 1.注意，Release函数会销毁对象，最后如果调用Join函数会导致段错误
 
-<img src="https://images.guangyin.blog/2025/08/d2209d1a2b6ed8b62451cdd99255dae0.png" alt="image-20250814161653234" style="zoom:80%;" /> 
+<img src="https://images.228610.xyz/2025/08/d2209d1a2b6ed8b62451cdd99255dae0.png" alt="image-20250814161653234" style="zoom:80%;" /> 
 
-<img src="https://images.guangyin.blog/2025/08/1beda6746bdc33326d53e79286b65c44.png" alt="image-20250814161804541" style="zoom: 50%;" /> 
+<img src="https://images.228610.xyz/2025/08/1beda6746bdc33326d53e79286b65c44.png" alt="image-20250814161804541" style="zoom: 50%;" /> 
 
 
 

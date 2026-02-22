@@ -11,11 +11,11 @@ tags: [vscode,Spring Boot]
 
 将maven添加到环境变量中
 
-![PixPin_2025-02-26_20-26-02](https://images.guangyin.blog/2025/02/d39b0c0a116089064e44c87fdcdb1e1f.webp)
+![PixPin_2025-02-26_20-26-02](https://images.228610.xyz/2025/02/d39b0c0a116089064e44c87fdcdb1e1f.webp)
 
 在环境变量中设置`JAVA_HOME`,值就是`JDK的安装路径`
 
-![PixPin_2025-02-26_20-24-17](https://images.guangyin.blog/2025/02/5e33cef804aa35904fb517a022b5e08d.webp)
+![PixPin_2025-02-26_20-24-17](https://images.228610.xyz/2025/02/5e33cef804aa35904fb517a022b5e08d.webp)
 
 ### 二、vscode插件
 
@@ -333,15 +333,15 @@ under the License.
 
 快捷键打开命令窗口输入：`Spring Initializr: Create a Maven Project`,根据提示配置项目
 
-![PixPin_2025-02-26_20-09-19](https://images.guangyin.blog/2025/02/bc18d78678d2c84a9471070a10dd3ac6.webp)
+![PixPin_2025-02-26_20-09-19](https://images.228610.xyz/2025/02/bc18d78678d2c84a9471070a10dd3ac6.webp)
 
 ### 六、启动项目
 
 进入`spring boot dashboard`
 
-![PixPin_2025-02-26_20-11-43](https://images.guangyin.blog/2025/02/1a663cf0ed87e537aaa6be26f8ba7eeb.webp)
+![PixPin_2025-02-26_20-11-43](https://images.228610.xyz/2025/02/1a663cf0ed87e537aaa6be26f8ba7eeb.webp)
 
 点击启动按钮
 
-![PixPin_2025-02-26_20-12-49](https://images.guangyin.blog/2025/02/551f33aa24c9686ab00d0fa30ae7918f.webp)
+![PixPin_2025-02-26_20-12-49](https://images.228610.xyz/2025/02/551f33aa24c9686ab00d0fa30ae7918f.webp)
 

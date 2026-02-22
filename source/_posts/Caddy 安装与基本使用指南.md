@@ -5,7 +5,7 @@ tags: [反向代理,caddy]
 ---
 # Caddy 反向代理配置与基础使用指南
 
-Caddy 是一个用 Go 语言编写的开源 Web 服务器，以简单易用、自动 HTTPS 和强大的插件系统著称。其配置文件 `Caddyfile` 简洁明了，能自动处理 HTTPS 证书的申请和续期。如果不了解反向代理是什么，可以参考[这篇文章](https://guangyin.blog/index.php/archives/3/)。
+Caddy 是一个用 Go 语言编写的开源 Web 服务器，以简单易用、自动 HTTPS 和强大的插件系统著称。其配置文件 `Caddyfile` 简洁明了，能自动处理 HTTPS 证书的申请和续期。如果不了解反向代理是什么，可以参考[这篇文章](https://www.228610.xyz/2025/02/23/%E4%BD%BF%E7%94%A8%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E7%9A%84%E7%90%86%E8%A7%A3/)。
 
 ---
 

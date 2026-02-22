@@ -201,4 +201,4 @@ EagerSingletonPtr* EagerSingletonPtr::instance = new EagerSingletonPtr();
 
 ### 三、补充
 
-C++单例类初始化顺序会导致一些问题，详细可以查看[这篇文章](https://guangyin.blog/index.php/archives/117/)
+C++单例类初始化顺序会导致一些问题，详细可以查看[这篇文章](https://www.228610.xyz/2025/03/20/C++单例类实现/)

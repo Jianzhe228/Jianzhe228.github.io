@@ -7,13 +7,13 @@ tags: [CentOS]
 
 修改`Address`,`Netmask`,`Gateway`,`DNS`,修改后点击Apply并重启网络
 
-![image-20250719140135106](https://images.guangyin.blog/2025/07/b258f72206c11b08f34b73d84c77c00f.png)
+![image-20250719140135106](https://images.228610.xyz/2025/07/b258f72206c11b08f34b73d84c77c00f.png)
 
 ### 二、代理环境
 
 软件下载：[clash for windows linux](https://d.lefly.cloud/clash/Clash.for.Windows-0.20.39-x64-linux.tar.gz)
 
-![image-20250719160231349](https://images.guangyin.blog/2025/07/3517a4756227904ad5e4ad99add67de6.webp)
+![image-20250719160231349](https://images.228610.xyz/2025/07/3517a4756227904ad5e4ad99add67de6.webp)
 
 如果是root用户，需要添加`--no-sandbox`运行
 

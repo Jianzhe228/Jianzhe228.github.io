@@ -9,17 +9,17 @@ tags: [cmake,C++]
 
 OpenSSL下载路径：https://slproweb.com/products/Win32OpenSSL.html
 
-![image-20250314170922728](https://images.guangyin.blog/2025/03/353441199ff5da2d4bff65cd69227af1.webp)
+![image-20250314170922728](https://images.228610.xyz/2025/03/353441199ff5da2d4bff65cd69227af1.webp)
 
 安装后的库文件是这样的
 
 - bin目录
 
-![image-20250314171205286](https://images.guangyin.blog/2025/03/643232ccca51770dffd9d36753dc74e1.webp)
+![image-20250314171205286](https://images.228610.xyz/2025/03/643232ccca51770dffd9d36753dc74e1.webp)
 
 - lib目录
 
-![image-20250314171309001](https://images.guangyin.blog/2025/03/8436334c95aee648de59b060fb0cb4d7.webp)
+![image-20250314171309001](https://images.228610.xyz/2025/03/8436334c95aee648de59b060fb0cb4d7.webp)
 
 可以看到，这是一个使用**MSVC**编译套件编译的库
 

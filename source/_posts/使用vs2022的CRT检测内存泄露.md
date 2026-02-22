@@ -47,7 +47,7 @@ int main()
 
 输出示例：
 
-![image-20251019164600710](https://images.guangyin.blog/2025/10/343812feba9057cba443749e27cceafa.png)
+![image-20251019164600710](https://images.228610.xyz/2025/10/343812feba9057cba443749e27cceafa.png)
 
 输出显示问题出在memoryleak.cpp文件第14行，泄露大小为400 bytes，如果需要在泄露处中断，可以添加
 

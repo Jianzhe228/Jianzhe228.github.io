@@ -350,22 +350,22 @@ bash <(curl -s https://raw.githubusercontent.com/cmliu/socks5-for-serv00/main/in
           ```
   至此，全部教程结束，再次感谢几位大佬！
 
-  [1]: https://images.guangyin.blog/2025/02/1081792284.webp
-  [2]: https://images.guangyin.blog/2025/02/679637afbd4b4.webp
-  [3]: https://images.guangyin.blog/2025/02/67963460e01f0.webp
-  [4]: https://images.guangyin.blog/2025/02/679634a0d46ad.webp
-  [5]: https://images.guangyin.blog/2025/02/679634d564f32.webp
-  [6]: https://images.guangyin.blog/2025/02/67963509512b5.webp
-  [7]: https://images.guangyin.blog/2025/02/6796352719cd6.webp
-  [8]: https://images.guangyin.blog/2025/02/6796359145849.webp
-  [9]: https://images.guangyin.blog/2025/02/679635aeb6704.webp
-  [10]: https://images.guangyin.blog/2025/02/679635cc53cca.webp
-  [11]: https://images.guangyin.blog/2025/02/679635e4f1ea3.webp
-  [12]: https://images.guangyin.blog/2025/02/679636096e2ff.webp
-  [13]: https://images.guangyin.blog/2025/02/6796363479ebd.webp
-  [14]: https://images.guangyin.blog/2025/02/67963648de3f4.webp
-  [15]: https://images.guangyin.blog/2025/02/67963688b4ecc.webp
-  [16]: https://images.guangyin.blog/2025/02/679636a08e88c.webp
-  [17]: https://images.guangyin.blog/2025/02/679636d8a7b23.webp
-  [18]: https://images.guangyin.blog/2025/02/679636f17db28.webp
-  [19]: https://images.guangyin.blog/2025/02/67963709b58da.webp
+  [1]: https://images.228610.xyz/2025/02/1081792284.webp
+  [2]: https://images.228610.xyz/2025/02/679637afbd4b4.webp
+  [3]: https://images.228610.xyz/2025/02/67963460e01f0.webp
+  [4]: https://images.228610.xyz/2025/02/679634a0d46ad.webp
+  [5]: https://images.228610.xyz/2025/02/679634d564f32.webp
+  [6]: https://images.228610.xyz/2025/02/67963509512b5.webp
+  [7]: https://images.228610.xyz/2025/02/6796352719cd6.webp
+  [8]: https://images.228610.xyz/2025/02/6796359145849.webp
+  [9]: https://images.228610.xyz/2025/02/679635aeb6704.webp
+  [10]: https://images.228610.xyz/2025/02/679635cc53cca.webp
+  [11]: https://images.228610.xyz/2025/02/679635e4f1ea3.webp
+  [12]: https://images.228610.xyz/2025/02/679636096e2ff.webp
+  [13]: https://images.228610.xyz/2025/02/6796363479ebd.webp
+  [14]: https://images.228610.xyz/2025/02/67963648de3f4.webp
+  [15]: https://images.228610.xyz/2025/02/67963688b4ecc.webp
+  [16]: https://images.228610.xyz/2025/02/679636a08e88c.webp
+  [17]: https://images.228610.xyz/2025/02/679636d8a7b23.webp
+  [18]: https://images.228610.xyz/2025/02/679636f17db28.webp
+  [19]: https://images.228610.xyz/2025/02/67963709b58da.webp

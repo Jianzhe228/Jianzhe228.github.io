@@ -243,7 +243,7 @@ systemctl restart nginx
 
 现在你可以通过浏览器访问你的域名或服务器 IP，会看到 Typecho 的安装界面。按照以下步骤完成安装：
 
-![PixPin_2025-02-26_23-42-18](https://images.guangyin.blog/2025/02/91182c932f2198f1c892360893048d38.webp)
+![PixPin_2025-02-26_23-42-18](https://images.228610.xyz/2025/02/91182c932f2198f1c892360893048d38.webp)
 
 - 选择 "开始安装"
 - 数据库适配器选择 “MySQL”
@@ -255,7 +255,7 @@ systemctl restart nginx
 - 点开高级选项，取消**启用数据库 SSL 服务端证书验证**
 - 创建管理员账号和密码
 
-![PixPin_2025-02-26_23-44-30](https://images.guangyin.blog/2025/02/c25167ff5ed2e3f63ccc85bd44ec34ec.webp)
+![PixPin_2025-02-26_23-44-30](https://images.228610.xyz/2025/02/c25167ff5ed2e3f63ccc85bd44ec34ec.webp)
 
 ### 10.注意事项：
 

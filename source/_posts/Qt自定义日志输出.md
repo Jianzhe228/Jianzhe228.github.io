@@ -63,7 +63,7 @@ QString typeToString(QtMsgType type)
 
 效果图：
 
-![image-20250310115157637](https://images.guangyin.blog/2025/03/2287b25acb6e7d62555a6b4e5f82404f.webp)
+![image-20250310115157637](https://images.228610.xyz/2025/03/2287b25acb6e7d62555a6b4e5f82404f.webp)
 
 #### 2.2 样式二：有颜色高亮
 
@@ -158,5 +158,5 @@ QString typeToString(QtMsgType type)
 
 效果图
 
-![image-20250310115026790](https://images.guangyin.blog/2025/03/dce9e0cb4bcc8b029e9b752836d1ba4d.webp)
+![image-20250310115026790](https://images.228610.xyz/2025/03/dce9e0cb4bcc8b029e9b752836d1ba4d.webp)
 

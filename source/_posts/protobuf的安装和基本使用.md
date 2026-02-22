@@ -31,22 +31,22 @@ sudo Idconfig
 
 使用Clion打开protobuf项目，根据需要选择编译套件
 
-![PixPin_2025-03-10_12-21-28](https://images.guangyin.blog/2025/03/9cfb5aa666bbae285f6978aa9676d4a2.webp)
+![PixPin_2025-03-10_12-21-28](https://images.228610.xyz/2025/03/9cfb5aa666bbae285f6978aa9676d4a2.webp)
 
 打开根目录下的CMakeLists.txt文件
 
 - 修改`protobuf_BUILD_TESTS`为OFF,取消编译测试代码
 - 添加`set(BUILD_SHARED_LIBS ON)`，用于生成动态库文件
 
-![image-20250308170612706](https://images.guangyin.blog/2025/03/7b6b91e9f544a2672e46c6ac3f33000e.webp)
+![image-20250308170612706](https://images.228610.xyz/2025/03/7b6b91e9f544a2672e46c6ac3f33000e.webp)
 
 然后点击编译，然后就会生成以下几个文件，将文件拷贝出来
 
-![image-20250310015149675](https://images.guangyin.blog/2025/03/f3ed7b35fe001218d972d5daa6cabef2.webp)
+![image-20250310015149675](https://images.228610.xyz/2025/03/f3ed7b35fe001218d972d5daa6cabef2.webp)
 
 自己找一个存放protobuf库的目录，用于存放这几个文件
 
-![image-20250308171436674](https://images.guangyin.blog/2025/03/538bea9c43a0a34a4711b2956d6b76ee.webp)
+![image-20250308171436674](https://images.228610.xyz/2025/03/538bea9c43a0a34a4711b2956d6b76ee.webp)
 
 > bin:将三个dll文件和exe文件都放在这个目录
 >

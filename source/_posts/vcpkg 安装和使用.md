@@ -379,7 +379,7 @@ echo "? 所有配置已写入 $BASHRC，下次登录自动生效"
 source ~/.bashrc
 ```
 
-![image-20251010154330419](https://images.guangyin.blog/2025/10/cc0c80555581deccb1935d801d0dfc81.png)
+![image-20251010154330419](https://images.228610.xyz/2025/10/cc0c80555581deccb1935d801d0dfc81.png)
 
 ```
 export PATH=$VCPKG_ROOT:$PATH

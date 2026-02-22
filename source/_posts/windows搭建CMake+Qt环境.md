@@ -10,7 +10,7 @@ tags: [cmake,Qt]
 
 注意，windows下建议使用MSVC编译套件，因为发现有些库只能MSVC才能使用，如QtWebEngine
 
-![image-20250419201547803](https://images.guangyin.blog/2025/04/8f6bc69708ec86179fa5c303a15c770e.webp)
+![image-20250419201547803](https://images.228610.xyz/2025/04/8f6bc69708ec86179fa5c303a15c770e.webp)
 
 ### 二、配置环境
 
@@ -32,11 +32,11 @@ tags: [cmake,Qt]
 
 ##### 1、clion配置
 
-![PixPin_2025-02-23_14-23-51](https://images.guangyin.blog/2025/02/6761cf5120f80e68107683f01a2c4ca2.webp)
+![PixPin_2025-02-23_14-23-51](https://images.228610.xyz/2025/02/6761cf5120f80e68107683f01a2c4ca2.webp)
 
 ##### 2、vscode配置
 
-![PixPin_2025-02-27_20-37-34](https://images.guangyin.blog/2025/02/dbe92310731bedd5e56b84f9e778d408.webp)
+![PixPin_2025-02-27_20-37-34](https://images.228610.xyz/2025/02/dbe92310731bedd5e56b84f9e778d408.webp)
 
 ##### 3、vs2022配置
 
@@ -46,13 +46,13 @@ tags: [cmake,Qt]
 
 配置插件：添加编译套件
 
-![image-20250419201103520](https://images.guangyin.blog/2025/04/7eef66d5815303b35c9cc61fd9e4c8c8.webp)
+![image-20250419201103520](https://images.228610.xyz/2025/04/7eef66d5815303b35c9cc61fd9e4c8c8.webp)
 
 ### 三、添加外部工具和插件
 
 #### 1、clion添加外部工具
 
-![PixPin_2025-02-27_20-40-48](https://images.guangyin.blog/2025/02/40e86daf3677bc7ec21141ad65e908af.webp)
+![PixPin_2025-02-27_20-40-48](https://images.228610.xyz/2025/02/40e86daf3677bc7ec21141ad65e908af.webp)
 
 - **qt-designer**：
     - Program: `D:\Qt\5.15.2\mingw81_64\bin\designer.exe`
@@ -78,7 +78,7 @@ tags: [cmake,Qt]
 
 右键点击ui文件，选择**Open with…**,然后点击add添加designer外部工具，**argument不用填，选择designer路径添加即可**，然后**点击Set as Default**设置为默认打开方式，以后双击ui文件就能使用Qt Designer打开了
 
-![image-20250420211911113](https://images.guangyin.blog/2025/04/fa3ff287e8fb6723c75f49b2a623e512.webp)
+![image-20250420211911113](https://images.228610.xyz/2025/04/fa3ff287e8fb6723c75f49b2a623e512.webp)
 
 ### 四、cmake使用
 
@@ -308,8 +308,8 @@ qt_add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
 
 **项目属性>Qt Project Settings>Qt Modules>Select Mudules**
 
-![image-20250419212814240](https://images.guangyin.blog/2025/04/5cd7e10137df941665a211fef20a6d7b.webp)
+![image-20250419212814240](https://images.228610.xyz/2025/04/5cd7e10137df941665a211fef20a6d7b.webp)
 
 勾选需要的模块，然后点击OK,确定退出项目属性编辑，这样就能添加Qt的其他模块了
 
-![image-20250419212848376](https://images.guangyin.blog/2025/04/56b1d3d1c55a1691c4481854707682f7.webp)
+![image-20250419212848376](https://images.228610.xyz/2025/04/56b1d3d1c55a1691c4481854707682f7.webp)

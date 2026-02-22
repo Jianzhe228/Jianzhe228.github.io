@@ -107,7 +107,7 @@ g++ -pg gprof.cpp -o test
 gprof build/app gmon.out > analysis.txt
 ```
 
-![image-20250403173859610](https://images.guangyin.blog/2025/04/720821249aeae22ee0f7477a14aa4b5f.webp)
+![image-20250403173859610](https://images.228610.xyz/2025/04/720821249aeae22ee0f7477a14aa4b5f.webp)
 
 关键参数：
 

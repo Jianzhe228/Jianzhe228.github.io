@@ -9,7 +9,7 @@ tags: [openssl]
 
     安装后将bin和lib添加到环境变量
     
-    ![image-20250314170922728](https://images.guangyin.blog/2025/03/353441199ff5da2d4bff65cd69227af1.webp)
+    ![image-20250314170922728](https://images.228610.xyz/2025/03/353441199ff5da2d4bff65cd69227af1.webp)
 
 ### 二、linux安装
 
