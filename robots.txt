@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /js/
+Disallow: /css/
+Disallow: /fancybox/
+
+Sitemap: https://www.228610.xyz/sitemap.xml
