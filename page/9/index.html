@@ -101,17 +101,17 @@
 <h4 id="1-1、ubuntu安装"><a href="#1-1、ubuntu安装" class="headerlink" title="1.1、ubuntu安装"></a>1.1、ubuntu安装</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">tar -zxvf protobuf-cpp-3.21.12.tar.gz</span><br><span class="line"></span><br><span class="line"><span class="built_in">cd</span> protobuf-cpp-3.21.12</span><br><span class="line"></span><br><span class="line"><span class="built_in">sudo</span> apt install automake libtool curl make g++ unzip</span><br><span class="line"></span><br><span class="line">./autogen.sh</span><br><span class="line"></span><br><span class="line">./configure</span><br><span class="line"></span><br><span class="line">make -j$(<span class="built_in">nproc</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">sudo</span> make install</span><br><span class="line"></span><br><span class="line"><span class="built_in">sudo</span> Idconfig</span><br></pre></td></tr></table></figure>
 
 <h4 id="2-1、windows安装"><a href="#2-1、windows安装" class="headerlink" title="2.1、windows安装"></a>2.1、windows安装</h4><p>使用Clion打开protobuf项目，根据需要选择编译套件</p>
-<p><img src="https://images.guangyin.blog/2025/03/9cfb5aa666bbae285f6978aa9676d4a2.webp" alt="PixPin_2025-03-10_12-21-28"></p>
+<p><img src="https://images.228610.xyz/2025/03/9cfb5aa666bbae285f6978aa9676d4a2.webp" alt="PixPin_2025-03-10_12-21-28"></p>
 <p>打开根目录下的CMakeLists.txt文件</p>
 <ul>
 <li>修改<code>protobuf_BUILD_TESTS</code>为OFF,取消编译测试代码</li>
 <li>添加<code>set(BUILD_SHARED_LIBS ON)</code>，用于生成动态库文件</li>
 </ul>
-<p><img src="https://images.guangyin.blog/2025/03/7b6b91e9f544a2672e46c6ac3f33000e.webp" alt="image-20250308170612706"></p>
+<p><img src="https://images.228610.xyz/2025/03/7b6b91e9f544a2672e46c6ac3f33000e.webp" alt="image-20250308170612706"></p>
 <p>然后点击编译，然后就会生成以下几个文件，将文件拷贝出来</p>
-<p><img src="https://images.guangyin.blog/2025/03/f3ed7b35fe001218d972d5daa6cabef2.webp" alt="image-20250310015149675"></p>
+<p><img src="https://images.228610.xyz/2025/03/f3ed7b35fe001218d972d5daa6cabef2.webp" alt="image-20250310015149675"></p>
 <p>自己找一个存放protobuf库的目录，用于存放这几个文件</p>
-<p><img src="https://images.guangyin.blog/2025/03/538bea9c43a0a34a4711b2956d6b76ee.webp" alt="image-20250308171436674"></p>
+<p><img src="https://images.228610.xyz/2025/03/538bea9c43a0a34a4711b2956d6b76ee.webp" alt="image-20250308171436674"></p>
 <blockquote>
 <p>bin:将三个dll文件和exe文件都放在这个目录</p>
 <p>lib:将另外三个dll.a文件放在这个目录</p>
@@ -179,7 +179,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/08/protobuf%E7%9A%84%E5%AE%89%E8%A3%85%E5%92%8C%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/" data-id="cuidfm39B3RoiBLDX8p9Lrlnc" data-title="protobuf的安装和基本使用" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/08/protobuf%E7%9A%84%E5%AE%89%E8%A3%85%E5%92%8C%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/" data-id="cuidl3iCPS0vAHJvbJeizY4wI" data-title="protobuf的安装和基本使用" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -265,7 +265,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/07/%E7%BD%91%E7%BB%9C%E9%80%9A%E4%BF%A1%E4%B8%AD%E7%9A%84%E5%A4%84%E7%90%86%E7%B2%98%E5%8C%85%E9%97%AE%E9%A2%98/" data-id="cuidfgJSmrsVNYNHTiDWtkwiU" data-title="网络通信中的处理粘包问题" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/07/%E7%BD%91%E7%BB%9C%E9%80%9A%E4%BF%A1%E4%B8%AD%E7%9A%84%E5%A4%84%E7%90%86%E7%B2%98%E5%8C%85%E9%97%AE%E9%A2%98/" data-id="cuidWwl2LxrNtcMPtXwQmjjG6" data-title="网络通信中的处理粘包问题" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -329,7 +329,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/06/chsrc%20%E5%85%A8%E5%B9%B3%E5%8F%B0%E9%80%9A%E7%94%A8%E6%8D%A2%E6%BA%90%E5%B7%A5%E5%85%B7/" data-id="cuidiDw_tXNVARaosMFsTfpCA" data-title="chsrc 全平台通用换源工具" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/06/chsrc%20%E5%85%A8%E5%B9%B3%E5%8F%B0%E9%80%9A%E7%94%A8%E6%8D%A2%E6%BA%90%E5%B7%A5%E5%85%B7/" data-id="cuidzyig9aF_hlTWUihEpNoS2" data-title="chsrc 全平台通用换源工具" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -382,13 +382,13 @@
 <ul>
 <li>选择<strong>11</strong>进入应用市场</li>
 </ul>
-<p><img src="https://images.guangyin.blog/2025/03/08428fa30525fb3623a32077b3a02378.webp" alt="image-20250306201129922"></p>
+<p><img src="https://images.228610.xyz/2025/03/08428fa30525fb3623a32077b3a02378.webp" alt="image-20250306201129922"></p>
 <ul>
 <li>选择<strong>55</strong>进入<strong>FRP内网穿透（服务端）</strong></li>
 </ul>
-<p><img src="https://images.guangyin.blog/2025/03/5250e56f44cfe9bfc3c38b5246aa23d6.webp" alt="image-20250306201417856"></p>
+<p><img src="https://images.228610.xyz/2025/03/5250e56f44cfe9bfc3c38b5246aa23d6.webp" alt="image-20250306201417856"></p>
 <p>选择<strong>1</strong>安装FRP服务端，保存<strong>客户端部署时需要用的参数</strong></p>
-<p><img src="https://images.guangyin.blog/2025/03/908c5cd5dafdb099913993d35e650460.webp" alt="image-20250306201745610"></p>
+<p><img src="https://images.228610.xyz/2025/03/908c5cd5dafdb099913993d35e650460.webp" alt="image-20250306201745610"></p>
 <h4 id="2、本地（WSL）"><a href="#2、本地（WSL）" class="headerlink" title="2、本地（WSL）"></a>2、本地（WSL）</h4><p>完成上述服务器端配置后，切换到本地，这里使用<strong>WSL</strong>为例</p>
 <p>同样切换到root用户执行安装<a target="_blank" rel="noopener" href="https://github.com/kejilion">kejilion</a>大佬的脚本文件</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bash &lt;(curl -sL kejilion.sh)</span><br></pre></td></tr></table></figure>
@@ -396,11 +396,11 @@
 <ul>
 <li>选择11进入脚本市场，选择<strong>56</strong>进入<strong>FRP内网穿透(客户端)</strong></li>
 </ul>
-<p><img src="https://images.guangyin.blog/2025/03/90411d280819d8fc67a6f303b2c92f00.webp" alt="image-20250306202352350"></p>
+<p><img src="https://images.228610.xyz/2025/03/90411d280819d8fc67a6f303b2c92f00.webp" alt="image-20250306202352350"></p>
 <ul>
 <li>然后选择<strong>1</strong>安装<strong>FRP客户端</strong>,根据提示填写信息,等待安装完成</li>
 </ul>
-<p><img src="https://images.guangyin.blog/2025/03/6a28ce4ee4b3fcf6cc4adfecf9369ef0.webp" alt="image-20250306202646846"></p>
+<p><img src="https://images.228610.xyz/2025/03/6a28ce4ee4b3fcf6cc4adfecf9369ef0.webp" alt="image-20250306202646846"></p>
 <blockquote>
 <ul>
 <li>外网对接IP就是公网云服务器的IP</li>
@@ -410,7 +410,7 @@
 <ul>
 <li>选择<strong>4</strong>添加一个对外服务</li>
 </ul>
-<p><img src="https://images.guangyin.blog/2025/03/58a012ea59cae90b79995c2a06a39986.webp" alt="image-20250306203429499"></p>
+<p><img src="https://images.228610.xyz/2025/03/58a012ea59cae90b79995c2a06a39986.webp" alt="image-20250306203429499"></p>
 <blockquote>
 <ol>
 <li>服务名称：随便填</li>
@@ -424,20 +424,20 @@
 <ul>
 <li>客户端</li>
 </ul>
-<p><img src="https://images.guangyin.blog/2025/03/6ef01487f0c695d8a9324b6b40790022.webp" alt="image-20250306203949531"></p>
+<p><img src="https://images.228610.xyz/2025/03/6ef01487f0c695d8a9324b6b40790022.webp" alt="image-20250306203949531"></p>
 <ul>
 <li>服务端，没有显示选择<strong>00</strong>刷新状态</li>
 </ul>
-<p><img src="https://images.guangyin.blog/2025/03/f56c9f71417d7fa1071f45fa5187ce1d.webp" alt="image-20250306205257292"></p>
+<p><img src="https://images.228610.xyz/2025/03/f56c9f71417d7fa1071f45fa5187ce1d.webp" alt="image-20250306205257292"></p>
 <h3 id="三、进阶"><a href="#三、进阶" class="headerlink" title="三、进阶"></a>三、进阶</h3><h4 id="1、添加自定义域名"><a href="#1、添加自定义域名" class="headerlink" title="1、添加自定义域名"></a>1、添加自定义域名</h4><p>在服务端选择<strong>5</strong>，添加一个内网服务域名访问</p>
-<p><img src="https://images.guangyin.blog/2025/03/235bf28aab4e677671c3fa7c3d7c00a1.webp" alt="image-20250306205713920"></p>
+<p><img src="https://images.228610.xyz/2025/03/235bf28aab4e677671c3fa7c3d7c00a1.webp" alt="image-20250306205713920"></p>
 <blockquote>
 <p>注意，域名记得<strong>解析并代理</strong>服务器的<strong>IP</strong>地址</p>
 </blockquote>
 <p>添加以后，我们就可以通过域名访问本地服务了</p>
-<p><img src="https://images.guangyin.blog/2025/03/bf20b7a74b3219426a140349a6cf9438.webp" alt="image-20250306205955812"></p>
+<p><img src="https://images.228610.xyz/2025/03/bf20b7a74b3219426a140349a6cf9438.webp" alt="image-20250306205955812"></p>
 <p>然后选择<strong>8</strong>阻止通过<strong>IP+端口</strong>的方式访问</p>
-<p><img src="https://images.guangyin.blog/2025/03/985f56ef4e99f841be40f76a31212fb1.webp" alt="image-20250306212117235"></p>
+<p><img src="https://images.228610.xyz/2025/03/985f56ef4e99f841be40f76a31212fb1.webp" alt="image-20250306212117235"></p>
 <blockquote>
 <p>注意，服务端删除内网穿透时，记得先<strong>选择6删除域名访问和选择7允许IP+端口访问</strong>，防止下次使用时发生问题,最后，如果之前删除过服务，别忘记修改客户端的token!</p>
 </blockquote>
@@ -446,7 +446,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/06/FRP%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F%E6%95%99%E7%A8%8B/" data-id="cuidL_zeIS61wxAqAR6gLTjSF" data-title="FRP内网穿透教程" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/06/FRP%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F%E6%95%99%E7%A8%8B/" data-id="cuidPG2koEcjSgWrbzC34IUpT" data-title="FRP内网穿透教程" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -511,7 +511,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/06/%E6%9B%B4%E6%8D%A2%20Typecho%20%E7%AB%99%E7%82%B9%E5%9F%9F%E5%90%8D/" data-id="cuidRhSUly3L9YMTLCdujv8RH" data-title="更换 Typecho 站点域名" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/06/%E6%9B%B4%E6%8D%A2%20Typecho%20%E7%AB%99%E7%82%B9%E5%9F%9F%E5%90%8D/" data-id="cuidgMx9b7P7GrxxBKj6C-ObP" data-title="更换 Typecho 站点域名" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -624,7 +624,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/06/%5B%E8%BD%AC%E8%BD%BD%5D%20Typecho%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB%E5%AE%8C%E6%95%B4%E6%8C%87%E5%8D%97/" data-id="cuidHOdoOrhc4PvG3Gu_EspY1" data-title="[转载] Typecho博客迁移完整指南" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/06/%5B%E8%BD%AC%E8%BD%BD%5D%20Typecho%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB%E5%AE%8C%E6%95%B4%E6%8C%87%E5%8D%97/" data-id="cuidTXM7id2cYA1OP6ZsjxfQw" data-title="[转载] Typecho博客迁移完整指南" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -693,7 +693,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/06/%E9%85%8D%E7%BD%AEMySQL%E6%88%96MariaDB%E8%BF%9C%E7%A8%8B%E7%99%BB%E5%BD%95/" data-id="cuidTk9FXdPlZMoZv94jiTVcA" data-title="配置MySQL或MariaDB远程登录" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/06/%E9%85%8D%E7%BD%AEMySQL%E6%88%96MariaDB%E8%BF%9C%E7%A8%8B%E7%99%BB%E5%BD%95/" data-id="cuidahx6op6iWJKqDB_bZ_Z31" data-title="配置MySQL或MariaDB远程登录" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -790,7 +790,7 @@
 <h3 id="8-启用站点配置"><a href="#8-启用站点配置" class="headerlink" title="8. 启用站点配置"></a>8. 启用站点配置</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">ln</span> -sf /etc/nginx/sites-available/typecho.conf /etc/nginx/sites-enabled/</span><br><span class="line"><span class="built_in">rm</span> /etc/nginx/sites-enabled/default</span><br><span class="line">nginx -t</span><br><span class="line">systemctl restart nginx</span><br></pre></td></tr></table></figure>
 
 <h3 id="9-访问网站完成安装"><a href="#9-访问网站完成安装" class="headerlink" title="9. 访问网站完成安装"></a>9. 访问网站完成安装</h3><p>现在你可以通过浏览器访问你的域名或服务器 IP，会看到 Typecho 的安装界面。按照以下步骤完成安装：</p>
-<p><img src="https://images.guangyin.blog/2025/02/91182c932f2198f1c892360893048d38.webp" alt="PixPin_2025-02-26_23-42-18"></p>
+<p><img src="https://images.228610.xyz/2025/02/91182c932f2198f1c892360893048d38.webp" alt="PixPin_2025-02-26_23-42-18"></p>
 <ul>
 <li>选择 “开始安装”</li>
 <li>数据库适配器选择 “MySQL”</li>
@@ -802,7 +802,7 @@
 <li>点开高级选项，取消<strong>启用数据库 SSL 服务端证书验证</strong></li>
 <li>创建管理员账号和密码</li>
 </ul>
-<p><img src="https://images.guangyin.blog/2025/02/c25167ff5ed2e3f63ccc85bd44ec34ec.webp" alt="PixPin_2025-02-26_23-44-30"></p>
+<p><img src="https://images.228610.xyz/2025/02/c25167ff5ed2e3f63ccc85bd44ec34ec.webp" alt="PixPin_2025-02-26_23-44-30"></p>
 <h3 id="10-注意事项："><a href="#10-注意事项：" class="headerlink" title="10.注意事项："></a>10.注意事项：</h3><ol>
 <li>确保防火墙允许 80 端口访问：</li>
 </ol>
@@ -854,7 +854,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/02/26/ubuntu%E9%83%A8%E7%BD%B2typecho%E5%8D%9A%E5%AE%A2%E7%B3%BB%E7%BB%9F/" data-id="cuid9-aEJFlmWvmy46EHROPUI" data-title="ubuntu部署typecho博客系统" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/02/26/ubuntu%E9%83%A8%E7%BD%B2typecho%E5%8D%9A%E5%AE%A2%E7%B3%BB%E7%BB%9F/" data-id="cuidne3BA7Y3s_OJfKChZvLbt" data-title="ubuntu部署typecho博客系统" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -900,9 +900,9 @@
 <li>vscode:<a target="_blank" rel="noopener" href="https://code.visualstudio.com/">https://code.visualstudio.com/</a></li>
 </ol>
 <p>将maven添加到环境变量中</p>
-<p><img src="https://images.guangyin.blog/2025/02/d39b0c0a116089064e44c87fdcdb1e1f.webp" alt="PixPin_2025-02-26_20-26-02"></p>
+<p><img src="https://images.228610.xyz/2025/02/d39b0c0a116089064e44c87fdcdb1e1f.webp" alt="PixPin_2025-02-26_20-26-02"></p>
 <p>在环境变量中设置<code>JAVA_HOME</code>,值就是<code>JDK的安装路径</code></p>
-<p><img src="https://images.guangyin.blog/2025/02/5e33cef804aa35904fb517a022b5e08d.webp" alt="PixPin_2025-02-26_20-24-17"></p>
+<p><img src="https://images.228610.xyz/2025/02/5e33cef804aa35904fb517a022b5e08d.webp" alt="PixPin_2025-02-26_20-24-17"></p>
 <h3 id="二、vscode插件"><a href="#二、vscode插件" class="headerlink" title="二、vscode插件"></a>二、vscode插件</h3><ol>
 <li>Spring Boot Extension Pack</li>
 <li>Maven for Java</li>
@@ -918,16 +918,16 @@
 
 
 <h3 id="五、创建Spring-Boot项目"><a href="#五、创建Spring-Boot项目" class="headerlink" title="五、创建Spring Boot项目"></a>五、创建Spring Boot项目</h3><p>快捷键打开命令窗口输入：<code>Spring Initializr: Create a Maven Project</code>,根据提示配置项目</p>
-<p><img src="https://images.guangyin.blog/2025/02/bc18d78678d2c84a9471070a10dd3ac6.webp" alt="PixPin_2025-02-26_20-09-19"></p>
+<p><img src="https://images.228610.xyz/2025/02/bc18d78678d2c84a9471070a10dd3ac6.webp" alt="PixPin_2025-02-26_20-09-19"></p>
 <h3 id="六、启动项目"><a href="#六、启动项目" class="headerlink" title="六、启动项目"></a>六、启动项目</h3><p>进入<code>spring boot dashboard</code></p>
-<p><img src="https://images.guangyin.blog/2025/02/1a663cf0ed87e537aaa6be26f8ba7eeb.webp" alt="PixPin_2025-02-26_20-11-43"></p>
+<p><img src="https://images.228610.xyz/2025/02/1a663cf0ed87e537aaa6be26f8ba7eeb.webp" alt="PixPin_2025-02-26_20-11-43"></p>
 <p>点击启动按钮</p>
-<p><img src="https://images.guangyin.blog/2025/02/551f33aa24c9686ab00d0fa30ae7918f.webp" alt="PixPin_2025-02-26_20-12-49"></p>
+<p><img src="https://images.228610.xyz/2025/02/551f33aa24c9686ab00d0fa30ae7918f.webp" alt="PixPin_2025-02-26_20-12-49"></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/02/26/windows%E4%BD%BF%E7%94%A8VSCode%E6%90%AD%E5%BB%BASpring%20Boot%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/" data-id="cuidCYBjCRMRnVPCB48d2PVJw" data-title="windows使用VSCode搭建Spring Boot开发环境" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/02/26/windows%E4%BD%BF%E7%94%A8VSCode%E6%90%AD%E5%BB%BASpring%20Boot%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/" data-id="cuidJ0x3y1x4_We_7Qpgg58N1" data-title="windows使用VSCode搭建Spring Boot开发环境" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -941,14 +941,14 @@
 
 
   
-    <article id="post-使用 Cloudflare 为网站或应用套上 CDN 的完整指南" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+    <article id="post-使用反向代理的理解" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
-    <a href="/2025/02/23/%E4%BD%BF%E7%94%A8%20Cloudflare%20%E4%B8%BA%E7%BD%91%E7%AB%99%E6%88%96%E5%BA%94%E7%94%A8%E5%A5%97%E4%B8%8A%20CDN%20%E7%9A%84%E5%AE%8C%E6%95%B4%E6%8C%87%E5%8D%97/" class="article-date">
+    <a href="/2025/02/23/%E4%BD%BF%E7%94%A8%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E7%9A%84%E7%90%86%E8%A7%A3/" class="article-date">
   <time class="dt-published" datetime="2025-02-23T16:45:00.000Z" itemprop="datePublished">2025-02-23</time>
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/%E6%90%9E%E4%B8%83%E6%8D%BB%E4%B8%89/">搞七捻三</a>
+    <a class="article-category-link" href="/categories/%E5%BC%80%E5%8F%91%E8%B0%83%E4%BC%98/">开发调优</a>
   </div>
 
   </div>
@@ -959,7 +959,7 @@
         
   
     <h1 itemprop="name">
-      <a class="p-name article-title" href="/2025/02/23/%E4%BD%BF%E7%94%A8%20Cloudflare%20%E4%B8%BA%E7%BD%91%E7%AB%99%E6%88%96%E5%BA%94%E7%94%A8%E5%A5%97%E4%B8%8A%20CDN%20%E7%9A%84%E5%AE%8C%E6%95%B4%E6%8C%87%E5%8D%97/">使用 Cloudflare 为网站或应用套上 CDN 的完整指南</a>
+      <a class="p-name article-title" href="/2025/02/23/%E4%BD%BF%E7%94%A8%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E7%9A%84%E7%90%86%E8%A7%A3/">使用反向代理的理解</a>
     </h1>
   
 
@@ -967,98 +967,128 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <h3 id="一、准备工作"><a href="#一、准备工作" class="headerlink" title="一、准备工作"></a><strong>一、准备工作</strong></h3><ol>
-<li><strong>拥有域名</strong><br>确保你拥有一个已注册的域名（例如 <code>example.com</code>）。</li>
-<li><strong>网站&#x2F;服务器在线</strong><br>源站（你的服务器）需能通过公网 IP 或域名访问，且运行正常。</li>
-</ol>
+        <p>在浏览器中访问一个资源时，通常需要知道提供该资源的服务器IP地址和服务的端口号。然而，直接使用IP地址和端口号访问资源不仅不友好，而且难以记忆。例如，访问 <code>http://example.com:8080</code> 这样的URL不仅不美观，用户体验也较差。为了解决这个问题，我们可以使用域名来指向服务器，但端口号的问题依然存在。</p>
+<p><strong>目标</strong>：让用户仅通过域名访问资源，而无需关心端口号。端口号的问题由服务器端自行处理。</p>
+<p>为此，我们可以使用反向代理或Cloudflare的Origin Rules来优雅地解决端口问题。以下是优化后的解决方案和详细说明。</p>
 <hr>
-<h3 id="二、配置-Cloudflare-CDN-步骤"><a href="#二、配置-Cloudflare-CDN-步骤" class="headerlink" title="二、配置 Cloudflare CDN 步骤"></a><strong>二、配置 Cloudflare CDN 步骤</strong></h3><h4 id="1-注册-Cloudflare-账号"><a href="#1-注册-Cloudflare-账号" class="headerlink" title="1. 注册 Cloudflare 账号"></a><strong>1. 注册 Cloudflare 账号</strong></h4><ul>
-<li>访问 <a target="_blank" rel="noopener" href="https://www.cloudflare.com/">Cloudflare 官网</a>，注册并登录。</li>
-</ul>
-<h4 id="2-添加网站到-Cloudflare"><a href="#2-添加网站到-Cloudflare" class="headerlink" title="2. 添加网站到 Cloudflare"></a><strong>2. 添加网站到 Cloudflare</strong></h4><ul>
-<li>在控制台点击 <strong>“Add a Site”</strong>，输入你的域名（如 <code>example.com</code>），选择免费计划（Free Plan）。</li>
-</ul>
-<h4 id="3-修改域名-DNS-服务器"><a href="#3-修改域名-DNS-服务器" class="headerlink" title="3. 修改域名 DNS 服务器"></a><strong>3. 修改域名 DNS 服务器</strong></h4><ul>
-<li>Cloudflare 会要求你将域名的 <strong>DNS 服务器（Name Server）</strong> 替换为 Cloudflare 提供的地址（例如 <code>alice.ns.cloudflare.com</code> 和 <code>bob.ns.cloudflare.com</code>）。<ul>
-<li><strong>操作位置</strong>：在你的域名注册商（如 GoDaddy、阿里云）后台，找到域名管理 → 修改 DNS 服务器。</li>
+<h2 id="解决方案一：反向代理"><a href="#解决方案一：反向代理" class="headerlink" title="解决方案一：反向代理"></a>解决方案一：反向代理</h2><h3 id="什么是反向代理？"><a href="#什么是反向代理？" class="headerlink" title="什么是反向代理？"></a>什么是反向代理？</h3><p>**反向代理（Reverse Proxy）**是一种服务器架构模式，它位于客户端和目标服务器之间，接收客户端的请求，并将请求转发到后端的目标服务器。通过这种方式，客户端只需要知道反向代理服务器的地址（通常是域名），而无需关心后端服务器的具体IP和端口。</p>
+<h3 id="反向代理的工作流程"><a href="#反向代理的工作流程" class="headerlink" title="反向代理的工作流程"></a>反向代理的工作流程</h3><ol>
+<li><strong>客户端请求</strong>：<ul>
+<li>用户在浏览器中输入 <code>http://example.com</code>，请求访问某个资源。</li>
 </ul>
 </li>
-</ul>
-<h4 id="4-配置-DNS-解析记录"><a href="#4-配置-DNS-解析记录" class="headerlink" title="4. 配置 DNS 解析记录"></a><strong>4. 配置 DNS 解析记录</strong></h4><ul>
-<li><p>在 Cloudflare 控制台的 <strong>DNS 设置页</strong>，添加一条A类记录：</p>
-<ul>
-<li><strong>A 记录</strong>：指向你的服务器 IP（源站 IP）。</li>
-<li><strong>开启代理（Proxy Status）</strong>：点击橙色云图标（启用 CDN 和防护）。</li>
-</ul>
-<blockquote>
-<p>例如：域名是<a target="_blank" rel="noopener" href="http://www.example.com时,只需要在名称那里填写www,内容填写服务器的ipv4地址,然后选择代理模式/">www.example.com时，只需要在名称那里填写www,内容填写服务器的IPv4地址，然后选择代理模式</a></p>
-</blockquote>
-</li>
-</ul>
-<h4 id="5-设置源站信息"><a href="#5-设置源站信息" class="headerlink" title="5. 设置源站信息"></a><strong>5. 设置源站信息</strong></h4><ul>
-<li><p>在 <strong>Cloudflare → SSL&#x2F;TLS → Overview</strong> 中，点击<strong>配置</strong>：</p>
-<ul>
-<li><p>选择 <strong>Full (strict)</strong> 模式（需源站配置有效 SSL 证书）。</p>
-<blockquote>
-<p>如果选择了 <strong>Full (strict)<strong>模式，可以在</strong>Origin Server</strong>中生成证书，点击Create Certificate,选择RSA(2048),选择有效期，点击生成即可</p>
-</blockquote>
-</li>
-<li><p>或选择 <strong>Flexible</strong> 模式（源站无需 SSL 证书，由 Cloudflare 提供加密）。</p>
-</li>
+<li><strong>DNS解析</strong>：<ul>
+<li>DNS服务器将 <code>example.com</code> 解析为反向代理服务器的IP地址。</li>
 </ul>
 </li>
-</ul>
-<h4 id="6-启用安全防护"><a href="#6-启用安全防护" class="headerlink" title="6. 启用安全防护"></a><strong>6. 启用安全防护</strong></h4><ul>
-<li>在 <strong>Security → Settings</strong> 中：<ul>
-<li>开启 <strong>DDoS 防护</strong> 和 <strong>Web Application Firewall (WAF)</strong>。</li>
-<li>调整安全级别（如“Medium”或“High”）。</li>
+<li><strong>反向代理接收请求</strong>：<ul>
+<li>反向代理服务器接收到客户端的请求。</li>
 </ul>
 </li>
+<li><strong>请求转发</strong>：<ul>
+<li>反向代理根据配置将请求转发到后端的目标服务器（例如 <code>http://localhost:8080</code>）。</li>
+</ul>
+</li>
+<li><strong>响应返回</strong>：<ul>
+<li>目标服务器处理请求并返回响应，反向代理再将响应返回给客户端。</li>
+</ul>
+</li>
+</ol>
+<p>![nginx.png][1]</p>
+<h3 id="反向代理的优点"><a href="#反向代理的优点" class="headerlink" title="反向代理的优点"></a>反向代理的优点</h3><ul>
+<li>隐藏后端服务器的真实IP地址和端口号，增强安全性。</li>
+<li>支持负载均衡和复杂的请求路由。</li>
+<li>提高用户体验，用户只需记住域名即可访问资源。</li>
+</ul>
+<h3 id="反向代理的缺点"><a href="#反向代理的缺点" class="headerlink" title="反向代理的缺点"></a>反向代理的缺点</h3><ul>
+<li>需要自行搭建和管理反向代理服务器（如Nginx或Caddy），维护成本较高。</li>
 </ul>
 <hr>
-<h3 id="三、验证-CDN-是否生效"><a href="#三、验证-CDN-是否生效" class="headerlink" title="三、验证 CDN 是否生效"></a><strong>三、验证 CDN 是否生效</strong></h3><ol>
-<li><strong>检查 DNS 解析</strong><br>使用 <code>ping example.com</code>，若返回的 IP 是 Cloudflare 的 IP（如 <code>104.21.xx.xx</code>），说明 DNS 生效。<a target="_blank" rel="noopener" href="https://www.cloudflare.com/ips/">Cloudflare IP 列表</a></li>
-<li><strong>访问网站</strong><br>通过浏览器访问网站，检查加载速度是否提升。</li>
+<h2 id="解决方案二：Cloudflare-Origin-Rules"><a href="#解决方案二：Cloudflare-Origin-Rules" class="headerlink" title="解决方案二：Cloudflare Origin Rules"></a>解决方案二：Cloudflare Origin Rules</h2><h3 id="什么是Cloudflare-Origin-Rules？"><a href="#什么是Cloudflare-Origin-Rules？" class="headerlink" title="什么是Cloudflare Origin Rules？"></a>什么是Cloudflare Origin Rules？</h3><p><strong>Cloudflare Origin Rules</strong> 是Cloudflare提供的一种功能，允许你自定义流量如何从Cloudflare的边缘节点转发到你的源服务器。通过Origin Rules，你可以灵活地修改请求的目标地址、端口和协议，而无需用户在URL中指定端口号。</p>
+<h3 id="Cloudflare-Origin-Rules的功能"><a href="#Cloudflare-Origin-Rules的功能" class="headerlink" title="Cloudflare Origin Rules的功能"></a>Cloudflare Origin Rules的功能</h3><ol>
+<li><strong>修改请求的目标地址</strong>：<ul>
+<li>例如，将 <code>example.com</code> 的请求转发到 <code>origin.example.com</code> 或 <code>192.168.1.1:8080</code>。</li>
+<li>这类似于反向代理的功能，可以隐藏源服务器的真实地址。</li>
+</ul>
+</li>
+<li><strong>修改端口</strong>：<ul>
+<li>如果源服务器运行在非标准端口（如 <code>8080</code>），可以通过Origin Rules将流量转发到该端口，而用户无需在URL中指定端口。</li>
+</ul>
+</li>
+<li><strong>修改协议</strong>：<ul>
+<li>例如，将HTTP请求转发到HTTPS源服务器，或者反之。</li>
+</ul>
+</li>
+<li><strong>基于条件转发</strong>：<ul>
+<li>根据请求的域名、路径、地理位置等条件，将流量转发到不同的源服务器。</li>
+</ul>
+</li>
 </ol>
+<h3 id="使用Cloudflare-Origin-Rules隐藏服务器IP和端口"><a href="#使用Cloudflare-Origin-Rules隐藏服务器IP和端口" class="headerlink" title="使用Cloudflare Origin Rules隐藏服务器IP和端口"></a>使用Cloudflare Origin Rules隐藏服务器IP和端口</h3><p>假设你的源服务器运行在 <code>192.168.1.1:8080</code>，你希望通过Cloudflare隐藏源服务器的真实地址和端口，用户只需访问 <code>https://example.com</code>。</p>
+<ol>
+<li><strong>在Cloudflare中设置DNS</strong>：<ul>
+<li>将 <code>example.com</code> 的DNS记录指向Cloudflare的IP地址（启用橙色云图标）。</li>
+</ul>
+</li>
+<li><strong>配置Origin Rules</strong>：<ul>
+<li>在Cloudflare控制台中，进入 <strong>Rules &gt; Origin Rules</strong>。</li>
+<li>创建一个规则，将 <code>example.com</code> 的请求转发到 <code>192.168.1.1:8080</code>。</li>
+<li>例如：<ul>
+<li><strong>规则条件</strong>：<code>Hostname</code> 等于 <code>example.com</code>。</li>
+<li><strong>操作</strong>：设置目标端口为 <code>8080</code>。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>结果</strong>：<ul>
+<li>用户访问 <code>https://example.com</code>，Cloudflare会将请求转发到 <code>192.168.1.1:8080</code>，而用户无需知道源服务器的真实地址和端口。</li>
+</ul>
+</li>
+</ol>
+<h3 id="Cloudflare-Origin-Rules的优点"><a href="#Cloudflare-Origin-Rules的优点" class="headerlink" title="Cloudflare Origin Rules的优点"></a>Cloudflare Origin Rules的优点</h3><ul>
+<li>无需自行搭建和管理服务器，管理更简单。</li>
+<li>集成Cloudflare的其他功能（如CDN、安全防护等），提升性能和安全性。</li>
+</ul>
+<h3 id="Cloudflare-Origin-Rules的缺点"><a href="#Cloudflare-Origin-Rules的缺点" class="headerlink" title="Cloudflare Origin Rules的缺点"></a>Cloudflare Origin Rules的缺点</h3><ul>
+<li>功能相对有限，可能无法满足复杂的路由需求。</li>
+<li>依赖Cloudflare的服务，可能受限于其定价和服务条款。</li>
+</ul>
 <hr>
-<h3 id="四、注意事项"><a href="#四、注意事项" class="headerlink" title="四、注意事项"></a>四、注意事项</h3><ol>
-<li>如果直接使用IP访问服务器，是没有CDN加速效果的</li>
-<li>cloudflare家的优选IP或域名都是使用80或443端口的</li>
-<li>如果ssl开启的是完全严格模式，记得在源服务器上面配置证书，否则无法访问</li>
-</ol>
-<h3 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、<strong>总结</strong></h3><table>
+<h2 id="反向代理与Cloudflare-Origin-Rules的比较"><a href="#反向代理与Cloudflare-Origin-Rules的比较" class="headerlink" title="反向代理与Cloudflare Origin Rules的比较"></a>反向代理与Cloudflare Origin Rules的比较</h2><table>
 <thead>
 <tr>
-<th align="left">步骤</th>
-<th align="left">关键点</th>
+<th><strong>方案</strong></th>
+<th><strong>优点</strong></th>
+<th><strong>缺点</strong></th>
 </tr>
 </thead>
 <tbody><tr>
-<td align="left">1. 修改 DNS 服务器</td>
-<td align="left">将域名的 Name Server 改为 Cloudflare 提供的地址</td>
+<td><strong>反向代理</strong></td>
+<td>- 支持复杂路由和负载均衡<br>- 灵活性高</td>
+<td>- 需要自行搭建和管理服务器<br>- 维护成本较高</td>
 </tr>
 <tr>
-<td align="left">2. 添加 DNS 记录</td>
-<td align="left">开启代理（橙色云图标），指向源站 IP 或域名</td>
-</tr>
-<tr>
-<td align="left">3. 配置 SSL&#x2F;TLS</td>
-<td align="left">根据源站证书情况选择加密模式</td>
-</tr>
-<tr>
-<td align="left">4. 启用安全防护</td>
-<td align="left">开启 WAF、DDoS 防护，限制恶意流量</td>
+<td><strong>Cloudflare Origin Rules</strong></td>
+<td>- 无需搭建服务器，管理简单<br>- 集成其他功能</td>
+<td>- 功能相对有限<br>- 依赖Cloudflare服务</td>
 </tr>
 </tbody></table>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>反向代理和Cloudflare Origin Rules都是隐藏服务器IP地址和端口号的有效方法，解决了用户直接访问IP和端口带来的不便。</p>
+<ul>
+<li>如果你需要更灵活的路由和负载均衡功能，推荐使用反向代理（如Nginx或Caddy）。</li>
+<li>如果你希望简化管理和利用Cloudflare的CDN和安全功能，推荐使用Cloudflare Origin Rules。</li>
+</ul>
+<p>根据你的具体需求和资源，选择适合的方案即可。<br>[1]: <a target="_blank" rel="noopener" href="https://images.228610.xyz/2025/03/c5507a9581655a9c071d2e81376fdb45.webp">https://images.228610.xyz/2025/03/c5507a9581655a9c071d2e81376fdb45.webp</a></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/02/23/%E4%BD%BF%E7%94%A8%20Cloudflare%20%E4%B8%BA%E7%BD%91%E7%AB%99%E6%88%96%E5%BA%94%E7%94%A8%E5%A5%97%E4%B8%8A%20CDN%20%E7%9A%84%E5%AE%8C%E6%95%B4%E6%8C%87%E5%8D%97/" data-id="cuidWwJTqNDJ9j7TlS5OkDkOT" data-title="使用 Cloudflare 为网站或应用套上 CDN 的完整指南" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/02/23/%E4%BD%BF%E7%94%A8%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E7%9A%84%E7%90%86%E8%A7%A3/" data-id="cuid-RpdQwWtaRWWaQR2Sfw9w" data-title="使用反向代理的理解" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cdn/" rel="tag">cdn</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cloudflare/" rel="tag">cloudflare</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/caddy/" rel="tag">caddy</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/nginx/" rel="tag">nginx</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/" rel="tag">反向代理</a></li></ul>
 
     </footer>
   </div>

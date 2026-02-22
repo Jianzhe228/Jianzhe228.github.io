@@ -154,7 +154,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/28/MySQL-%E6%85%A2%E6%9F%A5%E8%AF%A2%E6%97%A5%E5%BF%97%E4%BC%98%E5%8C%96SQL/" data-id="cuid4IfAGS9SRRSgCZgHE8RI4" data-title="MySQL-慢查询日志优化SQL" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/28/MySQL-%E6%85%A2%E6%9F%A5%E8%AF%A2%E6%97%A5%E5%BF%97%E4%BC%98%E5%8C%96SQL/" data-id="cuidOTpyqVsQN3HuYrNm3rf40" data-title="MySQL-慢查询日志优化SQL" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -331,7 +331,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/28/MySQL-%E4%BA%8B%E5%8A%A1/" data-id="cuidBU7oSXRt6huZiOGTQWwbL" data-title="MySQL-事务" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/28/MySQL-%E4%BA%8B%E5%8A%A1/" data-id="cuid8IiX9jgweYoP7ZBTFnY2h" data-title="MySQL-事务" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -633,7 +633,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/28/MySQL-%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/" data-id="cuidTViiKCJSVjto7w-Y5cPGV" data-title="MySQL-事务隔离级别实现原理" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/28/MySQL-%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/" data-id="cuidkgLmewFLPuDew9m_0YbPv" data-title="MySQL-事务隔离级别实现原理" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -843,9 +843,9 @@
 <p>但是，下面这个就不行,这条语句还查询了sex,age等信息，我们是无法从二级索引树上得到了，索引只能在主索引树上查找，这就涉及到了回表</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> student <span class="keyword">where</span> name <span class="operator">=</span> <span class="string">&#x27;zhangsan&#x27;</span></span><br></pre></td></tr></table></figure>
 
-<p><img src="https://images.guangyin.blog/2025/03/05e9f7822ca84c1403b0e7b3bb1c4126.webp" alt="image-20250329015034541"></p>
+<p><img src="https://images.228610.xyz/2025/03/05e9f7822ca84c1403b0e7b3bb1c4126.webp" alt="image-20250329015034541"></p>
 <p>所以，select 后边的字段尽量不要直接使用<code>*</code>，而是明确的使用字段名，一个是为了减少回表的发生，第二个是减少以后添加新字段时，不会影响现有的查询sql查询的结果，以产生意料之外的bug。</p>
-<h6 id="5、B-树索引和哈希索引"><a href="#5、B-树索引和哈希索引" class="headerlink" title="5、B+树索引和哈希索引"></a>5、B+树索引和哈希索引</h6><p><img src="https://images.guangyin.blog/2025/03/daa6b4181e8b597e2849a1baf2c85660.webp" alt="image-20250329010958816"></p>
+<h6 id="5、B-树索引和哈希索引"><a href="#5、B-树索引和哈希索引" class="headerlink" title="5、B+树索引和哈希索引"></a>5、B+树索引和哈希索引</h6><p><img src="https://images.228610.xyz/2025/03/daa6b4181e8b597e2849a1baf2c85660.webp" alt="image-20250329010958816"></p>
 <p>创建哈希索引</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> index name_index <span class="keyword">on</span> student(name) <span class="keyword">using</span> hash;</span><br></pre></td></tr></table></figure>
 
@@ -920,7 +920,7 @@
 <li><strong>查询时间不稳定，离根节点近的查询速度快，离根节点远的查询速度慢</strong></li>
 <li>在B-树上如果做区间查找，遍历的节点是非常多的</li>
 </ol>
-<p><img src="https://images.guangyin.blog/2025/03/b8f687303ed502210e97c846585f49b8.webp" alt="image-20250329012334382"></p>
+<p><img src="https://images.228610.xyz/2025/03/b8f687303ed502210e97c846585f49b8.webp" alt="image-20250329012334382"></p>
 <p>B+树的特点：</p>
 <ol>
 <li><strong>非叶子节点只存储索引，不会存储数据</strong>，意味着一个节点包含的索引更多，索引树的节点更少，层数更少，磁盘IO次数更少</li>
@@ -971,7 +971,7 @@
 </ol>
 <h6 id="13、Innodb自适应哈希索引"><a href="#13、Innodb自适应哈希索引" class="headerlink" title="13、Innodb自适应哈希索引"></a>13、Innodb自适应哈希索引</h6><p> 我们知道，在使用二级索引树的时候，可能会产生回表。<strong>当某些查询频繁访问二级索引且模式固定（如 <code>WHERE name = &#39;zhangsan&#39;</code> 的查询），InnoDB 会在内存中基于 B+ 树的二级索引创建一个哈希索引。自适应哈希索引的作用是加速特定查询，避免二级索引树和主键索引树的回表过程。</strong></p>
 <p> 一般情况下，二级索引会先查询二级索引树，如果二级索引树无法满足，就会到主键索引树上查找，这产生了回表，而<strong>如果生成了自适应哈希索引，那么在使用二级索引时，会直接根据哈希索引找到对应的数据页得到数据，跳过了二级索引树和主键索引树的收缩过程。</strong> </p>
-<p> <img src="https://images.guangyin.blog/2025/03/1d2f9b4c24cff3c70ffbcd7da60cd019.webp" alt="image-20250329015255357">   </p>
+<p> <img src="https://images.228610.xyz/2025/03/1d2f9b4c24cff3c70ffbcd7da60cd019.webp" alt="image-20250329015255357">   </p>
 <p> 当然，自适应哈希索引并不是所有情况都能提高速度，因为<code>自适应哈希索引的维护也是需要消耗性能的</code>，当达到一定的数据量时，并不一定能提高速度，所以需要根据实际情况开关。如果很多线程经常阻塞在哈希索引锁上，就应该视情况关闭自适应哈希索引</p>
 <ul>
 <li><p>查看自适应哈希索引是否打开</p>
@@ -1008,7 +1008,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/28/MySQL-%E7%B4%A2%E5%BC%95/" data-id="cuid-_Y1YRdSFLlZMxifG4XLJ" data-title="MySQL-索引" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/28/MySQL-%E7%B4%A2%E5%BC%95/" data-id="cuidl3jxpXj1DvTPNrGSnIjI1" data-title="MySQL-索引" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -1157,19 +1157,19 @@
 <p>课程表：课程id,课程名称，学分</p>
 <p>选课表：学号，课程id,成绩</p>
 <p>同理，我们再分析下面这个，使用EmployeeID和departmentName作为联合主键，发现其余字段并不符合第二范式的设计</p>
-<p><img src="https://images.guangyin.blog/2025/03/36ae6a519384ef0bf01fac82440b2ccd.webp"></p>
+<p><img src="https://images.228610.xyz/2025/03/36ae6a519384ef0bf01fac82440b2ccd.webp"></p>
 <p>分析部门和员工的关系，是一对多的关系，一个部门有多个员工</p>
-<p><img src="https://images.guangyin.blog/2025/03/6ac5d5ecf0f6bd6f198e09d49f7e22d5.webp" alt="image-20250329003729120"></p>
+<p><img src="https://images.228610.xyz/2025/03/6ac5d5ecf0f6bd6f198e09d49f7e22d5.webp" alt="image-20250329003729120"></p>
 <h3 id="第三范式"><a href="#第三范式" class="headerlink" title="第三范式"></a>第三范式</h3><blockquote>
 <p>在单主键中，属性不依赖于其他非主属性，非主键部分必须依赖于主键 </p>
 </blockquote>
-<p><img src="https://images.guangyin.blog/2025/03/4155f95df909742f5b8d4719ff9ceeea.webp" alt="image-20250329003952937"></p>
+<p><img src="https://images.228610.xyz/2025/03/4155f95df909742f5b8d4719ff9ceeea.webp" alt="image-20250329003952937"></p>
 <p>一般满足第三范式即可，还有其他范式，例如：BC范式，第四范式，但是这些范式会导致sql查询的复杂度，降低数据库的查询性能，需要权衡</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/28/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A1%A8%E7%9A%84%E8%AE%BE%E8%AE%A1%E8%8C%83%E5%BC%8F/" data-id="cuidG2eYeauwf9tkcKSWmXNgz" data-title="数据库表的设计范式" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/28/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A1%A8%E7%9A%84%E8%AE%BE%E8%AE%A1%E8%8C%83%E5%BC%8F/" data-id="cuidUniD0zEkRjiox7R5yzwVg" data-title="数据库表的设计范式" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -1397,7 +1397,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/28/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A1%A8%E7%9A%84%E8%AE%BE%E8%AE%A1/" data-id="cuidvUl6DTNq3_G1ua7fx3qn6" data-title="数据库表的设计" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/28/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A1%A8%E7%9A%84%E8%AE%BE%E8%AE%A1/" data-id="cuidN2ubeybF-QWPl9LUOuriz" data-title="数据库表的设计" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -1450,7 +1450,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/28/epoll%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8%E7%A4%BA%E4%BE%8B/" data-id="cuidvPzGetFry34hmjhn_7KBR" data-title="epoll简单使用示例" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/28/epoll%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8%E7%A4%BA%E4%BE%8B/" data-id="cuidTMwqU8-HqjrIJG0BBQDkz" data-title="epoll简单使用示例" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -1520,7 +1520,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/28/%E4%BA%8C%E5%8F%89%E6%A0%91%E9%81%8D%E5%8E%86/" data-id="cuidRvfX1W5FP5np373qgu_rZ" data-title="二叉树遍历" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/28/%E4%BA%8C%E5%8F%89%E6%A0%91%E9%81%8D%E5%8E%86/" data-id="cuidKnuIjCPg7-i4qC0YVBNYp" data-title="二叉树遍历" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -1578,7 +1578,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/28/C++%E7%94%9F%E6%88%90%E9%9A%8F%E6%9C%BA%E6%95%B0/" data-id="cuidnmW7ZGzHRZ9YPaC5dOuFg" data-title="C++生成随机数" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/28/C++%E7%94%9F%E6%88%90%E9%9A%8F%E6%9C%BA%E6%95%B0/" data-id="cuidyaXLutFa__NSiCEmfLQdP" data-title="C++生成随机数" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -1668,7 +1668,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/28/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/" data-id="cuidTnlqxqR-zXQ3h3smLrNF4" data-title="排序算法" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/28/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/" data-id="cuidXk7c2iPGCYIZ4yj5ZuIoL" data-title="排序算法" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       

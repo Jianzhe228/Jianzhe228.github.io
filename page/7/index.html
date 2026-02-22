@@ -107,7 +107,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/22/C++%20%E6%8A%A5%E9%94%99%EF%BC%9A'xxx'%20has%20not%20been%20declared/" data-id="cuidnGwMm5Tm4uKhh3aquz9qp" data-title="C++ 报错：&#39;xxx&#39; has not been declared" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/22/C++%20%E6%8A%A5%E9%94%99%EF%BC%9A'xxx'%20has%20not%20been%20declared/" data-id="cuiddHd9oPrNjSMDrZq4qozPr" data-title="C++ 报错：&#39;xxx&#39; has not been declared" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -172,12 +172,12 @@
 
 <h4 id="2、指针方式"><a href="#2、指针方式" class="headerlink" title="2、指针方式"></a>2、指针方式</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span> EAGER_SINGLETON_PTR_H</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> EAGER_SINGLETON_PTR_H</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">EagerSingletonPtr</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">// 禁用复制构造和赋值运算符</span></span><br><span class="line">    <span class="built_in">EagerSingletonPtr</span>(<span class="type">const</span> EagerSingletonPtr&amp;) = <span class="keyword">delete</span>;</span><br><span class="line">    EagerSingletonPtr&amp; <span class="keyword">operator</span>=(<span class="type">const</span> EagerSingletonPtr&amp;) = <span class="keyword">delete</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 获取单例实例</span></span><br><span class="line">    <span class="function"><span class="type">static</span> EagerSingletonPtr* <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 释放单例资源（解决内存泄漏问题）</span></span><br><span class="line">    <span class="function"><span class="type">static</span> <span class="type">void</span> <span class="title">destroyInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (instance != <span class="literal">nullptr</span>) &#123;</span><br><span class="line">            <span class="keyword">delete</span> instance;</span><br><span class="line">            instance = <span class="literal">nullptr</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 析构函数</span></span><br><span class="line">    ~<span class="built_in">EagerSingletonPtr</span>() &#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">&quot;饿汉单例被销毁&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="comment">// 私有构造函数</span></span><br><span class="line">    <span class="built_in">EagerSingletonPtr</span>() = <span class="keyword">default</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 静态实例（在程序加载时就创建）先创建对象，不管用与不用</span></span><br><span class="line">    <span class="type">static</span> EagerSingletonPtr* instance;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 静态成员变量初始化</span></span><br><span class="line">EagerSingletonPtr* EagerSingletonPtr::instance = <span class="keyword">new</span> <span class="built_in">EagerSingletonPtr</span>();</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span> <span class="comment">// EAGER_SINGLETON_PTR_H</span></span></span><br></pre></td></tr></table></figure>
 
-<h3 id="三、补充"><a href="#三、补充" class="headerlink" title="三、补充"></a>三、补充</h3><p>C++单例类初始化顺序会导致一些问题，详细可以查看<a target="_blank" rel="noopener" href="https://guangyin.blog/index.php/archives/117/">这篇文章</a></p>
+<h3 id="三、补充"><a href="#三、补充" class="headerlink" title="三、补充"></a>三、补充</h3><p>C++单例类初始化顺序会导致一些问题，详细可以查看<a href="https://www.228610.xyz/2025/03/20/C++%E5%8D%95%E4%BE%8B%E7%B1%BB%E5%AE%9E%E7%8E%B0/">这篇文章</a></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/20/C++%E5%8D%95%E4%BE%8B%E7%B1%BB%E5%AE%9E%E7%8E%B0/" data-id="cuidrKugpxWYu-CQFPT5i2-i3" data-title="C++单例类实现" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/20/C++%E5%8D%95%E4%BE%8B%E7%B1%BB%E5%AE%9E%E7%8E%B0/" data-id="cuidudt3EqnFBCaSw2Fl5akFV" data-title="C++单例类实现" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -247,7 +247,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/19/redis%E5%AE%89%E8%A3%85%E5%92%8C%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/" data-id="cuidkklhUxEA6-cN-KPIE7oTx" data-title="redis安装和基本使用" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/19/redis%E5%AE%89%E8%A3%85%E5%92%8C%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/" data-id="cuids1E-AzEnWOrtof5s0wtgC" data-title="redis安装和基本使用" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -288,7 +288,7 @@
     <div class="e-content article-entry" itemprop="articleBody">
       
         <p>问题：C++使用<strong>fstream</strong>打开相对路径文件发生错误，只能使用绝对路径，下面是项目结构</p>
-<p><img src="https://images.guangyin.blog/2025/03/32e45bb0c32c9e47366727a6031a1d06.webp" alt="image-20250318231044365"></p>
+<p><img src="https://images.228610.xyz/2025/03/32e45bb0c32c9e47366727a6031a1d06.webp" alt="image-20250318231044365"></p>
 <p>如上图，原以为相对路径是相对于二进制文件(<strong>server-ddz.exe</strong>)的路径，所以使用相对路径<code>../config/config.json</code>，但是经过测试，还是相对路径不正确的问题。</p>
 <p>下面的代码是查看程序运行时的路径</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">char</span> buffer[<span class="number">256</span>];</span><br><span class="line"><span class="type">char</span>* val = <span class="built_in">getcwd</span>(buffer, <span class="built_in">sizeof</span>(buffer));</span><br><span class="line"><span class="keyword">if</span> (val)</span><br><span class="line">&#123;</span><br><span class="line">    std::cout &lt;&lt; buffer &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -299,7 +299,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/18/C++%20%E6%8A%A5%E9%94%99%EF%BC%9Afstream%E6%89%93%E5%BC%80%E7%9B%B8%E5%AF%B9%E8%B7%AF%E5%BE%84%E6%96%87%E4%BB%B6%E5%8F%91%E7%94%9F%E9%94%99%E8%AF%AF/" data-id="cuid_3qclVYFRRFlWIcYH1kUK" data-title="C++ 报错：fstream打开相对路径文件发生错误" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/18/C++%20%E6%8A%A5%E9%94%99%EF%BC%9Afstream%E6%89%93%E5%BC%80%E7%9B%B8%E5%AF%B9%E8%B7%AF%E5%BE%84%E6%96%87%E4%BB%B6%E5%8F%91%E7%94%9F%E9%94%99%E8%AF%AF/" data-id="cuidE3EGqgusQyuHsBlXDt7Ju" data-title="C++ 报错：fstream打开相对路径文件发生错误" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -349,7 +349,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/16/C++%20%E6%8A%A5%E9%94%99%EF%BC%9A%E2%80%98xxx%E2%80%99%20does%20not%20name%20a%20type/" data-id="cuid2sZLcgQ48Di0kJAfy7AuV" data-title="C++ 报错：‘xxx’ does not name a type" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/16/C++%20%E6%8A%A5%E9%94%99%EF%BC%9A%E2%80%98xxx%E2%80%99%20does%20not%20name%20a%20type/" data-id="cuidRJ2jzo8IwTdhllSd-83T6" data-title="C++ 报错：‘xxx’ does not name a type" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -409,7 +409,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/16/ubuntu%E5%BD%BB%E5%BA%95%E5%8D%B8%E8%BD%BDMySQL/" data-id="cuidU3tMPvbyNBZsKYznOeT2K" data-title="ubuntu彻底卸载MySQL" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/16/ubuntu%E5%BD%BB%E5%BA%95%E5%8D%B8%E8%BD%BDMySQL/" data-id="cuid6jEm5nKrPNKNPV8IzOkA0" data-title="ubuntu彻底卸载MySQL" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -453,16 +453,16 @@
 <p>记一次在windows+cmake+MinGW环境下使用openssl添加库文件错误的经历</p>
 </blockquote>
 <h3 id="一、库文件介绍"><a href="#一、库文件介绍" class="headerlink" title="一、库文件介绍"></a>一、库文件介绍</h3><p>OpenSSL下载路径：<a target="_blank" rel="noopener" href="https://slproweb.com/products/Win32OpenSSL.html">https://slproweb.com/products/Win32OpenSSL.html</a></p>
-<p><img src="https://images.guangyin.blog/2025/03/353441199ff5da2d4bff65cd69227af1.webp" alt="image-20250314170922728"></p>
+<p><img src="https://images.228610.xyz/2025/03/353441199ff5da2d4bff65cd69227af1.webp" alt="image-20250314170922728"></p>
 <p>安装后的库文件是这样的</p>
 <ul>
 <li>bin目录</li>
 </ul>
-<p><img src="https://images.guangyin.blog/2025/03/643232ccca51770dffd9d36753dc74e1.webp" alt="image-20250314171205286"></p>
+<p><img src="https://images.228610.xyz/2025/03/643232ccca51770dffd9d36753dc74e1.webp" alt="image-20250314171205286"></p>
 <ul>
 <li>lib目录</li>
 </ul>
-<p><img src="https://images.guangyin.blog/2025/03/8436334c95aee648de59b060fb0cb4d7.webp" alt="image-20250314171309001"></p>
+<p><img src="https://images.228610.xyz/2025/03/8436334c95aee648de59b060fb0cb4d7.webp" alt="image-20250314171309001"></p>
 <p>可以看到，这是一个使用<strong>MSVC</strong>编译套件编译的库</p>
 <h3 id="二、遇到的问题"><a href="#二、遇到的问题" class="headerlink" title="二、遇到的问题"></a>二、遇到的问题</h3><p>根据经验，添加库文件通常需要”掐头去尾”——即<strong>去掉lib前缀和.lib后缀</strong>。例如，对于<strong>libcrypto.lib</strong>，我尝试这样添加：</p>
 <figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">target_link_libraries</span>(<span class="variable">$&#123;PROJECT_NAME&#125;</span> crypto)</span><br></pre></td></tr></table></figure>
@@ -523,7 +523,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/14/%E5%A6%82%E4%BD%95%E5%9C%A8CMake%E4%B8%AD%E6%AD%A3%E7%A1%AE%E7%9A%84%E6%B7%BB%E5%8A%A0%E5%BA%93%E6%96%87%E4%BB%B6%EF%BC%9AMSVC%E4%B8%8EMinGW%E6%B7%B7%E7%94%A8%E9%99%B7%E9%98%B1/" data-id="cuidoAwcuiWzEijJ1Akvfglxj" data-title="如何在CMake中正确的添加库文件：MSVC与MinGW混用陷阱" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/14/%E5%A6%82%E4%BD%95%E5%9C%A8CMake%E4%B8%AD%E6%AD%A3%E7%A1%AE%E7%9A%84%E6%B7%BB%E5%8A%A0%E5%BA%93%E6%96%87%E4%BB%B6%EF%BC%9AMSVC%E4%B8%8EMinGW%E6%B7%B7%E7%94%A8%E9%99%B7%E9%98%B1/" data-id="cuidMIeGmRLIgHVgDXcTaJ06t" data-title="如何在CMake中正确的添加库文件：MSVC与MinGW混用陷阱" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -573,14 +573,14 @@
 <p>原因：你在子目录serialize中添加的上述的动态库路径，但还是报错，可能是<strong>其他同级子目录或者上层目录</strong>使用了serialize目录的相关代码，因此其他目录也需要链接该动态库，但是由于CMake添加的<strong>link_directories</strong>只在该目录及其子目录下生效，在其他同级目录和上层目录是不生效的，所以其他目录也会报出错误：<strong>cannot found -lxxx</strong></p>
 </blockquote>
 </li>
-<li><p>确保库文件名正确，详细信息可以查看这篇文章：<a target="_blank" rel="noopener" href="https://guangyin.blog/index.php/archives/81/">如何在CMake中正确的添加库文件：MSVC与MinGW混用陷阱</a></p>
+<li><p>确保库文件名正确，详细信息可以查看这篇文章：<a href="https://www.228610.xyz/2025/03/14/%E5%A6%82%E4%BD%95%E5%9C%A8CMake%E4%B8%AD%E6%AD%A3%E7%A1%AE%E7%9A%84%E6%B7%BB%E5%8A%A0%E5%BA%93%E6%96%87%E4%BB%B6%EF%BC%9AMSVC%E4%B8%8EMinGW%E6%B7%B7%E7%94%A8%E9%99%B7%E9%98%B1/">如何在CMake中正确的添加库文件：MSVC与MinGW混用陷阱</a></p>
 </li>
 </ol>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/14/C++%20%E6%8A%A5%E9%94%99%EF%BC%9Acannot%20found%20-lxxx/" data-id="cuidh5UmIQRoYgNw-N8XpAXeu" data-title="C++ 报错：cannot found -lxxx" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/14/C++%20%E6%8A%A5%E9%94%99%EF%BC%9Acannot%20found%20-lxxx/" data-id="cuidx7ZTLli66CwnLmT4iL9pz" data-title="C++ 报错：cannot found -lxxx" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -644,7 +644,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/14/C++%20%E6%8A%A5%E9%94%99%EF%BC%9Aundefined%20reference%20to%20%E2%80%98xxxx%E2%80%99/" data-id="cuidscbzoCPO3Y7TC6zITFI1r" data-title="C++ 报错：undefined reference to ‘xxxx’" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/14/C++%20%E6%8A%A5%E9%94%99%EF%BC%9Aundefined%20reference%20to%20%E2%80%98xxxx%E2%80%99/" data-id="cuidVPtRTKDbm3D8aDKEmFjS1" data-title="C++ 报错：undefined reference to ‘xxxx’" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -772,7 +772,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/13/C++%E5%B0%81%E8%A3%85OpenSSL%E5%93%88%E5%B8%8C%E7%B1%BB/" data-id="cuidszvDigl7LhUsGcldD1hKs" data-title="C++封装OpenSSL哈希类" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/13/C++%E5%B0%81%E8%A3%85OpenSSL%E5%93%88%E5%B8%8C%E7%B1%BB/" data-id="cuid98kO6wCNt097Nnf6quAgY" data-title="C++封装OpenSSL哈希类" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       

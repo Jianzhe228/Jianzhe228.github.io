@@ -13,16 +13,16 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="记一次在windows+cmake+MinGW环境下使用openssl添加库文件错误的经历  一、库文件介绍OpenSSL下载路径：https:&#x2F;&#x2F;slproweb.com&#x2F;products&#x2F;Win32OpenSSL.html  安装后的库文件是这样的  bin目录    lib目录   可以看到，这是一个使用MSVC编译套件编译的库 二、遇到的问题根据经验，添加库文件通常需要”掐头去尾”——即">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://images.guangyin.blog/2025/03/353441199ff5da2d4bff65cd69227af1.webp">
-<meta property="og:image" content="https://images.guangyin.blog/2025/03/643232ccca51770dffd9d36753dc74e1.webp">
-<meta property="og:image" content="https://images.guangyin.blog/2025/03/8436334c95aee648de59b060fb0cb4d7.webp">
+<meta property="og:image" content="https://images.228610.xyz/2025/03/353441199ff5da2d4bff65cd69227af1.webp">
+<meta property="og:image" content="https://images.228610.xyz/2025/03/643232ccca51770dffd9d36753dc74e1.webp">
+<meta property="og:image" content="https://images.228610.xyz/2025/03/8436334c95aee648de59b060fb0cb4d7.webp">
 <meta property="article:published_time" content="2025-03-14T08:57:00.000Z">
-<meta property="article:modified_time" content="2026-02-22T06:44:28.064Z">
+<meta property="article:modified_time" content="2026-02-22T07:04:28.002Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="C++">
 <meta property="article:tag" content="cmake">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://images.guangyin.blog/2025/03/353441199ff5da2d4bff65cd69227af1.webp">
+<meta name="twitter:image" content="https://images.228610.xyz/2025/03/353441199ff5da2d4bff65cd69227af1.webp">
   
     <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -109,16 +109,16 @@
 <p>记一次在windows+cmake+MinGW环境下使用openssl添加库文件错误的经历</p>
 </blockquote>
 <h3 id="一、库文件介绍"><a href="#一、库文件介绍" class="headerlink" title="一、库文件介绍"></a>一、库文件介绍</h3><p>OpenSSL下载路径：<a target="_blank" rel="noopener" href="https://slproweb.com/products/Win32OpenSSL.html">https://slproweb.com/products/Win32OpenSSL.html</a></p>
-<p><img src="https://images.guangyin.blog/2025/03/353441199ff5da2d4bff65cd69227af1.webp" alt="image-20250314170922728"></p>
+<p><img src="https://images.228610.xyz/2025/03/353441199ff5da2d4bff65cd69227af1.webp" alt="image-20250314170922728"></p>
 <p>安装后的库文件是这样的</p>
 <ul>
 <li>bin目录</li>
 </ul>
-<p><img src="https://images.guangyin.blog/2025/03/643232ccca51770dffd9d36753dc74e1.webp" alt="image-20250314171205286"></p>
+<p><img src="https://images.228610.xyz/2025/03/643232ccca51770dffd9d36753dc74e1.webp" alt="image-20250314171205286"></p>
 <ul>
 <li>lib目录</li>
 </ul>
-<p><img src="https://images.guangyin.blog/2025/03/8436334c95aee648de59b060fb0cb4d7.webp" alt="image-20250314171309001"></p>
+<p><img src="https://images.228610.xyz/2025/03/8436334c95aee648de59b060fb0cb4d7.webp" alt="image-20250314171309001"></p>
 <p>可以看到，这是一个使用<strong>MSVC</strong>编译套件编译的库</p>
 <h3 id="二、遇到的问题"><a href="#二、遇到的问题" class="headerlink" title="二、遇到的问题"></a>二、遇到的问题</h3><p>根据经验，添加库文件通常需要”掐头去尾”——即<strong>去掉lib前缀和.lib后缀</strong>。例如，对于<strong>libcrypto.lib</strong>，我尝试这样添加：</p>
 <figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">target_link_libraries</span>(<span class="variable">$&#123;PROJECT_NAME&#125;</span> crypto)</span><br></pre></td></tr></table></figure>
@@ -179,7 +179,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/14/%E5%A6%82%E4%BD%95%E5%9C%A8CMake%E4%B8%AD%E6%AD%A3%E7%A1%AE%E7%9A%84%E6%B7%BB%E5%8A%A0%E5%BA%93%E6%96%87%E4%BB%B6%EF%BC%9AMSVC%E4%B8%8EMinGW%E6%B7%B7%E7%94%A8%E9%99%B7%E9%98%B1/" data-id="cuidoAwcuiWzEijJ1Akvfglxj" data-title="如何在CMake中正确的添加库文件：MSVC与MinGW混用陷阱" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/14/%E5%A6%82%E4%BD%95%E5%9C%A8CMake%E4%B8%AD%E6%AD%A3%E7%A1%AE%E7%9A%84%E6%B7%BB%E5%8A%A0%E5%BA%93%E6%96%87%E4%BB%B6%EF%BC%9AMSVC%E4%B8%8EMinGW%E6%B7%B7%E7%94%A8%E9%99%B7%E9%98%B1/" data-id="cuidMIeGmRLIgHVgDXcTaJ06t" data-title="如何在CMake中正确的添加库文件：MSVC与MinGW混用陷阱" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       

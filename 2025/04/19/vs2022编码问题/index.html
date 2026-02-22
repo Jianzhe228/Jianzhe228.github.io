@@ -13,18 +13,18 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="1、warning C4819解决方案： 在cmake文件中添加，必须位于 add_executable 之前 12add_compile_options(&quot;$&lt;$&lt;C_COMPILER_ID:MSVC&gt;:&#x2F;utf-8&gt;&quot;)add_compile_options(&quot;$&lt;$&lt;CXX_COMPILER_ID:MSVC&gt;:&#x2F;utf-">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://images.guangyin.blog/2025/04/405f7929bae44b39c90509bfbe14b0d0.webp">
-<meta property="og:image" content="https://images.guangyin.blog/2025/04/c7641f3d6461a58d8d0c32d86f9008a0.webp">
-<meta property="og:image" content="https://images.guangyin.blog/2025/04/4e22ff3e93148ab6366c5f8f67d0d233.webp">
-<meta property="og:image" content="https://images.guangyin.blog/2025/04/22381e40672f2fb81899a37a09244bae.webp">
-<meta property="og:image" content="https://images.guangyin.blog/2025/04/4843dece82851bd94ed6134ff036637b.webp">
-<meta property="og:image" content="https://images.guangyin.blog/2025/04/d564e1dea8844e45cd6a6dd6689e7011.webp">
+<meta property="og:image" content="https://images.228610.xyz/2025/04/405f7929bae44b39c90509bfbe14b0d0.webp">
+<meta property="og:image" content="https://images.228610.xyz/2025/04/c7641f3d6461a58d8d0c32d86f9008a0.webp">
+<meta property="og:image" content="https://images.228610.xyz/2025/04/4e22ff3e93148ab6366c5f8f67d0d233.webp">
+<meta property="og:image" content="https://images.228610.xyz/2025/04/22381e40672f2fb81899a37a09244bae.webp">
+<meta property="og:image" content="https://images.228610.xyz/2025/04/4843dece82851bd94ed6134ff036637b.webp">
+<meta property="og:image" content="https://images.228610.xyz/2025/04/d564e1dea8844e45cd6a6dd6689e7011.webp">
 <meta property="article:published_time" content="2025-04-19T12:03:00.000Z">
-<meta property="article:modified_time" content="2026-02-22T06:44:28.063Z">
+<meta property="article:modified_time" content="2026-02-22T07:04:28.001Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="vs2022">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://images.guangyin.blog/2025/04/405f7929bae44b39c90509bfbe14b0d0.webp">
+<meta name="twitter:image" content="https://images.228610.xyz/2025/04/405f7929bae44b39c90509bfbe14b0d0.webp">
   
     <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -112,21 +112,21 @@
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">add_compile_options</span>(<span class="string">&quot;$&lt;$&lt;C_COMPILER_ID:MSVC&gt;:/utf-8&gt;&quot;</span>)</span><br><span class="line"><span class="built_in">add_compile_options</span>(<span class="string">&quot;$&lt;$&lt;CXX_COMPILER_ID:MSVC&gt;:/utf-8&gt;&quot;</span>)</span><br></pre></td></tr></table></figure>
 
 <h3 id="2、warning-C4828"><a href="#2、warning-C4828" class="headerlink" title="2、warning C4828"></a>2、warning C4828</h3><h4 id="一、全局修改"><a href="#一、全局修改" class="headerlink" title="一、全局修改"></a>一、全局修改</h4><p><strong>工具&gt;选项&gt;环境&gt;文档&gt;使用特定编码保存文件</strong>,<strong>以后创建的文件</strong>就是以你指定的编码格式保存，注意是以后创建的，之前创建的需要手动修改</p>
-<p><img src="https://images.guangyin.blog/2025/04/405f7929bae44b39c90509bfbe14b0d0.webp" alt="image-20250419195027537"></p>
+<p><img src="https://images.228610.xyz/2025/04/405f7929bae44b39c90509bfbe14b0d0.webp" alt="image-20250419195027537"></p>
 <h4 id="二、手动修改"><a href="#二、手动修改" class="headerlink" title="二、手动修改"></a>二、手动修改</h4><p><strong>工具&gt;自定义&gt;命令&gt;文件&gt;添加命令&gt;高级保存选项</strong>，这里我选择放在文件，你也可以选择放在别的地方</p>
-<p><img src="https://images.guangyin.blog/2025/04/c7641f3d6461a58d8d0c32d86f9008a0.webp" alt="image-20250419195544699"></p>
-<p><img src="https://images.guangyin.blog/2025/04/4e22ff3e93148ab6366c5f8f67d0d233.webp" alt="image-20250419195752208"></p>
+<p><img src="https://images.228610.xyz/2025/04/c7641f3d6461a58d8d0c32d86f9008a0.webp" alt="image-20250419195544699"></p>
+<p><img src="https://images.228610.xyz/2025/04/4e22ff3e93148ab6366c5f8f67d0d233.webp" alt="image-20250419195752208"></p>
 <p>可以通过上移和下移 调整位置，调整完位置后就会在指定位置出现这个选项了</p>
-<p><img src="https://images.guangyin.blog/2025/04/22381e40672f2fb81899a37a09244bae.webp" alt="image-20250419195837916"></p>
+<p><img src="https://images.228610.xyz/2025/04/22381e40672f2fb81899a37a09244bae.webp" alt="image-20250419195837916"></p>
 <p>如果为灰色，那是因为没有选择文件，在需要修改编码文件的编辑界面点击一下，就能点击了</p>
-<p><img src="https://images.guangyin.blog/2025/04/4843dece82851bd94ed6134ff036637b.webp" alt="image-20250419200005997"></p>
+<p><img src="https://images.228610.xyz/2025/04/4843dece82851bd94ed6134ff036637b.webp" alt="image-20250419200005997"></p>
 <p>这样就能修改文件编码了，挺麻烦的，需要一个一个修改</p>
-<p><img src="https://images.guangyin.blog/2025/04/d564e1dea8844e45cd6a6dd6689e7011.webp" alt="image-20250419200139500"></p>
+<p><img src="https://images.228610.xyz/2025/04/d564e1dea8844e45cd6a6dd6689e7011.webp" alt="image-20250419200139500"></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/04/19/vs2022%E7%BC%96%E7%A0%81%E9%97%AE%E9%A2%98/" data-id="cuid3qVj25tsGQK0LxzHRM0mk" data-title="vs2022编码问题" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/04/19/vs2022%E7%BC%96%E7%A0%81%E9%97%AE%E9%A2%98/" data-id="cuidc1L8zxKVgzI0_WK1MyKpQ" data-title="vs2022编码问题" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       

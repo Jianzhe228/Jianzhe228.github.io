@@ -13,16 +13,16 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="API和文档下载：https:&#x2F;&#x2F;www.simnow.com.cn&#x2F;static&#x2F;apiDownload.action  将动态库继承到cmake时有点坑，simnow的动态库没有前缀lib,需要自行添加，否则cmake链接不到 12345678FIND_PACKAGE(ZLIB REQUIRED)LINK_DIRECTORIES($&#123;PROJECT_SOURCE_DIR&#125;&#x2F;">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://images.guangyin.blog/2025/08/0ac5abec79c0b4930fc02854f56d0b6b.png">
-<meta property="og:image" content="https://images.guangyin.blog/2025/08/f84209f0842e5f83fccde14469e4aa90.png">
-<meta property="og:image" content="https://images.guangyin.blog/2025/08/d2209d1a2b6ed8b62451cdd99255dae0.png">
-<meta property="og:image" content="https://images.guangyin.blog/2025/08/1beda6746bdc33326d53e79286b65c44.png">
+<meta property="og:image" content="https://images.228610.xyz/2025/08/0ac5abec79c0b4930fc02854f56d0b6b.png">
+<meta property="og:image" content="https://images.228610.xyz/2025/08/f84209f0842e5f83fccde14469e4aa90.png">
+<meta property="og:image" content="https://images.228610.xyz/2025/08/d2209d1a2b6ed8b62451cdd99255dae0.png">
+<meta property="og:image" content="https://images.228610.xyz/2025/08/1beda6746bdc33326d53e79286b65c44.png">
 <meta property="article:published_time" content="2025-08-14T08:14:00.000Z">
-<meta property="article:modified_time" content="2026-02-22T06:44:28.058Z">
+<meta property="article:modified_time" content="2026-02-22T07:04:27.996Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="CTP">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://images.guangyin.blog/2025/08/0ac5abec79c0b4930fc02854f56d0b6b.png">
+<meta name="twitter:image" content="https://images.228610.xyz/2025/08/0ac5abec79c0b4930fc02854f56d0b6b.png">
   
     <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -106,7 +106,7 @@
     <div class="e-content article-entry" itemprop="articleBody">
       
         <p>API和文档下载：<a target="_blank" rel="noopener" href="https://www.simnow.com.cn/static/apiDownload.action">https://www.simnow.com.cn/static/apiDownload.action</a></p>
-<p><img src="https://images.guangyin.blog/2025/08/0ac5abec79c0b4930fc02854f56d0b6b.png" alt="image-20250814152725311"></p>
+<p><img src="https://images.228610.xyz/2025/08/0ac5abec79c0b4930fc02854f56d0b6b.png" alt="image-20250814152725311"></p>
 <p>将动态库继承到cmake时有点坑，simnow的动态库没有前缀lib,需要自行添加，否则cmake链接不到</p>
 <figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FIND_PACKAGE</span>(ZLIB REQUIRED)</span><br><span class="line"><span class="keyword">LINK_DIRECTORIES</span>(<span class="variable">$&#123;PROJECT_SOURCE_DIR&#125;</span>/lib)</span><br><span class="line"></span><br><span class="line"><span class="keyword">TARGET_LINK_LIBRARIES</span>(<span class="variable">$&#123;PROJECT_NAME&#125;</span> </span><br><span class="line">    <span class="variable">$&#123;PROJECT_SOURCE_DIR&#125;</span>/lib/libthostmduserapi_se.so</span><br><span class="line">    <span class="variable">$&#123;ZLIB_LIBRARIES&#125;</span> </span><br><span class="line">    <span class="variable">$&#123;PROJECT_SOURCE_DIR&#125;</span>/lib/libstdc++.so.<span class="number">6</span> </span><br><span class="line">    pthread)</span><br></pre></td></tr></table></figure>
 
@@ -150,7 +150,7 @@
 </tr>
 </tbody></table>
 <h3 id="交互流程"><a href="#交互流程" class="headerlink" title="交互流程"></a>交互流程</h3><p>CTP程序的Api请求，都会在Spi回调线程中处理</p>
-<p><img src="https://images.guangyin.blog/2025/08/f84209f0842e5f83fccde14469e4aa90.png" alt="image-20250814154623940"></p>
+<p><img src="https://images.228610.xyz/2025/08/f84209f0842e5f83fccde14469e4aa90.png" alt="image-20250814154623940"></p>
 <h3 id="CTP通用参数"><a href="#CTP通用参数" class="headerlink" title="CTP通用参数"></a>CTP通用参数</h3><ol>
 <li><p><strong>nRequestID</strong>：客户端发送请求时要为该请求指定一个请求编号。<strong>交易接口会在响应或回报中返回与该请求相同</strong><br><strong>的请求编号</strong>。当客户端进行频繁操作时，很有可能会造成同一个响应函数被调用多次，这种情况下，能将请<br>求与响应关联起来的纽带就是请求编号。</p>
 </li>
@@ -179,9 +179,9 @@
 
 
 <h3 id="踩坑"><a href="#踩坑" class="headerlink" title="踩坑"></a>踩坑</h3><p>1.注意，Release函数会销毁对象，最后如果调用Join函数会导致段错误</p>
-<img src="https://images.guangyin.blog/2025/08/d2209d1a2b6ed8b62451cdd99255dae0.png" alt="image-20250814161653234" style="zoom:80%;" /> 
+<img src="https://images.228610.xyz/2025/08/d2209d1a2b6ed8b62451cdd99255dae0.png" alt="image-20250814161653234" style="zoom:80%;" /> 
 
-<img src="https://images.guangyin.blog/2025/08/1beda6746bdc33326d53e79286b65c44.png" alt="image-20250814161804541" style="zoom: 50%;" /> 
+<img src="https://images.228610.xyz/2025/08/1beda6746bdc33326d53e79286b65c44.png" alt="image-20250814161804541" style="zoom: 50%;" /> 
 
 
 
@@ -191,7 +191,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/08/14/CTP%20API%20%E5%BC%80%E5%8F%91%E6%B5%81%E7%A8%8B/" data-id="cuidix1DHrfPW6nDVt4MBkYBC" data-title="CTP API 开发流程" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/08/14/CTP%20API%20%E5%BC%80%E5%8F%91%E6%B5%81%E7%A8%8B/" data-id="cuidwBcfHh1z2MRkwQQYpbS6W" data-title="CTP API 开发流程" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       

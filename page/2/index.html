@@ -179,7 +179,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/11/24/Ubuntu%20%E7%A7%BB%E9%99%A4%20Firefox%20Snap%20%E5%B9%B6%E5%AE%89%E8%A3%85%20Firefox%20%E5%AE%98%E6%96%B9%20.deb%20%E7%89%88%E6%9C%AC/" data-id="cuid1iS_3B6DZWifzl-DsLHAu" data-title="Ubuntu 移除 Firefox Snap 并安装 Firefox 官方 .deb 版本" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/11/24/Ubuntu%20%E7%A7%BB%E9%99%A4%20Firefox%20Snap%20%E5%B9%B6%E5%AE%89%E8%A3%85%20Firefox%20%E5%AE%98%E6%96%B9%20.deb%20%E7%89%88%E6%9C%AC/" data-id="cuidOQQiOQymp_Uub29mONj78" data-title="Ubuntu 移除 Firefox Snap 并安装 Firefox 官方 .deb 版本" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -242,7 +242,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/11/24/aria2c%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AE/" data-id="cuidy6YnoUt4THMjNJNIVM_8O" data-title="aria2c安装和配置" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/11/24/aria2c%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AE/" data-id="cuidWgNum7UKnAUoQ8j_c1CPy" data-title="aria2c安装和配置" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -308,7 +308,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/11/09/vmware+ubuntu%20gui%E7%95%8C%E9%9D%A2%E6%98%BE%E7%A4%BA%E4%B8%8D%E5%85%A8/" data-id="cuidKeQ33l6hJXndkywyvnA9q" data-title="vmware+ubuntu gui界面显示不全" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/11/09/vmware+ubuntu%20gui%E7%95%8C%E9%9D%A2%E6%98%BE%E7%A4%BA%E4%B8%8D%E5%85%A8/" data-id="cuidZ11TKfWqkLiYlFCAIq01W" data-title="vmware+ubuntu gui界面显示不全" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -358,7 +358,7 @@
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> _CRTDBG_MAP_ALLOC</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cstdlib&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;crtdbg.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> _DEBUG</span></span><br><span class="line">    <span class="meta">#<span class="keyword">define</span> DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )</span></span><br><span class="line">    <span class="meta">#<span class="keyword">define</span> new DBG_NEW</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);</span><br><span class="line">    <span class="type">int</span>* p = <span class="keyword">new</span> <span class="type">int</span>[<span class="number">100</span>]; <span class="comment">// 故意制造泄漏</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>输出示例：</p>
-<p><img src="https://images.guangyin.blog/2025/10/343812feba9057cba443749e27cceafa.png" alt="image-20251019164600710"></p>
+<p><img src="https://images.228610.xyz/2025/10/343812feba9057cba443749e27cceafa.png" alt="image-20251019164600710"></p>
 <p>输出显示问题出在memoryleak.cpp文件第14行，泄露大小为400 bytes，如果需要在泄露处中断，可以添加</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">_CrtSetBreakAlloc(编号);</span><br></pre></td></tr></table></figure>
 
@@ -367,7 +367,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/10/29/%E4%BD%BF%E7%94%A8vs2022%E7%9A%84CRT%E6%A3%80%E6%B5%8B%E5%86%85%E5%AD%98%E6%B3%84%E9%9C%B2/" data-id="cuidyZz76fMXUL0suGCJ9kWrx" data-title="使用vs2022的CRT检测内存泄露" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/10/29/%E4%BD%BF%E7%94%A8vs2022%E7%9A%84CRT%E6%A3%80%E6%B5%8B%E5%86%85%E5%AD%98%E6%B3%84%E9%9C%B2/" data-id="cuidFuVSc_LYR9b2DR3n9J4fg" data-title="使用vs2022的CRT检测内存泄露" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -555,7 +555,7 @@
 
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">source ~/.bashrc</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://images.guangyin.blog/2025/10/cc0c80555581deccb1935d801d0dfc81.png" alt="image-20251010154330419"></p>
+<p><img src="https://images.228610.xyz/2025/10/cc0c80555581deccb1935d801d0dfc81.png" alt="image-20251010154330419"></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">export PATH=$VCPKG_ROOT:$PATH</span><br><span class="line">export VCPKG_USE_NINJA=1</span><br><span class="line">export VCPKG_MAX_CONCURRENCY=$(nproc)</span><br><span class="line">export VCPKG_BINARY_SOURCES=&quot;clear;files,/root/.vcpkg-cache,readwrite&quot;</span><br><span class="line">export CMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake</span><br></pre></td></tr></table></figure>
 <p>添加<code>CMAKE_PREFIX_PATH</code></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p ~/.config/cmake</span><br><span class="line">nano ~/.config/cmake/init.cmake</span><br></pre></td></tr></table></figure>
@@ -572,7 +572,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/10/28/vcpkg%20%E5%AE%89%E8%A3%85%E5%92%8C%E4%BD%BF%E7%94%A8/" data-id="cuidhD9__wMOlEUnhkOpLf6OX" data-title="vcpkg 安装和使用" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/10/28/vcpkg%20%E5%AE%89%E8%A3%85%E5%92%8C%E4%BD%BF%E7%94%A8/" data-id="cuidWWE6QlnfxKolJVZyudkZH" data-title="vcpkg 安装和使用" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -648,7 +648,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/10/01/%E5%9F%9F%E5%90%8D%E9%82%AE%E7%AE%B1%E6%90%AD%E5%BB%BA/" data-id="cuide_Nl4j5O1wvAURCDh7FkA" data-title="域名邮箱搭建" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/10/01/%E5%9F%9F%E5%90%8D%E9%82%AE%E7%AE%B1%E6%90%AD%E5%BB%BA/" data-id="cuidhdEJfMRe6XBs-ZwxJWdUu" data-title="域名邮箱搭建" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -710,7 +710,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/09/29/Hysteria2%20%E4%B8%80%E9%94%AE%E6%90%AD%E5%BB%BA%E8%84%9A%E6%9C%AC/" data-id="cuidL1gvSvJkiW-FXEI-L8Q6C" data-title="Hysteria2 一键搭建脚本" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/09/29/Hysteria2%20%E4%B8%80%E9%94%AE%E6%90%AD%E5%BB%BA%E8%84%9A%E6%9C%AC/" data-id="cuidLp4kksFStd-UdSYYlXfIR" data-title="Hysteria2 一键搭建脚本" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -751,7 +751,7 @@
     <div class="e-content article-entry" itemprop="articleBody">
       
         <p>API和文档下载：<a target="_blank" rel="noopener" href="https://www.simnow.com.cn/static/apiDownload.action">https://www.simnow.com.cn/static/apiDownload.action</a></p>
-<p><img src="https://images.guangyin.blog/2025/08/0ac5abec79c0b4930fc02854f56d0b6b.png" alt="image-20250814152725311"></p>
+<p><img src="https://images.228610.xyz/2025/08/0ac5abec79c0b4930fc02854f56d0b6b.png" alt="image-20250814152725311"></p>
 <p>将动态库继承到cmake时有点坑，simnow的动态库没有前缀lib,需要自行添加，否则cmake链接不到</p>
 <figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FIND_PACKAGE</span>(ZLIB REQUIRED)</span><br><span class="line"><span class="keyword">LINK_DIRECTORIES</span>(<span class="variable">$&#123;PROJECT_SOURCE_DIR&#125;</span>/lib)</span><br><span class="line"></span><br><span class="line"><span class="keyword">TARGET_LINK_LIBRARIES</span>(<span class="variable">$&#123;PROJECT_NAME&#125;</span> </span><br><span class="line">    <span class="variable">$&#123;PROJECT_SOURCE_DIR&#125;</span>/lib/libthostmduserapi_se.so</span><br><span class="line">    <span class="variable">$&#123;ZLIB_LIBRARIES&#125;</span> </span><br><span class="line">    <span class="variable">$&#123;PROJECT_SOURCE_DIR&#125;</span>/lib/libstdc++.so.<span class="number">6</span> </span><br><span class="line">    pthread)</span><br></pre></td></tr></table></figure>
 
@@ -795,7 +795,7 @@
 </tr>
 </tbody></table>
 <h3 id="交互流程"><a href="#交互流程" class="headerlink" title="交互流程"></a>交互流程</h3><p>CTP程序的Api请求，都会在Spi回调线程中处理</p>
-<p><img src="https://images.guangyin.blog/2025/08/f84209f0842e5f83fccde14469e4aa90.png" alt="image-20250814154623940"></p>
+<p><img src="https://images.228610.xyz/2025/08/f84209f0842e5f83fccde14469e4aa90.png" alt="image-20250814154623940"></p>
 <h3 id="CTP通用参数"><a href="#CTP通用参数" class="headerlink" title="CTP通用参数"></a>CTP通用参数</h3><ol>
 <li><p><strong>nRequestID</strong>：客户端发送请求时要为该请求指定一个请求编号。<strong>交易接口会在响应或回报中返回与该请求相同</strong><br><strong>的请求编号</strong>。当客户端进行频繁操作时，很有可能会造成同一个响应函数被调用多次，这种情况下，能将请<br>求与响应关联起来的纽带就是请求编号。</p>
 </li>
@@ -824,9 +824,9 @@
 
 
 <h3 id="踩坑"><a href="#踩坑" class="headerlink" title="踩坑"></a>踩坑</h3><p>1.注意，Release函数会销毁对象，最后如果调用Join函数会导致段错误</p>
-<img src="https://images.guangyin.blog/2025/08/d2209d1a2b6ed8b62451cdd99255dae0.png" alt="image-20250814161653234" style="zoom:80%;" /> 
+<img src="https://images.228610.xyz/2025/08/d2209d1a2b6ed8b62451cdd99255dae0.png" alt="image-20250814161653234" style="zoom:80%;" /> 
 
-<img src="https://images.guangyin.blog/2025/08/1beda6746bdc33326d53e79286b65c44.png" alt="image-20250814161804541" style="zoom: 50%;" /> 
+<img src="https://images.228610.xyz/2025/08/1beda6746bdc33326d53e79286b65c44.png" alt="image-20250814161804541" style="zoom: 50%;" /> 
 
 
 
@@ -836,7 +836,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/08/14/CTP%20API%20%E5%BC%80%E5%8F%91%E6%B5%81%E7%A8%8B/" data-id="cuidix1DHrfPW6nDVt4MBkYBC" data-title="CTP API 开发流程" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/08/14/CTP%20API%20%E5%BC%80%E5%8F%91%E6%B5%81%E7%A8%8B/" data-id="cuidwBcfHh1z2MRkwQQYpbS6W" data-title="CTP API 开发流程" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -979,7 +979,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/08/01/muduo(9)-%E7%8A%B6%E6%80%81%E6%9C%BA/" data-id="cuidNRVUlXkRCAyaA1n-ZlFwQ" data-title="muduo(9)-状态机" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/08/01/muduo(9)-%E7%8A%B6%E6%80%81%E6%9C%BA/" data-id="cuidocHq2a6-sDL7_PDjN_Isq" data-title="muduo(9)-状态机" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -1093,7 +1093,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/07/31/muduo(8)-Connector/" data-id="cuidigoWl2Ufs2w7hn9KVne1U" data-title="muduo(8)-Connector" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/07/31/muduo(8)-Connector/" data-id="cuidLkZvb4NC-13-QGNqnwIRc" data-title="muduo(8)-Connector" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       

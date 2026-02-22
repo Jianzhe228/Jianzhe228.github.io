@@ -13,14 +13,14 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="在main.cpp中添加如下内容，需要确保_CRTDBG_MAP_ALLOC宏放在最前面 123456789#define _CRTDBG_MAP_ALLOC#include &lt;cstdlib&gt;#include &lt;crtdbg.h&gt;#include &lt;iostream&gt;#ifdef _DEBUG    #define DBG_NEW new ( _NORMAL_">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://images.guangyin.blog/2025/10/343812feba9057cba443749e27cceafa.png">
+<meta property="og:image" content="https://images.228610.xyz/2025/10/343812feba9057cba443749e27cceafa.png">
 <meta property="article:published_time" content="2025-10-29T07:02:17.000Z">
-<meta property="article:modified_time" content="2026-02-22T06:44:28.063Z">
+<meta property="article:modified_time" content="2026-02-22T07:04:28.002Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="C++">
 <meta property="article:tag" content="CRT">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://images.guangyin.blog/2025/10/343812feba9057cba443749e27cceafa.png">
+<meta name="twitter:image" content="https://images.228610.xyz/2025/10/343812feba9057cba443749e27cceafa.png">
   
     <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -113,7 +113,7 @@
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> _CRTDBG_MAP_ALLOC</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cstdlib&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;crtdbg.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> _DEBUG</span></span><br><span class="line">    <span class="meta">#<span class="keyword">define</span> DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )</span></span><br><span class="line">    <span class="meta">#<span class="keyword">define</span> new DBG_NEW</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);</span><br><span class="line">    <span class="type">int</span>* p = <span class="keyword">new</span> <span class="type">int</span>[<span class="number">100</span>]; <span class="comment">// 故意制造泄漏</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>输出示例：</p>
-<p><img src="https://images.guangyin.blog/2025/10/343812feba9057cba443749e27cceafa.png" alt="image-20251019164600710"></p>
+<p><img src="https://images.228610.xyz/2025/10/343812feba9057cba443749e27cceafa.png" alt="image-20251019164600710"></p>
 <p>输出显示问题出在memoryleak.cpp文件第14行，泄露大小为400 bytes，如果需要在泄露处中断，可以添加</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">_CrtSetBreakAlloc(编号);</span><br></pre></td></tr></table></figure>
 
@@ -122,7 +122,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/10/29/%E4%BD%BF%E7%94%A8vs2022%E7%9A%84CRT%E6%A3%80%E6%B5%8B%E5%86%85%E5%AD%98%E6%B3%84%E9%9C%B2/" data-id="cuidyZz76fMXUL0suGCJ9kWrx" data-title="使用vs2022的CRT检测内存泄露" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/10/29/%E4%BD%BF%E7%94%A8vs2022%E7%9A%84CRT%E6%A3%80%E6%B5%8B%E5%86%85%E5%AD%98%E6%B3%84%E9%9C%B2/" data-id="cuidFuVSc_LYR9b2DR3n9J4fg" data-title="使用vs2022的CRT检测内存泄露" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
