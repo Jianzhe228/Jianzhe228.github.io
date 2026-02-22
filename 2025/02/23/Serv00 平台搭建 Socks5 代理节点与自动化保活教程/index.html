@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Serv00 平台搭建 Socks5 代理节点与自动化保活教程 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="该教程整合了以下几位大佬的教程  CMLiussss:Serv00&#x2F;CT8：从注册到部署SOCKS5代理，一步到位自动续期保活教程，SOCKS5可用于edgetunnel解锁ChatGPT hkfires : Serv00服务器优雅的保活方案 秋风于渭水 : 用GitHub Actions 搭建网页状态监控系统 Upptime   步骤1.申请端口 登录你帐号对应的 panel 面板">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Serv00 平台搭建 Socks5 代理节点与自动化保活教程">
+<meta property="og:url" content="http://example.com/2025/02/23/Serv00%20%E5%B9%B3%E5%8F%B0%E6%90%AD%E5%BB%BA%20Socks5%20%E4%BB%A3%E7%90%86%E8%8A%82%E7%82%B9%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96%E4%BF%9D%E6%B4%BB%E6%95%99%E7%A8%8B/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="该教程整合了以下几位大佬的教程  CMLiussss:Serv00&#x2F;CT8：从注册到部署SOCKS5代理，一步到位自动续期保活教程，SOCKS5可用于edgetunnel解锁ChatGPT hkfires : Serv00服务器优雅的保活方案 秋风于渭水 : 用GitHub Actions 搭建网页状态监控系统 Upptime   步骤1.申请端口 登录你帐号对应的 panel 面板">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://images.guangyin.blog/2025/02/1081792284.webp">
+<meta property="og:image" content="https://images.guangyin.blog/2025/02/679637afbd4b4.webp">
+<meta property="og:image" content="https://images.guangyin.blog/2025/02/67963460e01f0.webp">
+<meta property="og:image" content="https://images.guangyin.blog/2025/02/679634a0d46ad.webp">
+<meta property="og:image" content="https://images.guangyin.blog/2025/02/679634d564f32.webp">
+<meta property="og:image" content="https://images.guangyin.blog/2025/02/67963509512b5.webp">
+<meta property="og:image" content="https://images.guangyin.blog/2025/02/6796352719cd6.webp">
+<meta property="og:image" content="https://images.guangyin.blog/2025/02/6796359145849.webp">
+<meta property="og:image" content="https://images.guangyin.blog/2025/02/679635aeb6704.webp">
+<meta property="og:image" content="https://images.guangyin.blog/2025/02/679635cc53cca.webp">
+<meta property="og:image" content="https://images.guangyin.blog/2025/02/679635e4f1ea3.webp">
+<meta property="og:image" content="https://images.guangyin.blog/2025/02/679636096e2ff.webp">
+<meta property="og:image" content="https://images.guangyin.blog/2025/02/6796363479ebd.webp">
+<meta property="og:image" content="https://images.guangyin.blog/2025/02/67963648de3f4.webp">
+<meta property="og:image" content="https://images.guangyin.blog/2025/02/67963688b4ecc.webp">
+<meta property="og:image" content="https://images.guangyin.blog/2025/02/679636a08e88c.webp">
+<meta property="og:image" content="https://images.guangyin.blog/2025/02/679636d8a7b23.webp">
+<meta property="og:image" content="https://images.guangyin.blog/2025/02/679636f17db28.webp">
+<meta property="og:image" content="https://images.guangyin.blog/2025/02/67963709b58da.webp">
+<meta property="article:published_time" content="2025-02-23T16:43:00.000Z">
+<meta property="article:modified_time" content="2026-02-22T06:29:37.824Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="serv00">
+<meta property="article:tag" content="socks5">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://images.guangyin.blog/2025/02/1081792284.webp">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-Serv00 平台搭建 Socks5 代理节点与自动化保活教程" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/02/23/Serv00%20%E5%B9%B3%E5%8F%B0%E6%90%AD%E5%BB%BA%20Socks5%20%E4%BB%A3%E7%90%86%E8%8A%82%E7%82%B9%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96%E4%BF%9D%E6%B4%BB%E6%95%99%E7%A8%8B/" class="article-date">
+  <time class="dt-published" datetime="2025-02-23T16:43:00.000Z" itemprop="datePublished">2025-02-23</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%90%9E%E4%B8%83%E6%8D%BB%E4%B8%89/">搞七捻三</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Serv00 平台搭建 Socks5 代理节点与自动化保活教程
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>该教程整合了以下几位大佬的教程</p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://blog.cmliussss.com/">CMLiussss</a>:<a target="_blank" rel="noopener" href="https://blog.cmliussss.com/p/Serv00-Socks5/">Serv00&#x2F;CT8：从注册到部署SOCKS5代理，一步到位自动续期保活教程，SOCKS5可用于edgetunnel解锁ChatGPT</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/hkfires">hkfires</a> : <a target="_blank" rel="noopener" href="https://github.com/hkfires/Keep-Serv00-Alive">Serv00服务器优雅的保活方案</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.tjsky.net/">秋风于渭水</a> : <a target="_blank" rel="noopener" href="https://www.tjsky.net/tutorial/444">用GitHub Actions 搭建网页状态监控系统 Upptime</a></li>
+</ol>
+</blockquote>
+<h3 id="步骤1-申请端口"><a href="#步骤1-申请端口" class="headerlink" title="步骤1.申请端口"></a>步骤1.申请端口</h3><ol>
+<li>登录你帐号对应的 panel 面板</li>
+<li>面板左侧 &gt; <code>Port reservation</code> &gt; 选择 <code>Add port</code> 标签栏 &gt; 勾选 <code>Random</code> &gt; <code>＋Add</code></li>
+</ol>
+<p><img src="https://images.guangyin.blog/2025/02/1081792284.webp" alt="PixPin_2025-01-26_16-32-12.webp"></p>
+<p>选择 <code>Port list</code> 标签栏 &gt; 记录你分配到的<strong>TCP端口号</strong></p>
+<p><img src="https://images.guangyin.blog/2025/02/679637afbd4b4.webp" alt="PixPin_2025-01-26_21-24-46.webp"></p>
+<h3 id="步骤2-开启管理执行权限"><a href="#步骤2-开启管理执行权限" class="headerlink" title="步骤2.开启管理执行权限"></a>步骤2.开启管理执行权限</h3><ol>
+<li>登录你帐号对应的 panel 面板</li>
+<li>面板左侧 &gt; 选择 <code>Run your own applications</code> 标签栏 &gt; <code>Enabled</code> ; 使其<strong>Status</strong>变成 <code>✅Enabled</code>即可</li>
+</ol>
+<p><img src="https://images.guangyin.blog/2025/02/67963460e01f0.webp" alt="PixPin_2025-01-26_16-35-39.webp"></p>
+<h3 id="步骤3-执行一键安装Sock5节点脚本"><a href="#步骤3-执行一键安装Sock5节点脚本" class="headerlink" title="步骤3.执行一键安装Sock5节点脚本"></a>步骤3.执行一键安装Sock5节点脚本</h3><p>使用ssh连接serv00,执行以下脚本</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bash &lt;(curl -s https://raw.githubusercontent.com/cmliu/socks5-for-serv00/main/install-socks5.sh)</span><br></pre></td></tr></table></figure>
+
+<p>注意：在输入socks5端口号时，输入<strong>申请端口</strong>时记录的<strong>TCP端口号</strong>即可，其余参数可以自行输入任意内容；(如果不清楚nezha-agent等内容，照着填就行)，由于本教程没有用到<code>crontab</code>，可以不添加 crontab 守护进程的计划任务。</p>
+<p><img src="https://images.guangyin.blog/2025/02/679634a0d46ad.webp" alt="PixPin_2025-01-26_16-38-07.webp"></p>
+<h3 id="步骤4：创建域名"><a href="#步骤4：创建域名" class="headerlink" title="步骤4：创建域名"></a>步骤4：创建域名</h3><ul>
+<li>登录Serv00面板，删除注册后自带的网站</li>
+</ul>
+<p><img src="https://images.guangyin.blog/2025/02/679634d564f32.webp" alt="PixPin_2025-01-26_16-46-38.webp"></p>
+<ul>
+<li>点击Delete(purge website files)清空网站文件</li>
+</ul>
+<p><img src="https://images.guangyin.blog/2025/02/67963509512b5.webp" alt="PixPin_2025-01-26_16-49-23.webp"></p>
+<ul>
+<li>创建新网站，域名填写你想用的域名，我这里使用的是注册时自带的，网站类型设置为Node.js，程序版本选择NOde.js v22.4.1（你的版本可能更高，选择最新的即可）<br><img src="https://images.guangyin.blog/2025/02/6796352719cd6.webp" alt="PixPin_2025-01-26_16-52-12.webp"></li>
+</ul>
+<h3 id="步骤5：配置nodejs启动Sock5代理进程"><a href="#步骤5：配置nodejs启动Sock5代理进程" class="headerlink" title="步骤5：配置nodejs启动Sock5代理进程"></a>步骤5：配置nodejs启动Sock5代理进程</h3><ul>
+<li>SSH登录Serv00，输入<code>cd domains/你的网站域名/public_nodejs/</code></li>
+<li>由于Serv00的Apache设置的是静态优先，因而此处public文件夹下不能有index.html，否则会显示静态页面，而不会执行nodejs程序，我选择的是直接将public改名为static，执行<code>mv public static</code></li>
+<li>执行<code>npm22 install express</code></li>
+</ul>
+<p><img src="https://images.guangyin.blog/2025/02/6796359145849.webp" alt="PixPin_2025-01-26_16-53-21.webp"></p>
+<ul>
+<li><p>在<code>/home/你的用户名/domains/你的网站域名/public_nodejs</code>目录下创建以下<code>app.js</code>文件并修改app.js的第7行，填写你自己的Serv00用户名.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">const express = require(<span class="string">&quot;express&quot;</span>);</span><br><span class="line">const path = require(<span class="string">&quot;path&quot;</span>);</span><br><span class="line">const <span class="built_in">exec</span> = require(<span class="string">&quot;child_process&quot;</span>).<span class="built_in">exec</span>;</span><br><span class="line">const app = express();</span><br><span class="line">const port = 3000;</span><br><span class="line"></span><br><span class="line">const user = <span class="string">&quot;Serv00登录用户名&quot;</span>; //此处修改为Serv00的用户名</span><br><span class="line">const pName = <span class="string">&quot;s5&quot;</span>;</span><br><span class="line"></span><br><span class="line">app.use(express.static(path.join(__dirname, <span class="string">&#x27;static&#x27;</span>)));</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="function"><span class="title">keepWebAlive</span></span>() &#123;</span><br><span class="line">  const currentDate = new Date();</span><br><span class="line">  const formattedDate = currentDate.toLocaleDateString();</span><br><span class="line">  const formattedTime = currentDate.toLocaleTimeString();</span><br><span class="line"></span><br><span class="line">  <span class="built_in">exec</span>(`pgrep -laf <span class="variable">$&#123;pName&#125;</span>`, (err, stdout) =&gt; &#123;</span><br><span class="line">    const Process = `/home/<span class="variable">$&#123;user&#125;</span>/.<span class="variable">$&#123;pName&#125;</span>/<span class="variable">$&#123;pName&#125;</span> -c /home/<span class="variable">$&#123;user&#125;</span>/.<span class="variable">$&#123;pName&#125;</span>/config.json`;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (stdout.includes(Process)) &#123;</span><br><span class="line">      console.log(`<span class="variable">$&#123;formattedDate&#125;</span>, <span class="variable">$&#123;formattedTime&#125;</span>: Web Running`);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="built_in">exec</span>(`<span class="built_in">nohup</span> <span class="variable">$&#123;Process&#125;</span> &gt;/dev/null 2&gt;&amp;1 &amp;`, (err) =&gt; &#123;</span><br><span class="line">        <span class="keyword">if</span> (err) &#123;</span><br><span class="line">          console.log(`<span class="variable">$&#123;formattedDate&#125;</span>, <span class="variable">$&#123;formattedTime&#125;</span>: Keep alive error: <span class="variable">$&#123;err&#125;</span>`);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          console.log(`<span class="variable">$&#123;formattedDate&#125;</span>, <span class="variable">$&#123;formattedTime&#125;</span>: Keep alive success!`);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">setInterval(keepWebAlive, 10 * 1000);</span><br><span class="line"></span><br><span class="line">app.listen(port, () =&gt; &#123;</span><br><span class="line">  console.log(`Server is listening on port <span class="variable">$&#123;port&#125;</span>!`);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>修改完成后public_nodejs目录下应该和我一样</p>
+</li>
+</ul>
+<p><img src="https://images.guangyin.blog/2025/02/679635aeb6704.webp" alt="PixPin_2025-01-26_16-56-22.webp"></p>
+<ul>
+<li>自此部署完成,用浏览器输入一下你创建的网站域名，正常就能看到默认的页面</li>
+</ul>
+<p><img src="https://images.guangyin.blog/2025/02/679635cc53cca.webp" alt="PixPin_2025-01-26_16-59-28.webp"></p>
+<ul>
+<li><p>页面能够正常显示，返回SSH终端，输入<code>ps aux</code>可以看到新开了nodejs进程，稍带片刻，就能看到你的代理进程成功启动了</p>
+<p><img src="https://images.guangyin.blog/2025/02/679635e4f1ea3.webp" alt="PixPin_2025-01-26_17-00-17.webp"></p>
+</li>
+<li><p>Nodejs程序运行日志可以通过面板网站的log中查看，也可以在SSH终端里查看，日志文件的完整路径为&#x2F;home&#x2F;你的用户名&#x2F;domains&#x2F;你的网站域名&#x2F;logs&#x2F;error.log</p>
+</li>
+</ul>
+<blockquote>
+<p>SOCKS代理进程由Nodejs进程负责保活，10秒钟检查一次，因此后续只需要关注Nodejs进程的保活就可以了,<code>Nodejs</code>进程的保活可以手动访问网站进行，也可以通过自动化方案监控网站进行</p>
+</blockquote>
+<h3 id="步骤六：配置upptime自动化网页监控网站"><a href="#步骤六：配置upptime自动化网页监控网站" class="headerlink" title="步骤六：配置upptime自动化网页监控网站"></a>步骤六：配置<a target="_blank" rel="noopener" href="https://github.com/upptime/upptime">upptime</a>自动化网页监控网站</h3><blockquote>
+<p><a target="_blank" rel="noopener" href="https://github.com/upptime/upptime">upptime</a>自动化网页监控网站不需要有服务器，只需要有Github账号就能够进行部署</p>
+</blockquote>
+<ol>
+<li><p>访问 <a target="_blank" rel="noopener" href="https://www.tjsky.net/goto/?url=https://github.com/upptime/upptime">Upptime</a> 项目</p>
+</li>
+<li><p>点击 【Use this template】按钮<br><img src="https://images.guangyin.blog/2025/02/679636096e2ff.webp" alt="PixPin_2025-01-26_17-10-06.webp"></p>
+<blockquote>
+<p><strong>注意：这是个模版项目，所以不要像常见的项目那样，去直接点右上角的fork。</strong></p>
+</blockquote>
+</li>
+<li><p>创建repo</p>
+</li>
+</ol>
+<p><img src="https://images.guangyin.blog/2025/02/6796363479ebd.webp" alt="PixPin_2025-01-26_17-11-30.webp"></p>
+<ul>
+<li>输入 Repository name（比如upptime）</li>
+<li>勾选 【Include all branches】</li>
+<li>点击 【Create repository from temple】</li>
+</ul>
+<ol start="4">
+<li>配置upptime仓库</li>
+</ol>
+<p><img src="https://images.guangyin.blog/2025/02/67963648de3f4.webp" alt="PixPin_2025-01-26_17-13-29.webp"></p>
+<ul>
+<li>进入你刚才repo到自己账号下的项目</li>
+<li>点右上角的 【Settings】</li>
+<li>在左侧 【Code and automation】 下找到 【Pages】</li>
+<li>将 【Branch】 设置为 【gh-pages】</li>
+<li>点击 【Save】</li>
+</ul>
+<ol start="5">
+<li><p>给 Upptime-bot 设置 Repository Secret</p>
+<blockquote>
+<p>因为这个项目是利用bot实现自动化提交，需要给予bot，commit和publish的权限，所以我们需要设定一个<code>Personal Access Token</code></p>
+</blockquote>
+<ol>
+<li><p>点击网页右上角自己的头像，点 【Settings】</p>
+</li>
+<li><p>点击左侧最下方的【Developer settings】</p>
+</li>
+<li><p>点击左侧下方的【Personal access tokens】 ，点击左上角的 【Generate new token】</p>
+</li>
+<li><p>点击 【tokens (classic)】-&gt;【Generate new token】-&gt;【Generate new token (classic)】</p>
+<ol>
+<li>Note: upptime</li>
+<li>Select scopes:勾选【repo】和【workflow】（你直接勾workflow，repo就全勾上了）</li>
+<li>Expiration：选【No expiration】（无期限）</li>
+<li>点击页面最下方的 【Generate token】</li>
+</ol>
+</li>
+</ol>
+<p><img src="https://images.guangyin.blog/2025/02/67963688b4ecc.webp" alt="PixPin_2025-01-26_17-19-05.webp"></p>
+</li>
+<li><p>复制token,注意一定要在这里复制好，错过这个页面你就再也看不到token了</p>
+</li>
+<li><p>返回你repo的Upptime项目。点击 【Settings】，展开左侧的【Secrets】，点击【Actions 】 点击【 New repository secret】</p>
+</li>
+</ol>
+<p><img src="https://images.guangyin.blog/2025/02/679636a08e88c.webp" alt="PixPin_2025-01-26_17-20-24.webp"></p>
+<ol start="7">
+<li>给bot设定token</li>
+</ol>
+<ul>
+<li>Name: GH_PAT</li>
+<li>Value: 上边第5步里复制的 token</li>
+<li>点击 【Add secret】</li>
+</ul>
+<ol start="8">
+<li>回到你repo的upptime项目，点击【Code】，点击 【.upptimerc.yml】,修改.upptimerc.yml的内容</li>
+</ol>
+<ul>
+<li><p>按照以下模版修改文件</p>
+<pre><code>  <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 【】以及其中的内容，为说明文字，需要替换为你自己的设置。</span></span><br><span class="line"><span class="comment"># 『』以及其中的内容，为示例参数，需要替换为你自己的设置。</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#你的GitHub username </span></span><br><span class="line"><span class="attr">owner:</span> <span class="string">【你的</span> <span class="string">GitHub</span> <span class="string">username】『tjsky』</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#你的GitHub repo name </span></span><br><span class="line"><span class="attr">repo:</span> <span class="string">【你的</span> <span class="string">repo</span> <span class="string">name】『upptime』</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">#下边写的时候一定注意代码的缩进让，“-” 都在同一个竖线上，“name”和“url”也都在同一个竖线上，层次不齐的代码高几率直接报错</span></span><br><span class="line"><span class="attr">sites:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">【要监控的第一个网页的名称】『Google』</span></span><br><span class="line">    <span class="attr">url:</span> <span class="string">【要监控的第一个网页的域名】『https://www.google.com』</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">【要监控的第二个网页的名称】『Wikipedia』</span></span><br><span class="line">    <span class="attr">url:</span> <span class="string">【要监控的而网页的域名】『https://en.wikipedia.org』</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># A-如果你的监控控制台页面，打算使用github的默认域名，则使用如下设置。和下边B设置互斥，请二选一</span></span><br><span class="line"><span class="attr">status-website:</span> </span><br><span class="line">  <span class="attr">baseUrl:</span> <span class="string">【/你的</span> <span class="string">repo</span> <span class="string">name】『/upptime』</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># B-如果你的监控控制台页面，打算使用自己所有的域名，则使用如下设置，和上边A设置互斥，请二选一</span></span><br><span class="line"><span class="attr">status-website:</span> </span><br><span class="line">  <span class="attr">cname:</span> <span class="string">【你的域名】『upptime.tjsky.net』</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#自定义状态页面的navbar名称与链接</span></span><br><span class="line">  <span class="attr">logoUrl:</span> <span class="string">【控制台网页logo地址】『https://raw.githubusercontent.com/upptime/upptime.js.org/master/static/img/icon.svg』</span></span><br><span class="line">  <span class="string">name:【控制台网页名字】</span> <span class="string">『Upptime』</span></span><br><span class="line">  <span class="attr">introTitle:</span> <span class="string">【网页标题】『这里可以随便写的啦，比如写：这是使用upptime构建的开源网页状态监控页』</span></span><br><span class="line">  <span class="attr">introMessage:</span> <span class="string">【网页简介】『这里可以随便写的啦』</span></span><br><span class="line">  <span class="attr">navbar:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">title:</span> <span class="string">Status</span></span><br><span class="line">      <span class="attr">href:</span> <span class="string">/</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">title:</span> <span class="string">GitHub</span></span><br><span class="line">      <span class="attr">href:</span> <span class="string">https://github.com/OWNER/REPO</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+</code></pre>
+<ul>
+<li><p>例如：</p>
+<pre><code>  <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Change these first</span></span><br><span class="line"><span class="attr">owner:</span> <span class="string">makabaka</span> <span class="comment"># Your GitHub organization or username, where this repository lives</span></span><br><span class="line"><span class="attr">repo:</span> <span class="string">serv00-keep</span> <span class="comment"># The name of this repository</span></span><br><span class="line"></span><br><span class="line"><span class="attr">sites:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">serv00</span></span><br><span class="line">    <span class="attr">url:</span> <span class="string">https://abc.serv00.net</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">serv00</span></span><br><span class="line">    <span class="attr">url:</span> <span class="string">https://edf.serv00.net</span></span><br><span class="line"></span><br><span class="line"><span class="attr">status-website:</span></span><br><span class="line">  <span class="comment"># Add your custom domain name, or remove the `cname` line if you don&#x27;t have a domain</span></span><br><span class="line">  <span class="comment"># Uncomment the `baseUrl` line if you don&#x27;t have a custom domain and add your repo name there</span></span><br><span class="line">  <span class="comment"># cname: demo.upptime.js.org</span></span><br><span class="line">  <span class="attr">baseUrl:</span> <span class="string">/serv00-keep</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">logoUrl:</span> <span class="string">https://raw.githubusercontent.com/upptime/upptime.js.org/master/static/img/icon.svg</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">Upptime</span></span><br><span class="line">  <span class="attr">introTitle:</span> <span class="string">serv00-keep</span></span><br><span class="line">  <span class="attr">introMessage:</span> <span class="string">serv00</span> <span class="string">保活</span></span><br><span class="line">  <span class="attr">navbar:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">title:</span> <span class="string">Status</span></span><br><span class="line">      <span class="attr">href:</span> <span class="string">/</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">title:</span> <span class="string">GitHub</span></span><br><span class="line">      <span class="attr">href:</span> <span class="string">https://github.com/$OWNER/$REPO</span></span><br></pre></td></tr></table></figure>
+</code></pre>
+</li>
+</ul>
+<ol start="9">
+<li>修改完成后在点击页面最下的【Commit changes】按钮，提交修改。</li>
+<li>启动GitHub Actions</li>
+</ol>
+<p><img src="https://images.guangyin.blog/2025/02/679636d8a7b23.webp" alt="PixPin_2025-01-26_17-27-09.webp"></p>
+<blockquote>
+<p>一般情况下，在你修改.upptimerc.yml后，Actions就会自动开始运行。你会看到一个黄圈圈在转。运行成功会显示绿色的勾，运行失败会显示红色的叉。如果出现红叉，一般都是你修改yml文件时，什么地方写错了，比如少打了一个字母啊，空格漏了啊，代码对齐有问题，少写了什么必须设置的参数，什么参数设置错误了。请仔细检查。</p>
+</blockquote>
+<ol start="11">
+<li>访问监控状态页面</li>
+</ol>
+<p><img src="https://images.guangyin.blog/2025/02/679636f17db28.webp" alt="PixPin_2025-01-26_17-30-10.webp"></p>
+<ol>
+<li>进入你刚才repo到自己账号下的项目</li>
+<li>点右上角的 【Settings】</li>
+<li>在左侧 【Code and automation】 下找到 【Pages】</li>
+<li><code>Your site is live at XXXXXX</code>这里就是你的监控状态页面啦</li>
+<li>Active Incidents 显示目前的异常事件，Live Status 显示目前监控状态，Past Incidents 显示过去的异常事件</li>
+</ol>
+<blockquote>
+<p>实际上就是在你的repo仓库页面</p>
+</blockquote>
+<p><img src="https://images.guangyin.blog/2025/02/67963709b58da.webp" alt="PixPin_2025-01-26_17-31-14.webp"></p>
+<ol start="12">
+<li><p>汉化配置页,把如下内容粘贴到.upptimerc.yml的最后</p>
+<pre><code><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">i18n:</span></span><br><span class="line">  <span class="attr">activeIncidents:</span> <span class="string">活动事件</span></span><br><span class="line">  <span class="attr">allSystemsOperational:</span> <span class="string">所有系统都可以正常运行</span></span><br><span class="line">  <span class="attr">incidentReport:</span> <span class="string">&quot;事件 #NUMBER 报告 →&quot;</span></span><br><span class="line">  <span class="attr">activeIncidentSummary:</span> <span class="string">在DATE</span> <span class="string">打开，有</span> <span class="string">POSTS</span> <span class="string">个帖子</span></span><br><span class="line">  <span class="attr">incidentTitle:</span> <span class="string">事件NUMBER</span> <span class="string">的详细信息</span></span><br><span class="line">  <span class="attr">incidentDetails:</span> <span class="string">事件详细信息</span></span><br><span class="line">  <span class="attr">incidentFixed:</span> <span class="string">已修复</span></span><br><span class="line">  <span class="attr">incidentOngoing:</span> <span class="string">正在进行</span></span><br><span class="line">  <span class="attr">incidentOpenedAt:</span> <span class="string">开始于</span></span><br><span class="line">  <span class="attr">incidentClosedAt:</span> <span class="string">结束于</span></span><br><span class="line">  <span class="attr">incidentSubscribe:</span> <span class="string">订阅更新</span></span><br><span class="line">  <span class="attr">incidentViewOnGitHub:</span> <span class="string">在</span> <span class="string">GitHub</span> <span class="string">上查看</span></span><br><span class="line">  <span class="attr">incidentCommentSummary:</span> <span class="string">由</span> <span class="string">AUTHOR</span> <span class="string">在DATE</span> <span class="string">发布</span></span><br><span class="line">  <span class="attr">incidentBack:</span> <span class="string">←</span> <span class="string">返回所有事件</span></span><br><span class="line">  <span class="attr">pastIncidents:</span> <span class="string">过去的事件</span></span><br><span class="line">  <span class="attr">pastIncidentsResolved:</span> <span class="string">POSTS</span> <span class="string">个问题在MINUTES</span> <span class="string">分钟内得到解决</span></span><br><span class="line">  <span class="attr">liveStatus:</span> <span class="string">实时状态</span></span><br><span class="line">  <span class="attr">overallUptime:</span> <span class="string">&quot;总体正常运行时间： UPTIME&quot;</span></span><br><span class="line">  <span class="attr">overallUptimeTitle:</span> <span class="string">总体正常运行时间</span></span><br><span class="line">  <span class="attr">averageResponseTime:</span> <span class="string">&quot;平均响应时间:TIMEms&quot;</span></span><br><span class="line">  <span class="attr">averageResponseTimeTitle:</span> <span class="string">平均响应时间</span></span><br><span class="line">  <span class="attr">sevelDayResponseTime:</span> <span class="number">7</span> <span class="string">天响应时间</span></span><br><span class="line">  <span class="attr">responseTimeMs:</span> <span class="string">响应时间（毫秒）</span></span><br><span class="line">  <span class="attr">ms:</span> <span class="string">毫秒</span></span><br><span class="line">  <span class="attr">loading:</span> <span class="string">加载中</span></span><br><span class="line">  <span class="attr">navGitHub:</span> <span class="string">GitHub</span></span><br><span class="line">  <span class="attr">footer:</span> <span class="string">gd1214b保留所有权利。</span> <span class="string">Copyright</span> <span class="string">©</span> <span class="number">2021 </span><span class="string">gd1214b.</span> <span class="string">All</span> <span class="string">Rights</span> <span class="string">Reserved.</span></span><br><span class="line">  <span class="attr">rateLimitExceededTitle:</span> <span class="string">超出速率限制</span></span><br><span class="line">  <span class="attr">rateLimitExceededIntro:</span> <span class="string">您已超过一小时内可以执行的请求数，因此您必须等待才能再次访问此网站。或者，您可以添加</span> <span class="string">GitHub</span> <span class="string">个人访问令牌以继续使用本网站。</span></span><br><span class="line">  <span class="attr">rateLimitExceededWhatDoesErrorMean:</span> <span class="string">这个错误是什么意思？本网站使用</span> <span class="string">GitHub</span> <span class="string">API</span> <span class="string">访问有关我们网站状态的实时数据。默认情况下，GitHub</span> <span class="string">允许每个</span> <span class="string">IP</span> <span class="string">地址每小时</span> <span class="number">60</span> <span class="string">个请求，您已经消耗了这些请求。</span></span><br><span class="line">  <span class="attr">rateLimitExceededErrorHowCanFix:</span> <span class="string">我该如何解决？</span></span><br><span class="line">  <span class="attr">rateLimitExceededErrorFix:</span> <span class="string">您可以再等一个小时，您的</span> <span class="string">IP</span> <span class="string">地址限制将恢复。或者，您可以添加您的</span> <span class="string">GitHub</span> <span class="string">个人访问令牌，这将为您提供每小时额外</span> <span class="number">5</span><span class="string">,000</span> <span class="string">个请求。</span></span><br><span class="line">  <span class="attr">rateLimitExceededGeneratePAT:</span> <span class="string">了解如何生成个人访问令牌</span></span><br><span class="line">  <span class="attr">rateLimitExceededHasSet:</span> <span class="string">您有一个个人访问令牌集。</span></span><br><span class="line">  <span class="attr">rateLimitExceededRemoveToken:</span> <span class="string">删除令牌</span></span><br><span class="line">  <span class="attr">rateLimitExceededGitHubPAT:</span> <span class="string">GitHub</span> <span class="string">个人访问令牌</span></span><br><span class="line">  <span class="attr">rateLimitExceededCopyPastePAT:</span> <span class="string">复制并粘贴您的令牌</span></span><br><span class="line">  <span class="attr">rateLimitExceededSaveToken:</span> <span class="string">保存令牌</span></span><br><span class="line">  <span class="attr">errorTitle:</span> <span class="string">发生错误</span></span><br><span class="line">  <span class="attr">errorIntro:</span> <span class="string">尝试获取最新状态详细信息时出错。</span></span><br><span class="line">  <span class="attr">errorText:</span> <span class="string">您可以稍后再试。</span></span><br><span class="line">  <span class="attr">errorHome:</span> <span class="string">转到主页</span></span><br><span class="line">  <span class="attr">pastScheduledMaintenance:</span> <span class="string">过去的预定维护</span></span><br><span class="line">  <span class="attr">scheduledMaintenance:</span> <span class="string">定期维护</span></span><br><span class="line">  <span class="attr">scheduledMaintenanceSummaryStarted:</span> <span class="string">从</span> <span class="string">DATE</span> <span class="string">开始，持续DURATION</span> <span class="string">分钟</span></span><br><span class="line">  <span class="attr">scheduledMaintenanceSummaryStarts:</span> <span class="string">从</span> <span class="string">DATE</span> <span class="string">开始，持续DURATION</span> <span class="string">分钟</span></span><br><span class="line">  <span class="attr">startedAt:</span> <span class="string">开始在</span></span><br><span class="line">  <span class="attr">startsAt:</span> <span class="string">开始于</span></span><br><span class="line">  <span class="attr">duration:</span> <span class="string">持续时间</span></span><br><span class="line">  <span class="attr">durationMin:</span> <span class="string">$DURATION</span> <span class="string">分钟</span></span><br><span class="line">  <span class="attr">incidentCompleted:</span> <span class="string">已完成</span></span><br><span class="line">  <span class="attr">incidentScheduled:</span> <span class="string">已预定</span></span><br><span class="line">  <span class="attr">url:</span> <span class="string">&quot;链接&quot;</span></span><br><span class="line">  <span class="attr">status:</span> <span class="string">&quot;状态&quot;</span></span><br><span class="line">  <span class="attr">history:</span> <span class="string">&quot;历史&quot;</span></span><br><span class="line">  <span class="attr">responseTime:</span> <span class="string">&quot;响应时间&quot;</span></span><br><span class="line">  <span class="attr">uptime:</span> <span class="string">&quot;正常运行时间&quot;</span></span><br><span class="line">  <span class="attr">up:</span> <span class="string">&quot;? 正常运行&quot;</span></span><br><span class="line">  <span class="attr">degraded:</span> <span class="string">&quot;? 运行缓慢&quot;</span></span><br><span class="line">  <span class="attr">down:</span> <span class="string">&quot;? 停机&quot;</span></span><br><span class="line">  <span class="attr">responseTimeGraphAlt:</span> <span class="string">&quot;响应时间图像&quot;</span></span><br><span class="line">  <span class="attr">responseTimeDay:</span> <span class="string">&quot;24 小时响应时间&quot;</span></span><br><span class="line">  <span class="attr">responseTimeWeek:</span> <span class="string">&quot;7 天正常运行时间&quot;</span></span><br><span class="line">  <span class="attr">responseTimeMonth:</span> <span class="string">&quot;30天的正常运行时间&quot;</span></span><br><span class="line">  <span class="attr">responseTimeYear:</span> <span class="string">&quot;1年的正常运行时间&quot;</span></span><br><span class="line">  <span class="attr">uptimeDay:</span> <span class="string">&quot;24 小时正常运行时间&quot;</span></span><br><span class="line">  <span class="attr">uptimeWeek:</span> <span class="string">&quot;7 天正常运行时间&quot;</span></span><br><span class="line">  <span class="attr">uptimeMonth:</span> <span class="string">&quot;30天的正常运行时间&quot;</span></span><br><span class="line">  <span class="attr">uptimeYear:</span> <span class="string">&quot;1年的正常运行时间&quot;</span></span><br><span class="line">  <span class="attr">liveStatusHtmlComment:</span> <span class="string">&quot;&lt;！ -实时状态- &gt;&quot;</span></span><br><span class="line">  <span class="attr">degradedPerformance:</span> <span class="string">&quot;? 性能降低&quot;</span></span><br><span class="line">  <span class="attr">completeOutage:</span> <span class="string">&quot;? 全部停机&quot;</span></span><br><span class="line">  <span class="attr">partialOutage:</span> <span class="string">&quot;? 部分停机&quot;</span></span><br></pre></td></tr></table></figure>
+</code></pre>
+</li>
+</ol>
+<p>至此，全部教程结束，再次感谢几位大佬！</p>
+</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2025/02/23/Serv00%20%E5%B9%B3%E5%8F%B0%E6%90%AD%E5%BB%BA%20Socks5%20%E4%BB%A3%E7%90%86%E8%8A%82%E7%82%B9%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96%E4%BF%9D%E6%B4%BB%E6%95%99%E7%A8%8B/" data-id="cuidAEJAzOxKBqkXm1Hvv-Gwp" data-title="Serv00 平台搭建 Socks5 代理节点与自动化保活教程" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/serv00/" rel="tag">serv00</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/socks5/" rel="tag">socks5</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2025/02/23/PicGo%E6%90%AD%E5%BB%BACloudflare%20R2%E5%9B%BE%E5%BA%8A%E6%95%99%E7%A8%8B/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          PicGo搭建Cloudflare R2图床教程
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2025/02/23/nginx%20%E5%AE%89%E8%A3%85%E4%B8%8E%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">nginx 安装与基本使用指南</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/C-%E7%AF%87/">C-篇</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/OpenSSL/">OpenSSL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Qt/">Qt</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/muduo/">muduo</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E5%8F%91%E8%B0%83%E4%BC%98/">开发调优</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%90%9E%E4%B8%83%E6%8D%BB%E4%B8%89/">搞七捻三</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%B5%84%E6%BA%90%E8%8D%9F%E8%90%83/">资源荟萃</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%97%AE%E9%A2%98%E6%B1%87%E6%80%BB/">问题汇总</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/1panel/" rel="tag">1panel</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CRT/" rel="tag">CRT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTP/" rel="tag">CTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FRP/" rel="tag">FRP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MariaDB/" rel="tag">MariaDB</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyNodeQuery/" rel="tag">MyNodeQuery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PicGo/" rel="tag">PicGo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Qt/" rel="tag">Qt</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/" rel="tag">Spring Boot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/aria2c/" rel="tag">aria2c</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/caddy/" rel="tag">caddy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdn/" rel="tag">cdn</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cloudflare/" rel="tag">cloudflare</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cmake/" rel="tag">cmake</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/epoll/" rel="tag">epoll</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/firefox/" rel="tag">firefox</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flameshot/" rel="tag">flameshot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hy/" rel="tag">hy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/muduo/" rel="tag">muduo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mvnd/" rel="tag">mvnd</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/opengl/" rel="tag">opengl</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openssl/" rel="tag">openssl</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/protobuf/" rel="tag">protobuf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/serv00/" rel="tag">serv00</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socat/" rel="tag">socat</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socks5/" rel="tag">socks5</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/typecho/" rel="tag">typecho</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ubuntu/" rel="tag">ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vcpkg/" rel="tag">vcpkg</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vmware/" rel="tag">vmware</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vs2022/" rel="tag">vs2022</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vscode/" rel="tag">vscode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%B8%AD%E8%BD%AC/" rel="tag">中转</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/" rel="tag">内网穿透</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/" rel="tag">反向代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9F%9F%E5%90%8D%E9%82%AE%E7%AE%B1/" rel="tag">域名邮箱</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A2%E9%92%88/" rel="tag">探针</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%B2%98%E5%8C%85/" rel="tag">粘包</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%95%9C%E5%83%8F%E6%BA%90/" rel="tag">镜像源</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/1panel/" style="font-size: 10px;">1panel</a> <a href="/tags/C/" style="font-size: 18.57px;">C++</a> <a href="/tags/CRT/" style="font-size: 10px;">CRT</a> <a href="/tags/CTP/" style="font-size: 10px;">CTP</a> <a href="/tags/CentOS/" style="font-size: 12.86px;">CentOS</a> <a href="/tags/FRP/" style="font-size: 10px;">FRP</a> <a href="/tags/MariaDB/" style="font-size: 10px;">MariaDB</a> <a href="/tags/MyNodeQuery/" style="font-size: 10px;">MyNodeQuery</a> <a href="/tags/MySQL/" style="font-size: 20px;">MySQL</a> <a href="/tags/PicGo/" style="font-size: 10px;">PicGo</a> <a href="/tags/Qt/" style="font-size: 17.14px;">Qt</a> <a href="/tags/Spring-Boot/" style="font-size: 10px;">Spring Boot</a> <a href="/tags/aria2c/" style="font-size: 10px;">aria2c</a> <a href="/tags/caddy/" style="font-size: 11.43px;">caddy</a> <a href="/tags/cdn/" style="font-size: 10px;">cdn</a> <a href="/tags/cloudflare/" style="font-size: 14.29px;">cloudflare</a> <a href="/tags/cmake/" style="font-size: 11.43px;">cmake</a> <a href="/tags/docker/" style="font-size: 11.43px;">docker</a> <a href="/tags/epoll/" style="font-size: 10px;">epoll</a> <a href="/tags/firefox/" style="font-size: 10px;">firefox</a> <a href="/tags/flameshot/" style="font-size: 10px;">flameshot</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/hy/" style="font-size: 10px;">hy</a> <a href="/tags/muduo/" style="font-size: 17.14px;">muduo</a> <a href="/tags/mvnd/" style="font-size: 10px;">mvnd</a> <a href="/tags/nginx/" style="font-size: 12.86px;">nginx</a> <a href="/tags/opengl/" style="font-size: 12.86px;">opengl</a> <a href="/tags/openssl/" style="font-size: 17.14px;">openssl</a> <a href="/tags/protobuf/" style="font-size: 10px;">protobuf</a> <a href="/tags/python/" style="font-size: 10px;">python</a> <a href="/tags/redis/" style="font-size: 11.43px;">redis</a> <a href="/tags/serv00/" style="font-size: 11.43px;">serv00</a> <a href="/tags/socat/" style="font-size: 10px;">socat</a> <a href="/tags/socks5/" style="font-size: 10px;">socks5</a> <a href="/tags/typecho/" style="font-size: 11.43px;">typecho</a> <a href="/tags/ubuntu/" style="font-size: 15.71px;">ubuntu</a> <a href="/tags/vcpkg/" style="font-size: 10px;">vcpkg</a> <a href="/tags/vmware/" style="font-size: 11.43px;">vmware</a> <a href="/tags/vs2022/" style="font-size: 10px;">vs2022</a> <a href="/tags/vscode/" style="font-size: 12.86px;">vscode</a> <a href="/tags/%E4%B8%AD%E8%BD%AC/" style="font-size: 10px;">中转</a> <a href="/tags/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/" style="font-size: 10px;">内网穿透</a> <a href="/tags/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/" style="font-size: 14.29px;">反向代理</a> <a href="/tags/%E5%9F%9F%E5%90%8D%E9%82%AE%E7%AE%B1/" style="font-size: 10px;">域名邮箱</a> <a href="/tags/%E6%8E%A2%E9%92%88/" style="font-size: 10px;">探针</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 11.43px;">算法</a> <a href="/tags/%E7%B2%98%E5%8C%85/" style="font-size: 10px;">粘包</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 10px;">计算机网络</a> <a href="/tags/%E9%95%9C%E5%83%8F%E6%BA%90/" style="font-size: 10px;">镜像源</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/02/">February 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/12/">December 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/11/">November 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/10/">October 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/09/">September 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/08/">August 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/07/">July 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/05/">May 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/04/">April 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/03/">March 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/02/">February 2025</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/02/22/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/08/ubuntu%20%E5%85%8D%E5%AF%86%E6%93%8D%E4%BD%9C/">ubuntu 免密操作</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/08/Ubuntu%2025%20%E4%B8%8B%20Flameshot%20%E5%BF%AB%E6%8D%B7%E9%94%AE%E6%88%AA%E5%9B%BE%E5%A4%B1%E8%B4%A5%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/">Ubuntu 25 下 Flameshot 快捷键截图失败解决方案</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/05/%E9%80%9A%E8%BF%87%E7%BD%91%E7%BA%BF%E4%BC%A0%E8%BE%93%E6%95%B0%E6%8D%AE/">通过网线传输数据</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/04/ctypes%E5%B0%81%E8%A3%85C++%E6%8E%A5%E5%8F%A3%E7%BB%99Python%E4%BD%BF%E7%94%A8/">ctypes封装C++接口给Python使用</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

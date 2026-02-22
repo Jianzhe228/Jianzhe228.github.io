@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>PicGo搭建Cloudflare R2图床教程 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="1、创建R2存储 创建R2对象存储，如下图：我是绑定了PayPal，账单邮寄地址不需要真实地址，你也可以填写真实地址    点击创建存储桶   随便填写一个桶名，位置自行填写，这里我就是使用自动分配了，任何点击 创建存储桶  点击设置  点击连接域添加自定义域，假设我有一个example.com域名，这里就填写images.example.com  填写域名后点击继续，再点击连接域，状态变为活动表">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PicGo搭建Cloudflare R2图床教程">
+<meta property="og:url" content="http://example.com/2025/02/23/PicGo%E6%90%AD%E5%BB%BACloudflare%20R2%E5%9B%BE%E5%BA%8A%E6%95%99%E7%A8%8B/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="1、创建R2存储 创建R2对象存储，如下图：我是绑定了PayPal，账单邮寄地址不需要真实地址，你也可以填写真实地址    点击创建存储桶   随便填写一个桶名，位置自行填写，这里我就是使用自动分配了，任何点击 创建存储桶  点击设置  点击连接域添加自定义域，假设我有一个example.com域名，这里就填写images.example.com  填写域名后点击继续，再点击连接域，状态变为活动表">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://images.guangyin.blog/2025/02/672a348f96e1a7cf2f4fd395931dbaa1.webp">
+<meta property="og:image" content="https://images.guangyin.blog/2025/02/5f21680f8860beefba72525e94e88194.webp">
+<meta property="og:image" content="https://images.guangyin.blog/2025/02/4230d21681b7f31041242ed5aae4a849.webp">
+<meta property="og:image" content="https://images.guangyin.blog/2025/02/3b0383f27ca87d235ce4ccb5f18eb846.webp">
+<meta property="og:image" content="https://images.guangyin.blog/2025/02/24ae031b019b4b50a2eac8aa41e36922.webp">
+<meta property="og:image" content="https://images.guangyin.blog/2025/02/3d28d23fa7d3fdae1c58b86f74a71fad.webp">
+<meta property="og:image" content="https://images.guangyin.blog/2025/02/16f183628f75c0b3e06c6b36226acf9b.webp">
+<meta property="og:image" content="https://images.guangyin.blog/2025/02/05f5f47fc0c454e9807772ef87a5aec9.webp">
+<meta property="og:image" content="https://images.guangyin.blog/2025/02/f82d9e8a24f6569dcfd48ede5b8de16f.webp">
+<meta property="og:image" content="https://images.guangyin.blog/2025/02/392edaaf74a05768eaffc1a4b6b0fb06.webp">
+<meta property="og:image" content="https://images.guangyin.blog/2025/02/e75e9f3caad7ead36cb75f1516521488.webp">
+<meta property="og:image" content="https://images.guangyin.blog/2025/02/878a45cef43194d5b68d649d35eb8179.webp">
+<meta property="og:image" content="https://images.guangyin.blog/2025/02/a49743b04086f65a1dfc19867cc0eb63.webp">
+<meta property="og:image" content="https://images.guangyin.blog/2025/02/30b9ec6ea304e53b131b52abc259d579.webp">
+<meta property="og:image" content="https://images.guangyin.blog/2025/02/10c076e6ec5164fd88f6cefb6d444cbc.webp">
+<meta property="og:image" content="https://images.guangyin.blog/2025/02/4d67f03e3da14016e8074034b2a5e764.webp">
+<meta property="article:published_time" content="2025-02-23T16:43:00.000Z">
+<meta property="article:modified_time" content="2026-02-22T06:29:37.824Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="PicGo">
+<meta property="article:tag" content="cloudflare">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://images.guangyin.blog/2025/02/672a348f96e1a7cf2f4fd395931dbaa1.webp">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-PicGo搭建Cloudflare R2图床教程" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/02/23/PicGo%E6%90%AD%E5%BB%BACloudflare%20R2%E5%9B%BE%E5%BA%8A%E6%95%99%E7%A8%8B/" class="article-date">
+  <time class="dt-published" datetime="2025-02-23T16:43:00.000Z" itemprop="datePublished">2025-02-23</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%90%9E%E4%B8%83%E6%8D%BB%E4%B8%89/">搞七捻三</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      PicGo搭建Cloudflare R2图床教程
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="1、创建R2存储"><a href="#1、创建R2存储" class="headerlink" title="1、创建R2存储"></a>1、创建R2存储</h3><ul>
+<li>创建R2对象存储，如下图：我是绑定了PayPal，账单邮寄地址不需要真实地址，你也可以填写真实地址</li>
+</ul>
+<p><img src="https://images.guangyin.blog/2025/02/672a348f96e1a7cf2f4fd395931dbaa1.webp" alt="PixPin_2025-02-23_10-36-31"></p>
+<ul>
+<li>点击创建存储桶</li>
+</ul>
+<p><img src="https://images.guangyin.blog/2025/02/5f21680f8860beefba72525e94e88194.webp" alt="PixPin_2025-02-23_10-44-28"></p>
+<p>随便填写一个桶名，位置自行填写，这里我就是使用自动分配了，任何点击 <code>创建存储桶</code></p>
+<p><img src="https://images.guangyin.blog/2025/02/4230d21681b7f31041242ed5aae4a849.webp" alt="PixPin_2025-02-23_10-45-24"></p>
+<p>点击设置</p>
+<p><img src="https://images.guangyin.blog/2025/02/3b0383f27ca87d235ce4ccb5f18eb846.webp" alt="c3c40cd0aa1923bb5908f2df1c1d07a2"></p>
+<p>点击<code>连接域</code>添加自定义域，假设我有一个example.com域名，这里就填写<code>images.example.com</code></p>
+<p><img src="https://images.guangyin.blog/2025/02/24ae031b019b4b50a2eac8aa41e36922.webp" alt="PixPin_2025-02-23_10-48-38"></p>
+<p>填写域名后点击<code>继续</code>，再点击<code>连接域</code>，状态变为<code>活动</code>表明成功添加自定义域，如果不更新，刷新一下页面</p>
+<p><img src="https://images.guangyin.blog/2025/02/3d28d23fa7d3fdae1c58b86f74a71fad.webp" alt="PixPin_2025-02-23_10-55-23"></p>
+<p>然后划到下面，删除<code>对象生命周期规则</code>的规则，点击删除</p>
+<p><img src="https://images.guangyin.blog/2025/02/16f183628f75c0b3e06c6b36226acf9b.webp" alt="PixPin_2025-02-23_10-58-31"></p>
+<h3 id="2、配置PicGo"><a href="#2、配置PicGo" class="headerlink" title="2、配置PicGo"></a>2、配置PicGo</h3><ul>
+<li><p>PicGo官网下载连接：<a target="_blank" rel="noopener" href="https://github.com/Molunerfinn/picgo/releases">https://github.com/Molunerfinn/picgo/releases</a></p>
+<blockquote>
+<p>注意：<a target="_blank" rel="noopener" href="https://github.com/Molunerfinn/PicGo/releases/tag/v2.3.1">2.3.1</a>这个版本好像无法搜索插件？我是直接下载了最新的<a target="_blank" rel="noopener" href="https://github.com/Molunerfinn/PicGo/releases/tag/v2.4.0-beta.9">2.4.0-beta.9</a>测试版本</p>
+</blockquote>
+</li>
+<li><p>安装s3插件，点击搜索<code>s3</code>即可安装，这里还推荐几个插件，如下图的<code>tinypng</code>和<code>webp</code></p>
+<ul>
+<li><code>tinypng</code>:压缩图片</li>
+<li><code>webp</code>:将图片格式转换为webp</li>
+</ul>
+<p>经过测试，发现现执行<code>webp</code>转换格式再执行<code>tinypng</code>压缩图片</p>
+</li>
+</ul>
+<p><img src="https://images.guangyin.blog/2025/02/05f5f47fc0c454e9807772ef87a5aec9.webp" alt="PixPin_2025-02-23_11-06-35"></p>
+<ul>
+<li>配置图床</li>
+</ul>
+<p>返回cloudflare R2页面，点击<code>管理API令牌</code>，再点击<code>创建API令牌</code></p>
+<p><img src="https://images.guangyin.blog/2025/02/f82d9e8a24f6569dcfd48ede5b8de16f.webp" alt="PixPin_2025-02-23_11-18-01"></p>
+<p>令牌名称随意，指定存储桶为我们创建的存储桶，然后滑到底部点击<code>创建API令牌</code>,然后不要退出cloudflare页面，后面要用</p>
+<p><img src="https://images.guangyin.blog/2025/02/392edaaf74a05768eaffc1a4b6b0fb06.webp" alt="PixPin_2025-02-23_11-19-39"></p>
+<p>返回PicGo,点击Amazon S3配置图床信息</p>
+<ol>
+<li>应用密钥ID就是创建令牌得到的：<code>访问密钥 ID</code>（Access Key ID）</li>
+<li>应用密钥：填写<code>机密访问密钥</code>（Secret Access Key）</li>
+<li>桶名填写 R2 中创建的 <code>Bucket 名称</code>，如创建R2的桶的名字 <code>images</code></li>
+<li>自定义节点:填写<code>为 S3 客户端使用管辖权地特定的终结点</code></li>
+</ol>
+<p><img src="https://images.guangyin.blog/2025/02/e75e9f3caad7ead36cb75f1516521488.webp" alt="PixPin_2025-02-23_11-16-08"></p>
+<p>代理自行填写，自定义输出URL模板填写你自己的域名，上面我们创建时使用的是：<code>images.example.com</code></p>
+<p><img src="https://images.guangyin.blog/2025/02/878a45cef43194d5b68d649d35eb8179.webp" alt="PixPin_2025-02-23_11-28-58"></p>
+<p>然后点击底部的<code>确定</code>即可完成图床搭建。</p>
+<h3 id="3、其他"><a href="#3、其他" class="headerlink" title="3、其他"></a>3、其他</h3><ul>
+<li>配置缓存，打开cloudflare,进入你自己的域名，点击<code>缓存</code>，点击<code>Cache Rules</code>，创建一条规则</li>
+</ul>
+<p><img src="https://images.guangyin.blog/2025/02/a49743b04086f65a1dfc19867cc0eb63.webp" alt="PixPin_2025-02-23_11-37-36"></p>
+<p>配置自行填写：</p>
+<ol>
+<li>边缘 TTL：一个月</li>
+<li>浏览器 TTL：8小时</li>
+</ol>
+<p>然后点击保存</p>
+<p><img src="https://images.guangyin.blog/2025/02/30b9ec6ea304e53b131b52abc259d579.webp" alt="PixPin_2025-02-23_11-38-14"></p>
+<ul>
+<li>创建压缩规则，根据情况填写相关规则即可，然后点击保存</li>
+</ul>
+<p><img src="https://images.guangyin.blog/2025/02/10c076e6ec5164fd88f6cefb6d444cbc.webp" alt="PixPin_2025-02-23_11-42-36"></p>
+<p>点击<code>规则</code>，点击<code>页面规则</code>，创建一个页面规则，点击<code>保存页面规则</code></p>
+<p><img src="https://images.guangyin.blog/2025/02/4d67f03e3da14016e8074034b2a5e764.webp" alt="PixPin_2025-02-23_11-47-09"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2025/02/23/PicGo%E6%90%AD%E5%BB%BACloudflare%20R2%E5%9B%BE%E5%BA%8A%E6%95%99%E7%A8%8B/" data-id="cuid0vnlj-iucZLwLN7UFQuKm" data-title="PicGo搭建Cloudflare R2图床教程" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PicGo/" rel="tag">PicGo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cloudflare/" rel="tag">cloudflare</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2025/02/23/windows%E6%90%AD%E5%BB%BACMake+Qt%E7%8E%AF%E5%A2%83/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          windows搭建CMake+Qt环境
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2025/02/23/Serv00%20%E5%B9%B3%E5%8F%B0%E6%90%AD%E5%BB%BA%20Socks5%20%E4%BB%A3%E7%90%86%E8%8A%82%E7%82%B9%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96%E4%BF%9D%E6%B4%BB%E6%95%99%E7%A8%8B/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Serv00 平台搭建 Socks5 代理节点与自动化保活教程</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/C-%E7%AF%87/">C-篇</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/OpenSSL/">OpenSSL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Qt/">Qt</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/muduo/">muduo</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E5%8F%91%E8%B0%83%E4%BC%98/">开发调优</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%90%9E%E4%B8%83%E6%8D%BB%E4%B8%89/">搞七捻三</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%B5%84%E6%BA%90%E8%8D%9F%E8%90%83/">资源荟萃</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%97%AE%E9%A2%98%E6%B1%87%E6%80%BB/">问题汇总</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/1panel/" rel="tag">1panel</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CRT/" rel="tag">CRT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTP/" rel="tag">CTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FRP/" rel="tag">FRP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MariaDB/" rel="tag">MariaDB</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyNodeQuery/" rel="tag">MyNodeQuery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PicGo/" rel="tag">PicGo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Qt/" rel="tag">Qt</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/" rel="tag">Spring Boot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/aria2c/" rel="tag">aria2c</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/caddy/" rel="tag">caddy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdn/" rel="tag">cdn</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cloudflare/" rel="tag">cloudflare</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cmake/" rel="tag">cmake</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/epoll/" rel="tag">epoll</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/firefox/" rel="tag">firefox</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flameshot/" rel="tag">flameshot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hy/" rel="tag">hy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/muduo/" rel="tag">muduo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mvnd/" rel="tag">mvnd</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/opengl/" rel="tag">opengl</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openssl/" rel="tag">openssl</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/protobuf/" rel="tag">protobuf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/serv00/" rel="tag">serv00</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socat/" rel="tag">socat</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socks5/" rel="tag">socks5</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/typecho/" rel="tag">typecho</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ubuntu/" rel="tag">ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vcpkg/" rel="tag">vcpkg</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vmware/" rel="tag">vmware</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vs2022/" rel="tag">vs2022</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vscode/" rel="tag">vscode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%B8%AD%E8%BD%AC/" rel="tag">中转</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/" rel="tag">内网穿透</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/" rel="tag">反向代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9F%9F%E5%90%8D%E9%82%AE%E7%AE%B1/" rel="tag">域名邮箱</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A2%E9%92%88/" rel="tag">探针</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%B2%98%E5%8C%85/" rel="tag">粘包</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%95%9C%E5%83%8F%E6%BA%90/" rel="tag">镜像源</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/1panel/" style="font-size: 10px;">1panel</a> <a href="/tags/C/" style="font-size: 18.57px;">C++</a> <a href="/tags/CRT/" style="font-size: 10px;">CRT</a> <a href="/tags/CTP/" style="font-size: 10px;">CTP</a> <a href="/tags/CentOS/" style="font-size: 12.86px;">CentOS</a> <a href="/tags/FRP/" style="font-size: 10px;">FRP</a> <a href="/tags/MariaDB/" style="font-size: 10px;">MariaDB</a> <a href="/tags/MyNodeQuery/" style="font-size: 10px;">MyNodeQuery</a> <a href="/tags/MySQL/" style="font-size: 20px;">MySQL</a> <a href="/tags/PicGo/" style="font-size: 10px;">PicGo</a> <a href="/tags/Qt/" style="font-size: 17.14px;">Qt</a> <a href="/tags/Spring-Boot/" style="font-size: 10px;">Spring Boot</a> <a href="/tags/aria2c/" style="font-size: 10px;">aria2c</a> <a href="/tags/caddy/" style="font-size: 11.43px;">caddy</a> <a href="/tags/cdn/" style="font-size: 10px;">cdn</a> <a href="/tags/cloudflare/" style="font-size: 14.29px;">cloudflare</a> <a href="/tags/cmake/" style="font-size: 11.43px;">cmake</a> <a href="/tags/docker/" style="font-size: 11.43px;">docker</a> <a href="/tags/epoll/" style="font-size: 10px;">epoll</a> <a href="/tags/firefox/" style="font-size: 10px;">firefox</a> <a href="/tags/flameshot/" style="font-size: 10px;">flameshot</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/hy/" style="font-size: 10px;">hy</a> <a href="/tags/muduo/" style="font-size: 17.14px;">muduo</a> <a href="/tags/mvnd/" style="font-size: 10px;">mvnd</a> <a href="/tags/nginx/" style="font-size: 12.86px;">nginx</a> <a href="/tags/opengl/" style="font-size: 12.86px;">opengl</a> <a href="/tags/openssl/" style="font-size: 17.14px;">openssl</a> <a href="/tags/protobuf/" style="font-size: 10px;">protobuf</a> <a href="/tags/python/" style="font-size: 10px;">python</a> <a href="/tags/redis/" style="font-size: 11.43px;">redis</a> <a href="/tags/serv00/" style="font-size: 11.43px;">serv00</a> <a href="/tags/socat/" style="font-size: 10px;">socat</a> <a href="/tags/socks5/" style="font-size: 10px;">socks5</a> <a href="/tags/typecho/" style="font-size: 11.43px;">typecho</a> <a href="/tags/ubuntu/" style="font-size: 15.71px;">ubuntu</a> <a href="/tags/vcpkg/" style="font-size: 10px;">vcpkg</a> <a href="/tags/vmware/" style="font-size: 11.43px;">vmware</a> <a href="/tags/vs2022/" style="font-size: 10px;">vs2022</a> <a href="/tags/vscode/" style="font-size: 12.86px;">vscode</a> <a href="/tags/%E4%B8%AD%E8%BD%AC/" style="font-size: 10px;">中转</a> <a href="/tags/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/" style="font-size: 10px;">内网穿透</a> <a href="/tags/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/" style="font-size: 14.29px;">反向代理</a> <a href="/tags/%E5%9F%9F%E5%90%8D%E9%82%AE%E7%AE%B1/" style="font-size: 10px;">域名邮箱</a> <a href="/tags/%E6%8E%A2%E9%92%88/" style="font-size: 10px;">探针</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 11.43px;">算法</a> <a href="/tags/%E7%B2%98%E5%8C%85/" style="font-size: 10px;">粘包</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 10px;">计算机网络</a> <a href="/tags/%E9%95%9C%E5%83%8F%E6%BA%90/" style="font-size: 10px;">镜像源</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/02/">February 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/12/">December 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/11/">November 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/10/">October 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/09/">September 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/08/">August 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/07/">July 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/05/">May 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/04/">April 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/03/">March 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/02/">February 2025</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/02/22/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/08/ubuntu%20%E5%85%8D%E5%AF%86%E6%93%8D%E4%BD%9C/">ubuntu 免密操作</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/08/Ubuntu%2025%20%E4%B8%8B%20Flameshot%20%E5%BF%AB%E6%8D%B7%E9%94%AE%E6%88%AA%E5%9B%BE%E5%A4%B1%E8%B4%A5%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/">Ubuntu 25 下 Flameshot 快捷键截图失败解决方案</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/05/%E9%80%9A%E8%BF%87%E7%BD%91%E7%BA%BF%E4%BC%A0%E8%BE%93%E6%95%B0%E6%8D%AE/">通过网线传输数据</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/04/ctypes%E5%B0%81%E8%A3%85C++%E6%8E%A5%E5%8F%A3%E7%BB%99Python%E4%BD%BF%E7%94%A8/">ctypes封装C++接口给Python使用</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

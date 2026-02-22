@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>MySQL-事务隔离级别实现原理 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="事务隔离级别（隔离性实现底层）实现原理 &#x3D; 锁 + MVCC(mvcc处理这两种级别：REPEATABLE-READ和READ-COMMITTED) SERIALIZABLE需要依赖间隙锁，即解决幻读问题 原子性，一致性，持久性：undo log（回滚日志） + redo log(重做日志)  一、表级锁&amp;行级锁 表级锁：对整张表加锁。开销小，加锁快，不会出现死锁；锁粒度大，发">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL-事务隔离级别实现原理">
+<meta property="og:url" content="http://example.com/2025/03/28/MySQL-%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="事务隔离级别（隔离性实现底层）实现原理 &#x3D; 锁 + MVCC(mvcc处理这两种级别：REPEATABLE-READ和READ-COMMITTED) SERIALIZABLE需要依赖间隙锁，即解决幻读问题 原子性，一致性，持久性：undo log（回滚日志） + redo log(重做日志)  一、表级锁&amp;行级锁 表级锁：对整张表加锁。开销小，加锁快，不会出现死锁；锁粒度大，发">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-11-25_17-27-05.png">
+<meta property="og:image" content="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-11-25_18-43-28.png">
+<meta property="og:image" content="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-11-25_17-50-20.png">
+<meta property="og:image" content="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-11-25_18-00-17.png">
+<meta property="og:image" content="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-11-25_18-06-13.png">
+<meta property="og:image" content="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-11-25_18-20-53.png">
+<meta property="og:image" content="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-11-25_18-29-59.png">
+<meta property="og:image" content="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-11-26_14-21-28.png">
+<meta property="og:image" content="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-11-26_14-30-40.png">
+<meta property="og:image" content="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-11-26_17-50-09.png">
+<meta property="og:image" content="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-11-26_17-48-23.png">
+<meta property="og:image" content="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-11-26_18-08-58.png">
+<meta property="og:image" content="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-11-26_18-15-40.png">
+<meta property="og:image" content="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-11-28_15-38-36.png">
+<meta property="og:image" content="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-12-03_14-55-55.png">
+<meta property="og:image" content="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-12-03_15-51-52.png">
+<meta property="article:published_time" content="2025-03-28T17:59:00.000Z">
+<meta property="article:modified_time" content="2026-02-22T06:29:37.823Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="MySQL">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-11-25_17-27-05.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-MySQL-事务隔离级别实现原理" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/03/28/MySQL-%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/" class="article-date">
+  <time class="dt-published" datetime="2025-03-28T17:59:00.000Z" itemprop="datePublished">2025-03-28</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      MySQL-事务隔离级别实现原理
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <ol>
+<li>事务隔离级别（隔离性实现底层）实现原理 &#x3D; 锁 + MVCC(mvcc处理这两种级别：<code>REPEATABLE-READ和READ-COMMITTED</code>)</li>
+<li><code>SERIALIZABLE</code>需要依赖间隙锁，即解决幻读问题</li>
+<li>原子性，一致性，持久性：undo log（回滚日志） + redo log(重做日志)</li>
+</ol>
+<h3 id="一、表级锁-行级锁"><a href="#一、表级锁-行级锁" class="headerlink" title="一、表级锁&amp;行级锁"></a>一、表级锁&amp;行级锁</h3><ul>
+<li><p>表级锁：对整张表加锁。开销小，加锁快，不会出现死锁；锁粒度大，发生锁冲突的概率高，并发度低。</p>
+</li>
+<li><p>行级锁：对某行记录加锁。开销大，加锁慢，会出现死锁；锁定粒度最小，发生锁冲突的概率最低，并发度高。</p>
+</li>
+<li><p>显示加锁：select … lock in share mode强制获取共享锁，select … for update获取排它锁</p>
+</li>
+</ul>
+<h3 id="二、排他锁和共享锁"><a href="#二、排他锁和共享锁" class="headerlink" title="二、排他锁和共享锁"></a>二、排他锁和共享锁</h3><ul>
+<li>排它锁（Exclusive），又称为X锁，写锁。</li>
+<li>共享锁（Shared），又称为S锁，读锁。</li>
+</ul>
+<p>X和S锁之间有以下的关系： SS可以兼容的，XS、SX、XX之间是互斥的</p>
+<ul>
+<li>一个事务对数据对象 O 加了 S 锁，可以对 O 进行读取操作但不能进行更新操作。加锁期间其它事 务能对O 加 S 锁但不能加 X 锁。</li>
+<li>一个事务对数据对象 O 加了 X 锁，就可以对 O 进行读取和更新。加锁期间其它事务不能对 O 加任 何锁。</li>
+</ul>
+<p>示例：注意这里的隔离级别是<code>REPEATABLE-READ</code>,在<code>SERIALIZABLE</code>这种隔离级别中情况并不同。后面会看到</p>
+<p><img src="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-11-25_17-27-05.png" alt="PixPin_2024-11-25_17-27-05"></p>
+<p>从图中我们可以看出，InnoDB是支持行锁的。其中，第五步失败的原因是被右边第四步的共享锁阻塞了，因为第五步申请的是排他锁，排他锁和共享锁是互斥的，所以第五步会失败。如下面，共享锁是兼容的，所有第五步会成功，第四步会失败。</p>
+<p><img src="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-11-25_18-43-28.png" alt="PixPin_2024-11-25_18-43-28"></p>
+<p>示例二</p>
+<p><img src="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-11-25_17-50-20.png" alt="PixPin_2024-11-25_17-50-20"></p>
+<p>​	从图中可以看出，我们只是修改了where的过滤字段，使用name作为过滤字段，但是使用以后，发现行锁好像不起作用了？我们查询<code>zhangsan</code>和<code>lisi</code>是不同的行数据，发现是失败的。这是因为，<code>Innodb的行锁是加在索引项上面的,是给索引加锁，而不是单纯的在行数据上面加锁，如果过滤条件没有索引的话，InnoDB使用的是表锁而不是行锁!,只有在使用索引作为过滤条件时才会使用行锁</code>,这里的name是没有索引的，所有这里使用的是表锁。如下图所示，给name字段添加了辅助索引，便能够使用行锁了</p>
+<p><img src="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-11-25_18-00-17.png" alt="PixPin_2024-11-25_18-00-17"></p>
+<p>由于InnoDB的行锁实现是针对索引（主键索引）字段添加的锁，不是针对行记录加的锁，因此虽然访问的是 InnoDB引擎下表的不同行，但是如果使用相同的索引字段作为过滤条件，依然会发生锁冲突，只能串行进行，不能并发进行。</p>
+<p><img src="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-11-25_18-06-13.png" alt="PixPin_2024-11-25_18-06-13"></p>
+<p>即使SQL中使用了索引，但是经过MySQL的优化器后，如果认为全表扫描比使用索引效率更高，此 时会放弃使用索引，因此也不会使用行锁，而是使用表锁，比如对一些很小的表，MySQL就不会去使用索引。</p>
+<p>下面使用<code>SERIALIZABLE</code>隔离级别，<code>在SERIALIZABLE隔离级别中，查询操作会自动加上共享锁，写操作会自动加上排他锁</code></p>
+<p><img src="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-11-25_18-20-53.png" alt="PixPin_2024-11-25_18-20-53"></p>
+<p>从上面可以看到，我们使用<code>SERIALIZABLE</code>的隔离级别，发现共享锁和共享锁时是兼容的，所以第一步和第二步可以得到结果，<del>由于共享锁和排他锁不兼容，所以第四，第五和第六步失败了</del>(这个解释错了，看下面的解释)。其中，第三和第四步，虽然使用不同的索引，但实际上，<code>InnoDB的所有锁最终是加在主键索引上面的</code>，我们使用name作为索引，他会发生回表在主索引树上查找数据，最终使用的是主键作为索引，所以第三和第四步不会成功,他们都被右边共享锁阻塞住了。再看第五步，刚开始我是很懵逼的，为什么两边都无法执行写操作。后面才知道<code>共享锁是可以叠加的，在开始的两次select操作，两边的会话都加上了共享锁。所以左边的第三和第四步被右边会话的共享锁阻塞，而右边的第五步被左边的共享锁阻塞，所有两边都无法执行写操作。</code>	</p>
+<p><img src="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-11-25_18-29-59.png" alt="PixPin_2024-11-25_18-29-59"></p>
+<p>从这里我们可以知道，第二步能成功是因为在同一个会话中且只有一个共享锁进行加锁，所有第二部的写操作是能够成功的，而第三步被第二步的排他锁阻塞。</p>
+<ol>
+<li>InnoDB行锁是通过给索引上的索引项加锁来实现的，而不是给表的行记录加锁实现的，这就意味着只有通过索引条件检索据，InnoDB才使用行级锁，否则InnoDB将使用表锁。</li>
+<li>由于InnoDB的行锁实现是针对索引（主键索引）字段添加的锁，不是针对行记录加的锁，因此虽然访问的是 InnoDB引擎下表的不同行，但是如果使用相同的索引字段作为过滤条件，依然会发生锁冲突，只能串行进行，不能并发进行。</li>
+<li>即使SQL中使用了索引，但是经过MySQL的优化器后，如果认为全表扫描比使用索引效率更高，此时会放弃使用索引，因此也不会使用行锁，而是使用表锁，比如对一些很小的表，MySQL就不会去使用索引。</li>
+</ol>
+<h3 id="三、间隙锁-gap-lock"><a href="#三、间隙锁-gap-lock" class="headerlink" title="三、间隙锁(gap lock)"></a>三、间隙锁(<code>gap lock</code>)</h3><h4 id="1、范围查询"><a href="#1、范围查询" class="headerlink" title="1、范围查询"></a>1、范围查询</h4><p><code>在串行化隔离级别下会使用到间隙锁</code></p>
+<p>当我们用范围条件而不是相等条件检索数据（<code>使用next-key lock,next-key lock = record lock + gap lock </code>），并请求共享或排他锁时，InnoDB 会给符合条件的已有数据记录的索引项加锁(<code>这些锁称为行锁（record lock）</code>)；对于键值在条件范围内但并不存在的记录，叫做<code>间隙（GAP)</code> ，InnoDB 也会对这个“间隙”加锁，这种锁机制就是所谓的间隙锁(<code>gap lock</code>)。举例来说， 假如 user 表中只有 101 条记录， 其 userid 的值分别是 1,2,…,100,101， 下面的 SQL：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> <span class="keyword">user</span> <span class="keyword">where</span> userid <span class="operator">&gt;</span> <span class="number">100</span> <span class="keyword">for</span> <span class="keyword">update</span>;</span><br></pre></td></tr></table></figure>
+
+<p>是一个范围条件的检索，InnoDB 不仅会对符合条件的 userid 值为 101 的记录加锁(<code>行锁</code>)，也会对userid 大 于 101（但是这些记录并不存在）的”间隙”加锁（<code>间隙锁</code>），防止其它事务在表的末尾增加数据。</p>
+<p>InnoDB使用间隙锁的目的，为了防止幻读，以满足串行化隔离级别的要求，对于上面的例子，要是不使用间隙锁，如果其他事务插入了 userid 大于 100 的任何记录，那么本事务如果再次执行上述语句， 就会发生幻读。</p>
+<p>示例：</p>
+<p><img src="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-11-26_14-21-28.png" alt="PixPin_2024-11-26_14-21-28"></p>
+<p>在串行化（<code>SERIALIZABLE</code>）隔离级别下，查询操作都会加上共享锁，写操作都会添加排他锁。在这里，我们使用<code>select * from user where id &gt; 3</code>进行范围查询，这时，InnoDB会为添加间隙锁，即大于<code>id&gt;3</code>的数据都会被上锁，即使没有这个数据。</p>
+<p>间隙锁的锁的范围是<code>左开右闭</code>的，所以上面的加锁范围如下：<code>(3,4],(4,5],(5,无穷大]</code>,加上锁以后，他会对该大于该id后面的写操作都会被间隙锁阻塞。所以上面的第五步会失败。</p>
+<p><strong>行级共享读锁 (S Lock)</strong>：在你进行 <code>SELECT</code> 时，InnoDB 会为每一行数据加上共享读锁，防止其他事务修改这些行。</p>
+<p><strong>间隙锁 (Gap Lock)</strong>：如果你的查询是带范围的（如 <code>SELECT * FROM user WHERE id &gt; 3;</code>），InnoDB 可能会在符合条件的行之间的“间隙”上加锁，阻止其他事务在这些间隙插入数据，防止幻读。</p>
+<p>同样的道理，在 <code>SERIALIZABLE</code> 隔离级别下，如果执行 <code>SELECT * FROM user;</code>，在事务未提交之前，其他事务对 <code>user</code> 表的数据进行 写操作（如 <code>INSERT</code>、<code>UPDATE</code>、<code>DELETE</code>）是会被间隙锁阻塞的。所以下面的第五步会失败。</p>
+<p><img src="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-11-26_14-30-40.png" alt="PixPin_2024-11-26_14-30-40"></p>
+<p>存在的问题：我们这里的id是主键，这个是不会重复的,那么使用辅助索引的情况是怎么？辅助索引是允许重复的。</p>
+<p>例如使用age作为辅助索引，如果age相等，那么就会比较主键大小，主键按升序排序。这就意味着，如果在不指定id的情况下，一般后面插入的数据排在后边，这就会出现下面这种情况。</p>
+<p>例如：我们使用<code>select * from user where age &gt; 16;</code>锁住大于16区间的数据</p>
+<p><img src="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-11-26_17-50-09.png" alt="PixPin_2024-11-26_17-50-09"> </p>
+<p>我们会加锁的区域有：(16,无穷大]</p>
+<ul>
+<li><p>我们首先插入数据的的age &#x3D; 15，不在加锁区域，能够插入</p>
+</li>
+<li><p>但是age &#x3D; 16无法插入，按理说16不应该在这个加锁区间才是。但是就是失败了</p>
+  <img src="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-11-26_17-48-23.png" alt="PixPin_2024-11-26_17-48-23" style="zoom:50%;" /> 
+  
+<p>  这是因为虽然新插入的数据age是16,但是他是后插入的，且没有指定id,所以在插入数据排序时，他会排在原本数据<code>jianzhe</code>行的右边，即图中（16，5）的后边，但是他的右边已经被锁住了，所以无法插入成功,<code>所以对于间隙的范围要了解清楚</code></p>
+</li>
+</ul>
+<h4 id="2、等值查询"><a href="#2、等值查询" class="headerlink" title="2、等值查询"></a>2、等值查询</h4><p>在串行化下，如果使用主键或者唯一键作为等值查询的条件，是不会产生幻读现象的，这是因为插入操作会执行失败，删除和更新操作会被共享锁阻塞,所以需要考虑的是辅助索引作为等值查询条件的情况。</p>
+<p>在使用辅助索引作为插入条件时，数据要么插入到该数据的左边，要么插入到该数据的右边，所以，要避免幻读的发生，InnoDB就会在该值的左右两边的间隙加上间隙锁，例如：我们插入一条age &#x3D; 18的数据，<code>insert into user(name,age,sex) values(&#39;aaa&#39;,18,&#39;M&#39;)</code>,<code>假设表数据如下</code>，他就会在（15，18]和（18，19]之间加上间隙锁，防止有插入age等于18的	数据。但是这时，如果我们插入age等于15, 16，17,19的数据也会失败（age &#x3D; 15如果不指定id的情况下会失败，但是在age &#x3D; 15且id &lt; 23的时候会成功，19同理）</p>
+<p><img src="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-11-26_18-08-58.png" alt="PixPin_2024-11-26_18-08-58" style="zoom:50%;" /> <img src="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-11-26_18-15-40.png" alt="PixPin_2024-11-26_18-15-40" style="zoom: 50%;" /></p>
+<h3 id="四、意向共享锁和意向排他锁"><a href="#四、意向共享锁和意向排他锁" class="headerlink" title="四、意向共享锁和意向排他锁"></a>四、意向共享锁和意向排他锁</h3><p><code>意向锁是存储引擎自己加的，并不需要我们手动添加。</code></p>
+<ul>
+<li><p>意向共享锁（IS锁）：事务计划给记录加行共享锁，事务在给一行记录加共享锁前，必须先取得该表的 IS 锁。</p>
+</li>
+<li><p>意向排他锁（IX锁）：事务计划给记录加行排他锁，事务在给一行记录加排他锁前，必须先取得该表的 IX 锁。</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>X</th>
+<th>IX</th>
+<th>S</th>
+<th>IS</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>X</td>
+<td>Conflict</td>
+<td>Conflict</td>
+<td>Conflict</td>
+<td>Conflict</td>
+</tr>
+<tr>
+<td>IX</td>
+<td>Conflict</td>
+<td>兼容</td>
+<td>Conflict</td>
+<td>兼容</td>
+</tr>
+<tr>
+<td>S</td>
+<td>Conflict</td>
+<td>Conflict</td>
+<td>兼容</td>
+<td>兼容</td>
+</tr>
+<tr>
+<td>IS</td>
+<td>Conflict</td>
+<td>兼容</td>
+<td>兼容</td>
+<td>兼容</td>
+</tr>
+</tbody></table>
+<ol>
+<li>意向锁是由InnoDB存储引擎获取行锁之前自己获取的</li>
+<li>意向锁之间都是兼容的，不会产生冲突</li>
+<li>意向锁存在的意义是为了更高效的获取表锁（<code>表格中的X和S指的是表锁，不是行锁</code>！！！）</li>
+<li>意向锁是表级锁，协调表锁和行锁的共存关系。主要目的是显示事务正在锁定某行或者试图锁定某 行。</li>
+</ol>
+<p>意向锁存在的目的：针对表锁</p>
+<p>如果一个事务需要修改很多的数据，涉及多张表，那么如果使用行锁时很容易导致死锁且效率较低，这时使用表锁的效率反而更高，要获取表的共享锁或排他锁，就需要确保两件事：</p>
+<ol>
+<li>这张表没有被其他事务获取过X锁</li>
+<li>这张表里面的数据没有被其他事务获取过行锁x锁</li>
+</ol>
+<p>其中，最主要的是第二条，如果表的数据量很大，如有1千万条数据，那么要判断有没有行锁x锁，这个效率是很低的，所以意向锁的目的就是解决这个查找效率问题。</p>
+<p>如果意向排他锁已经被获取了，那就说明表中有数据被其他事务添加了行锁x锁，所以<code>当要获取表的X锁时，不需要检查表中的哪些行已经加上了行（X或S）锁，只需要快速检查IX和IS锁即可。</code></p>
+<h3 id="五、MVCC"><a href="#五、MVCC" class="headerlink" title="五、MVCC"></a>五、MVCC</h3><p>已提交读和可重复读的底层原理：MVCC(多版本并发控制)，并发读取方式：<strong>快照读</strong></p>
+<p>InnoDB的两种读取操作：</p>
+<ol>
+<li><p>锁定读（SX），需要加锁</p>
+</li>
+<li><p>非锁定读，即不需要加锁（MVCC提供的快照读，底层为undo log回滚日志）,如select，其中，<strong>已提交读和可重复读都依赖于非锁定读，即快照读</strong></p>
+</li>
+</ol>
+<p>MVCC提供的读操作：</p>
+<ol>
+<li>快照读（snapshot read）：读的是记录的可见版本，不用加锁。如select，<strong>已提交读和可重复读都依赖于非锁定读，即快照读</strong></li>
+<li>当前读（current read）：读取的是记录的最新版本，并且当前读返回的记录。如insert，delete，update，select…lock in share mode&#x2F;for update</li>
+</ol>
+<h3 id="六、undo-log-回滚日志"><a href="#六、undo-log-回滚日志" class="headerlink" title="六、undo log 回滚日志"></a>六、undo log 回滚日志</h3><ul>
+<li><p>事务发生错误时回滚日志 rollback</p>
+</li>
+<li><p>提供MVCC的非锁定读（快照读）</p>
+<p>  <img src="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-11-28_15-38-36.png" alt="PixPin_2024-11-28_15-38-36"></p>
+<p>  如图所示，undo log使用链表将每一次修改的数据的操作串在一起，这些数据存放于缓存中。通过将历史数据串起来实现回滚的效果。</p>
+<ul>
+<li><code>DB_TRX_ID</code>是InnoDB为每一个事务提供的唯一的ID值</li>
+<li><code>DB_ROLL_PTR</code>是上一个数据存放的地址，如果发生错误，会根据这个地址回滚数据</li>
+<li><code>DB_ROW_ID</code>是InnoDB默认提供的索引，如果建表时没有创建索引，InnoDB就会提供这么一个索引</li>
+</ul>
+</li>
+<li><p>已提交读和可重复读</p>
+<ol>
+<li><p><strong>已提交读</strong>：<strong>每次执行select语句的时候都重新生成一次快照</strong> （Read View），但是只有事务已经成功commit以后才能 放入快照中，如果事务还未commit，则不会放入快照中。解决了脏读问题。但是<strong>存在不可重复读和幻读</strong>的现象，即最新查询的数据内容与前面的的不一致。<strong>换句话说：其他事务更新后而且已经提交的数据，可以实时反馈给当前事务的select结果当中。</strong></p>
+</li>
+<li><p><strong>可重复读</strong>：**同一个事务开始的时候生成一个当前事务全局性的快照（Read View），只在事务开始时生成一次快照。**这样既能解决脏读，也解决不可重复读的问题。但还是存在幻读的问题。 例如：事务A开启时生成了一个快照，此时事务B插入了一个数据并成功提交，此时如果事务A查询时并不会查询到数据，这是因为数据会从快照中读取，但是，如果事务A对新插入数据进行update操作是会成功的，再一次查询时，会查询到了新的数据，发生了幻读现象。<strong>原因是一个事务内所有的操作对于事务自己是可见的，事务进行select操作时不仅会查询快照，还会根据自己的事务ID（DB_TRX_ID）查询修改过的数据（查询时不仅使用快照，还会检查事务自身产生的修改）。这里事务进行update操作是在最新数据中修改的(将新数据的事务ID变为A的事务ID)，而不是在快照中修改的。所以update操作能成功，从而能查询到修改后的数据。</strong></p>
+<blockquote>
+<p>快照内容读取原则：</p>
+<ol>
+<li>版本未提交无法读取，无法生成快照</li>
+<li>版本已提交，但是在快照创建后提交的，无法读取</li>
+<li>版本已提交，但是在快照创建前提交的，可以读取</li>
+<li>当前事务内自己的更新，可以读到，通过查询当前事务ID号的操作</li>
+</ol>
+</blockquote>
+</li>
+</ol>
+</li>
+</ul>
+<h3 id="七、redo-log重做日志"><a href="#七、redo-log重做日志" class="headerlink" title="七、redo log重做日志"></a>七、redo log重做日志</h3><p><code>redo log是为了保证了数据的持久性和崩溃恢复而设计的,记录的是物理变更信息，即页级的操作，在事务begin开始时就开始记录</code>，不管事务是否提交都会记录下来，在异常发生时，如数据持久化过程中发生掉电，InnoDB会使用redo log恢复到掉电前的时刻，保证数据的完整性。<code>其中，undo log也会写入在redo log中。</code></p>
+<h3 id="八、redo-log与undo-log的区别"><a href="#八、redo-log与undo-log的区别" class="headerlink" title="八、redo log与undo log的区别"></a>八、<code>redo log</code>与<code>undo log</code>的区别</h3><ul>
+<li><strong>Redo Log（重做日志）</strong>：<ul>
+<li><code>redo log</code>记录的是物理变更信息（如写入、更新、删除等），即页级的操作而不记录原始的SQL语句。它可以确保即使系统崩溃，数据库也能根据这些日志进行恢复。它是为了<strong>保证事务的持久性</strong>（Durability）和崩溃恢复而设计的。</li>
+<li>由于它记录的是<strong>数据页级别的修改</strong>，因此我们有时称它为<strong>物理日志</strong>。</li>
+</ul>
+</li>
+<li><strong>Undo Log（回滚日志）</strong>：<ul>
+<li><code>undo log</code>记录的是<strong>逻辑操作(记录了对数据的反向操作)</strong>，即记录的是事务对数据的撤销操作（例如，原始数据的值），用于在事务回滚时撤销之前的操作。</li>
+<li>例如，在一个<code>UPDATE</code>语句执行时，<code>undo log</code>会记录更新前的数据值。这样如果事务回滚时，InnoDB可以使用<code>undo log</code>来恢复到操作之前的状态。</li>
+<li><code>undo log</code>并不是用来恢复数据的物理状态，而是恢复事务的逻辑操作。因此我们把它称为<strong>逻辑日志</strong>。</li>
+</ul>
+</li>
+</ul>
+<p><strong>小结</strong></p>
+<ul>
+<li><strong>Redo Log</strong>是物理日志，记录数据页的修改，<code>保证持久性和崩溃恢复</code>。它用于记录操作的物理变更（例如写入数据页），并在数据库恢复时重新应用这些变更。</li>
+<li><strong>Undo Log</strong>是逻辑日志，记录撤销操作，<code>确保事务的原子性和一致性</code>。它用于回滚事务时恢复数据的原始状态。</li>
+<li>在事务提交时，<code>redo log</code>会先写入磁盘，保证数据的一致性和持久性。然后，事务状态标记为<code>commit</code>，而数据页的刷写通常是异步进行的。</li>
+</ul>
+<h3 id="九、InnoDB的Buffer"><a href="#九、InnoDB的Buffer" class="headerlink" title="九、InnoDB的Buffer"></a>九、InnoDB的Buffer</h3><p><img src="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-12-03_14-55-55.png" alt="PixPin_2024-12-03_14-55-55" style="zoom: 25%;" /> <img src="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-12-03_15-51-52.png" alt="PixPin_2024-12-03_15-51-52" style="zoom:33%;" /> </p>
+<p>InnoDB 在处理 SQL 语句时，涉及两个重要的内存结构：<strong>InnoDB Logger Buffer</strong> 和 <strong>InnoDB Buffer Pool Cache</strong>。这两个内存结构的作用、分配和使用是为了优化事务处理、数据的缓存和磁盘 I&#x2F;O 操作。</p>
+<ol>
+<li><p><strong>InnoDB Buffer Pool Cache</strong>（缓冲池）</p>
+<p> <strong>Buffer Pool</strong> 是 InnoDB 存储引擎中的关键内存组件，主要用于存储表数据页、索引页、undo log 页和其他数据。它的作用是提高磁盘 I&#x2F;O 性能，减少对磁盘的直接访问，将经常使用的数据保存在内存中。<code>Buffer Pool</code> 的大小对数据库性能有重要影响。</p>
+</li>
+</ol>
+<h4 id="Buffer-Pool-的使用场景"><a href="#Buffer-Pool-的使用场景" class="headerlink" title="Buffer Pool 的使用场景"></a><strong>Buffer Pool 的使用场景</strong></h4><ul>
+<li><strong>数据和索引的缓存</strong>：在处理 SQL 查询时，数据页和索引页会被加载到 <code>Buffer Pool</code> 中。当执行查询（例如 <code>SELECT</code>）时，InnoDB 会首先检查 <code>Buffer Pool</code> 是否已经缓存了所需的数据和索引。如果数据已经在内存中，就可以直接访问，避免了磁盘 I&#x2F;O 操作。</li>
+<li><strong>事务中的数据修改</strong>：当执行更新、删除或插入等写操作时，修改的数据页会被加载到 <code>Buffer Pool</code> 中。这些修改的数据页不会立刻写入磁盘，而是保存在内存中，直到合适的时机（例如 Buffer Pool 满了或者定期刷新）才会被写入磁盘。</li>
+</ul>
+<ol start="2">
+<li><p><strong>InnoDB Logger Buffer</strong>（日志缓冲区）</p>
+<p> <strong>Logger Buffer</strong> 是用来存储事务的 redo log 信息的内存缓冲区。每当一个事务对数据做出修改时，InnoDB 会将修改的操作记录在 <strong>redo log</strong> 中，这些日志是物理日志，用于恢复数据库的一致性。</p>
+</li>
+</ol>
+<h4 id="Logger-Buffer-的使用场景"><a href="#Logger-Buffer-的使用场景" class="headerlink" title="Logger Buffer 的使用场景"></a><strong>Logger Buffer 的使用场景</strong></h4><ul>
+<li><p>每次发生数据修改时，InnoDB 会将修改操作记录到 <code>Logger Buffer</code>，并等待最终的写入操作。写入日志的操作通常会被延迟，以减少磁盘 I&#x2F;O 操作。</p>
+</li>
+<li><p>在事务提交时，<code>Logger Buffer</code> 会被刷新到磁盘中，确保 redo log 文件的持久性。</p>
+</li>
+</ul>
+<p> <strong>Buffer Pool 和 Logger Buffer 的区别与配合</strong></p>
+<ul>
+<li><strong>Buffer Pool</strong> 主要负责缓存和存储数据库的数据页和索引页。它帮助减少磁盘 I&#x2F;O，提高查询和写操作的性能。</li>
+<li><strong>Logger Buffer</strong> 主要负责缓存 redo log 记录，确保事务的持久性。在事务提交时，<code>Logger Buffer</code> 中的内容会被刷新到磁盘中的 redo log 文件。</li>
+</ul>
+<h4 id="配合使用的流程："><a href="#配合使用的流程：" class="headerlink" title="配合使用的流程："></a><strong>配合使用的流程</strong>：</h4><ol>
+<li><strong>SQL 语句执行时</strong>：当执行 <code>SELECT</code> 查询时，InnoDB 会先检查所需的数据页是否在 Buffer Pool 中；如果不在内存中，则会从磁盘加载。如果是修改数据的语句（例如 <code>UPDATE</code>），数据会先在 Buffer Pool 中进行修改。</li>
+<li><strong>事务开始时</strong>：当事务开始时，所有对数据的修改都会先记录到 <code>Logger Buffer</code>，然后在提交时将这些日志写入磁盘。</li>
+<li><strong>事务提交时</strong>：当事务提交时，<code>Logger Buffer</code> 中的日志会被刷新到磁盘中的 redo log 文件，这样可以确保在系统崩溃时，已经提交的事务能够通过 redo log 恢复。与此同时，修改的数据页也会从 Buffer Pool 刷写到磁盘中，确保数据的持久性。</li>
+</ol>
+<h3 id="十、事务提交过程的详细说明"><a href="#十、事务提交过程的详细说明" class="headerlink" title="十、事务提交过程的详细说明"></a>十、事务提交过程的详细说明</h3><ol>
+<li><p><strong>事务的<code>prepare</code>阶段</strong>：</p>
+<ul>
+<li><p>当事务执行<code>COMMIT</code>时，InnoDB首先会在内存中记录该事务的<code>redo log</code>。此时，事务的状态变为<code>PREPARE</code>。</p>
+</li>
+<li><p>在<code>PREPARE</code>阶段，InnoDB已经将<code>redo log</code>（包括更新的数据页信息）写入到日志缓冲区，但尚未将修改的实际数据写入磁盘。</p>
+</li>
+<li><p>这时，事务的操作还没有完全持久化到磁盘，InnoDB通过<code>redo log</code>记录了关于数据变更的物理操作（即页级的操作信息），这些信息将用于崩溃恢复时的回滚或重做操作。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>事务的<code>commit</code>阶段</strong>：</p>
+<ul>
+<li><p>当事务的<code>redo log</code>成功地刷新到磁盘后，InnoDB会标记该事务为<code>COMMIT</code>状态。</p>
+</li>
+<li><p>在此时，修改的数据页（实际上是缓冲池中的数据）并没有立即刷新到磁盘。数据在InnoDB的<code>Buffer Pool</code>中仍然存在，InnoDB会异步地将这些数据写入磁盘。这个过程通过<code>flush</code>操作完成，但它是延迟的，具体时机由<code>innodb_flush_log_at_trx_commit</code>等配置项控制。</p>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="十一、-崩溃恢复过程"><a href="#十一、-崩溃恢复过程" class="headerlink" title="十一、 崩溃恢复过程"></a>十一、 崩溃恢复过程</h3><p>MySQL重启后，InnoDB会执行崩溃恢复。这个过程分为以下几个阶段</p>
+<ul>
+<li><strong>Redo Log重做（Recovery Phase）</strong>：InnoDB会通过读取<code>redo log</code>，恢复所有已提交事务的操作。因为<code>redo log</code>记录的是物理变更，它确保所有已提交的事务能够重做（即应用）到磁盘上的数据中。换句话说，尽管数据页没有及时刷写到磁盘，<strong>只要事务已经提交并且<code>redo log</code>被持久化，重启后InnoDB会通过<code>redo log</code>将修改恢复到数据页</strong>。</li>
+<li><strong>Undo Log回滚（Rollback Phase）</strong>：InnoDB会回滚所有尚未提交的事务（即<code>PREPARE</code>状态的事务）。这些未提交事务的操作在崩溃前已经被记录到<code>redo log</code>，但是由于它们没有提交，InnoDB会通过<code>undo log</code>撤销这些事务的操作，确保数据库恢复到一致性状态。</li>
+</ul>
+<p> 即<strong>崩溃在<code>COMMIT</code>之前</strong>：InnoDB会通过<code>redo log</code>回滚事务的变更，确保未提交的事务不会影响最终的数据一致性。</p>
+<p> <strong>崩溃在<code>COMMIT</code>之后</strong>：InnoDB会通过<code>redo log</code>重做已提交事务的变更，恢复数据库数据，即使数据页未写入磁盘。</p>
+<p> <strong><code>undo log</code></strong> 和 <strong><code>redo log</code></strong> 在崩溃恢复和回滚操作中是配合使用的，但它们的作用和使用场景有所不同。简要来说，<code>undo log</code> 用于回滚未提交事务的操作，而 <code>redo log</code> 用于重做已提交事务的操作。它们在恢复过程中各司其职。</p>
+<p>现在我们知道，InnoDB存储引擎事务操作的实际上是redo log日志，并不是真正的数据，如今可以根据redo log恢复，所以说MySQL最重要的就是日志。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2025/03/28/MySQL-%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/" data-id="cuidQWHVd2HN3xLj8PzNb6Vj2" data-title="MySQL-事务隔离级别实现原理" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2025/03/28/MySQL-%E4%BA%8B%E5%8A%A1/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          MySQL-事务
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2025/03/28/MySQL-%E7%B4%A2%E5%BC%95/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">MySQL-索引</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/C-%E7%AF%87/">C-篇</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/OpenSSL/">OpenSSL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Qt/">Qt</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/muduo/">muduo</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E5%8F%91%E8%B0%83%E4%BC%98/">开发调优</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%90%9E%E4%B8%83%E6%8D%BB%E4%B8%89/">搞七捻三</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%B5%84%E6%BA%90%E8%8D%9F%E8%90%83/">资源荟萃</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%97%AE%E9%A2%98%E6%B1%87%E6%80%BB/">问题汇总</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/1panel/" rel="tag">1panel</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CRT/" rel="tag">CRT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTP/" rel="tag">CTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FRP/" rel="tag">FRP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MariaDB/" rel="tag">MariaDB</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyNodeQuery/" rel="tag">MyNodeQuery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PicGo/" rel="tag">PicGo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Qt/" rel="tag">Qt</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/" rel="tag">Spring Boot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/aria2c/" rel="tag">aria2c</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/caddy/" rel="tag">caddy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdn/" rel="tag">cdn</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cloudflare/" rel="tag">cloudflare</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cmake/" rel="tag">cmake</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/epoll/" rel="tag">epoll</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/firefox/" rel="tag">firefox</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flameshot/" rel="tag">flameshot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hy/" rel="tag">hy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/muduo/" rel="tag">muduo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mvnd/" rel="tag">mvnd</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/opengl/" rel="tag">opengl</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openssl/" rel="tag">openssl</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/protobuf/" rel="tag">protobuf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/serv00/" rel="tag">serv00</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socat/" rel="tag">socat</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socks5/" rel="tag">socks5</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/typecho/" rel="tag">typecho</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ubuntu/" rel="tag">ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vcpkg/" rel="tag">vcpkg</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vmware/" rel="tag">vmware</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vs2022/" rel="tag">vs2022</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vscode/" rel="tag">vscode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%B8%AD%E8%BD%AC/" rel="tag">中转</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/" rel="tag">内网穿透</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/" rel="tag">反向代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9F%9F%E5%90%8D%E9%82%AE%E7%AE%B1/" rel="tag">域名邮箱</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A2%E9%92%88/" rel="tag">探针</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%B2%98%E5%8C%85/" rel="tag">粘包</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%95%9C%E5%83%8F%E6%BA%90/" rel="tag">镜像源</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/1panel/" style="font-size: 10px;">1panel</a> <a href="/tags/C/" style="font-size: 18.57px;">C++</a> <a href="/tags/CRT/" style="font-size: 10px;">CRT</a> <a href="/tags/CTP/" style="font-size: 10px;">CTP</a> <a href="/tags/CentOS/" style="font-size: 12.86px;">CentOS</a> <a href="/tags/FRP/" style="font-size: 10px;">FRP</a> <a href="/tags/MariaDB/" style="font-size: 10px;">MariaDB</a> <a href="/tags/MyNodeQuery/" style="font-size: 10px;">MyNodeQuery</a> <a href="/tags/MySQL/" style="font-size: 20px;">MySQL</a> <a href="/tags/PicGo/" style="font-size: 10px;">PicGo</a> <a href="/tags/Qt/" style="font-size: 17.14px;">Qt</a> <a href="/tags/Spring-Boot/" style="font-size: 10px;">Spring Boot</a> <a href="/tags/aria2c/" style="font-size: 10px;">aria2c</a> <a href="/tags/caddy/" style="font-size: 11.43px;">caddy</a> <a href="/tags/cdn/" style="font-size: 10px;">cdn</a> <a href="/tags/cloudflare/" style="font-size: 14.29px;">cloudflare</a> <a href="/tags/cmake/" style="font-size: 11.43px;">cmake</a> <a href="/tags/docker/" style="font-size: 11.43px;">docker</a> <a href="/tags/epoll/" style="font-size: 10px;">epoll</a> <a href="/tags/firefox/" style="font-size: 10px;">firefox</a> <a href="/tags/flameshot/" style="font-size: 10px;">flameshot</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/hy/" style="font-size: 10px;">hy</a> <a href="/tags/muduo/" style="font-size: 17.14px;">muduo</a> <a href="/tags/mvnd/" style="font-size: 10px;">mvnd</a> <a href="/tags/nginx/" style="font-size: 12.86px;">nginx</a> <a href="/tags/opengl/" style="font-size: 12.86px;">opengl</a> <a href="/tags/openssl/" style="font-size: 17.14px;">openssl</a> <a href="/tags/protobuf/" style="font-size: 10px;">protobuf</a> <a href="/tags/python/" style="font-size: 10px;">python</a> <a href="/tags/redis/" style="font-size: 11.43px;">redis</a> <a href="/tags/serv00/" style="font-size: 11.43px;">serv00</a> <a href="/tags/socat/" style="font-size: 10px;">socat</a> <a href="/tags/socks5/" style="font-size: 10px;">socks5</a> <a href="/tags/typecho/" style="font-size: 11.43px;">typecho</a> <a href="/tags/ubuntu/" style="font-size: 15.71px;">ubuntu</a> <a href="/tags/vcpkg/" style="font-size: 10px;">vcpkg</a> <a href="/tags/vmware/" style="font-size: 11.43px;">vmware</a> <a href="/tags/vs2022/" style="font-size: 10px;">vs2022</a> <a href="/tags/vscode/" style="font-size: 12.86px;">vscode</a> <a href="/tags/%E4%B8%AD%E8%BD%AC/" style="font-size: 10px;">中转</a> <a href="/tags/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/" style="font-size: 10px;">内网穿透</a> <a href="/tags/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/" style="font-size: 14.29px;">反向代理</a> <a href="/tags/%E5%9F%9F%E5%90%8D%E9%82%AE%E7%AE%B1/" style="font-size: 10px;">域名邮箱</a> <a href="/tags/%E6%8E%A2%E9%92%88/" style="font-size: 10px;">探针</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 11.43px;">算法</a> <a href="/tags/%E7%B2%98%E5%8C%85/" style="font-size: 10px;">粘包</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 10px;">计算机网络</a> <a href="/tags/%E9%95%9C%E5%83%8F%E6%BA%90/" style="font-size: 10px;">镜像源</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/02/">February 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/12/">December 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/11/">November 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/10/">October 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/09/">September 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/08/">August 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/07/">July 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/05/">May 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/04/">April 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/03/">March 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/02/">February 2025</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/02/22/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/08/ubuntu%20%E5%85%8D%E5%AF%86%E6%93%8D%E4%BD%9C/">ubuntu 免密操作</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/08/Ubuntu%2025%20%E4%B8%8B%20Flameshot%20%E5%BF%AB%E6%8D%B7%E9%94%AE%E6%88%AA%E5%9B%BE%E5%A4%B1%E8%B4%A5%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/">Ubuntu 25 下 Flameshot 快捷键截图失败解决方案</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/05/%E9%80%9A%E8%BF%87%E7%BD%91%E7%BA%BF%E4%BC%A0%E8%BE%93%E6%95%B0%E6%8D%AE/">通过网线传输数据</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/04/ctypes%E5%B0%81%E8%A3%85C++%E6%8E%A5%E5%8F%A3%E7%BB%99Python%E4%BD%BF%E7%94%A8/">ctypes封装C++接口给Python使用</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

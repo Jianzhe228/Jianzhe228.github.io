@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>muduo(7)-AsyncLogging | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="muduo库的AsyncLogging异步日志记录使用双缓冲+任务队列实现，同时，在日志内容过多时，主动丢弃部分日志，确保系统高效的运行，防止被日志阻塞。 12345678910111213141516171819202122232425262728293031323334BufferPtr currentBuffer_ GUARDED_BY(mutex_);&#x2F;&#x2F;当前缓冲区BufferPtr ne">
+<meta property="og:type" content="article">
+<meta property="og:title" content="muduo(7)-AsyncLogging">
+<meta property="og:url" content="http://example.com/2025/07/31/muduo(7)-AsyncLogging/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="muduo库的AsyncLogging异步日志记录使用双缓冲+任务队列实现，同时，在日志内容过多时，主动丢弃部分日志，确保系统高效的运行，防止被日志阻塞。 12345678910111213141516171819202122232425262728293031323334BufferPtr currentBuffer_ GUARDED_BY(mutex_);&#x2F;&#x2F;当前缓冲区BufferPtr ne">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2025-07-31T03:18:00.000Z">
+<meta property="article:modified_time" content="2026-02-22T06:29:37.825Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="muduo">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-muduo(7)-AsyncLogging" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/07/31/muduo(7)-AsyncLogging/" class="article-date">
+  <time class="dt-published" datetime="2025-07-31T03:18:00.000Z" itemprop="datePublished">2025-07-31</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/muduo/">muduo</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      muduo(7)-AsyncLogging
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>muduo库的AsyncLogging异步日志记录使用双缓冲+任务队列实现，同时，在日志内容过多时，主动丢弃部分日志，确保系统高效的运行，防止被日志阻塞。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BufferPtr currentBuffer_ <span class="title">GUARDED_BY</span><span class="params">(mutex_)</span></span>;<span class="comment">//当前缓冲区</span></span><br><span class="line"><span class="function">BufferPtr nextBuffer_ <span class="title">GUARDED_BY</span><span class="params">(mutex_)</span></span>;<span class="comment">//备用缓冲区</span></span><br><span class="line"><span class="function">BufferVector buffers_ <span class="title">GUARDED_BY</span><span class="params">(mutex_)</span></span>;<span class="comment">//待写入队列</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">AsyncLogging::append</span><span class="params">(<span class="type">const</span> <span class="type">char</span>* logline, <span class="type">int</span> len)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="function">muduo::MutexLockGuard <span class="title">lock</span><span class="params">(mutex_)</span></span>;</span><br><span class="line">    <span class="comment">// 如果当前缓冲区有足够的空间，则直接追加到当前缓冲区</span></span><br><span class="line">    <span class="keyword">if</span> (currentBuffer_-&gt;<span class="built_in">avail</span>() &gt; len)</span><br><span class="line">    &#123;</span><br><span class="line">        currentBuffer_-&gt;<span class="built_in">append</span>(logline, len);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 将当前缓冲区放入待写入队列或者说待写入缓冲区</span></span><br><span class="line">        buffers_.<span class="built_in">push_back</span>(std::<span class="built_in">move</span>(currentBuffer_));</span><br><span class="line">        <span class="comment">// 为 currentBuffer_ 获取一个新的空缓冲区</span></span><br><span class="line">        <span class="keyword">if</span> (nextBuffer_) <span class="comment">// 如果备用缓冲区存在</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// 将备用缓冲区设置为当前缓冲区</span></span><br><span class="line">            currentBuffer_ = std::<span class="built_in">move</span>(nextBuffer_);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// 在备用缓冲区不存在的情况下，为 currentBuffer_ 分配一个新的空缓冲区</span></span><br><span class="line">            currentBuffer_.<span class="built_in">reset</span>(<span class="keyword">new</span> Buffer);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 将新的日志消息写入新的 currentBuffer_</span></span><br><span class="line">        currentBuffer_-&gt;<span class="built_in">append</span>(logline, len);</span><br><span class="line">        <span class="comment">// 通知等待的线程开始写入数据(当前缓冲区已满，批量写入)</span></span><br><span class="line">        cond_.<span class="built_in">notify</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>后端一直循环写入日志，看起来比较绕，currentBuffer,nextBuffer,buffers,newBuffer1,newBuffer2,buffersToWrite,一共六个buffer</p>
+<ol>
+<li>currentBuffer:前端写入日志的buffer</li>
+<li>nextBuffer:前端备用buffer</li>
+<li>buffers：前端待写入日志队列</li>
+<li>newBuffer1:后端备用buffer</li>
+<li>newBuffer2:后端备用buffer</li>
+<li>bufferToWrite：真正要写入日志的buffer</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">AsyncLogging::threadFunc</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="comment">// 确认后端日志线程已启动</span></span><br><span class="line">  <span class="built_in">assert</span>(running_ == <span class="literal">true</span>);</span><br><span class="line">  <span class="comment">// 使用 CountDownLatch 通知前端线程：后端线程已成功启动，可以开始记录日志了</span></span><br><span class="line">  latch_.<span class="built_in">countDown</span>();</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 创建一个 LogFile 对象，这是日志最终写入的目标文件。</span></span><br><span class="line">  <span class="comment">// 第三个参数 threadSafe 设置为 false，因为所有写操作都在这一个后端线程内完成，无需加锁。</span></span><br><span class="line">  <span class="function">LogFile <span class="title">output</span><span class="params">(basename_, rollSize_, <span class="literal">false</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 这两个缓冲区用于后续和前端的缓冲区进行交换，避免在后端线程中频繁分配新内存</span></span><br><span class="line">  <span class="function">BufferPtr <span class="title">newBuffer1</span><span class="params">(<span class="keyword">new</span> Buffer)</span></span>;</span><br><span class="line">  <span class="function">BufferPtr <span class="title">newBuffer2</span><span class="params">(<span class="keyword">new</span> Buffer)</span></span>;</span><br><span class="line">  newBuffer1-&gt;<span class="built_in">bzero</span>();</span><br><span class="line">  newBuffer2-&gt;<span class="built_in">bzero</span>();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 准备一个 vector，用于存放从前端（append函数）收集到的、待写入文件的缓冲区指针</span></span><br><span class="line">  BufferVector buffersToWrite;</span><br><span class="line">  buffersToWrite.<span class="built_in">reserve</span>(<span class="number">16</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 后端日志线程主循环</span></span><br><span class="line">  <span class="keyword">while</span> (running_)</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="comment">// 在循环开始时，断言两个空闲缓冲区都是空的，并且待写入区也是空的</span></span><br><span class="line">    <span class="built_in">assert</span>(newBuffer1 &amp;&amp; newBuffer1-&gt;<span class="built_in">length</span>() == <span class="number">0</span>);</span><br><span class="line">    <span class="built_in">assert</span>(newBuffer2 &amp;&amp; newBuffer2-&gt;<span class="built_in">length</span>() == <span class="number">0</span>);</span><br><span class="line">    <span class="built_in">assert</span>(buffersToWrite.<span class="built_in">empty</span>());</span><br><span class="line"></span><br><span class="line">    &#123;</span><br><span class="line">      <span class="function">muduo::MutexLockGuard <span class="title">lock</span><span class="params">(mutex_)</span></span>;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 等待可能被两种情况唤醒：</span></span><br><span class="line">      <span class="comment">// 1. 前端线程写满一个 buffer 后调用 cond_.notify() 唤醒。</span></span><br><span class="line">      <span class="comment">// 2. 超时时间到达，即使没有数据也要进行一次日志刷盘。</span></span><br><span class="line">      <span class="keyword">if</span> (buffers_.<span class="built_in">empty</span>())  <span class="comment">// unusual usage!</span></span><br><span class="line">      &#123;</span><br><span class="line">        cond_.<span class="built_in">waitForSeconds</span>(flushInterval_);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 无论 cond_ 是如何被唤醒的，我们都把前端的 currentBuffer_ 移到待写入队列中。</span></span><br><span class="line">      <span class="comment">// 这样可以确保即使在超时的情况下，当前缓冲区里未满的日志也能被收集到。</span></span><br><span class="line">      buffers_.<span class="built_in">push_back</span>(std::<span class="built_in">move</span>(currentBuffer_));</span><br><span class="line">      </span><br><span class="line">      <span class="comment">// 将之前准备好的空闲缓冲区 newBuffer1 设置为新的 currentBuffer_</span></span><br><span class="line">      currentBuffer_ = std::<span class="built_in">move</span>(newBuffer1);</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 将前端的整个待写入队列 buffers_ 和后端的 buffersToWrite 进行交换。</span></span><br><span class="line">      <span class="comment">// 交换后，buffers_ 变为空，前端可以继续无锁地向其中添加写满的 buffer。</span></span><br><span class="line">      buffersToWrite.<span class="built_in">swap</span>(buffers_);</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 如果前端把备用缓冲区 nextBuffer_ 也用掉了，那么就把另一个空闲缓冲区 newBuffer2 补上。</span></span><br><span class="line">      <span class="comment">// currentbuffer写满了，执行currentbuffer = move(nextbuffer),此后nextbuffer为空</span></span><br><span class="line">      <span class="keyword">if</span> (!nextBuffer_)</span><br><span class="line">      &#123;</span><br><span class="line">        nextBuffer_ = std::<span class="built_in">move</span>(newBuffer2);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 断言我们确实拿到了待写入的数据</span></span><br><span class="line">    <span class="built_in">assert</span>(!buffersToWrite.<span class="built_in">empty</span>());</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 如果待写入的缓冲区数量过多（超过25个），说明前端日志产生速度远超后端写入速度，</span></span><br><span class="line">    <span class="comment">// 为了防止内存无限增长，这里会丢弃掉一部分日志。</span></span><br><span class="line">    <span class="keyword">if</span> (buffersToWrite.<span class="built_in">size</span>() &gt; <span class="number">25</span>)</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="type">char</span> buf[<span class="number">256</span>];</span><br><span class="line">      <span class="built_in">snprintf</span>(buf, <span class="keyword">sizeof</span> buf, <span class="string">&quot;Dropped log messages at %s, %zd larger buffers\n&quot;</span>,</span><br><span class="line">               Timestamp::<span class="built_in">now</span>().<span class="built_in">toFormattedString</span>().<span class="built_in">c_str</span>(),</span><br><span class="line">               buffersToWrite.<span class="built_in">size</span>()<span class="number">-2</span>);</span><br><span class="line">      <span class="built_in">fputs</span>(buf, stderr);</span><br><span class="line">      output.<span class="built_in">append</span>(buf, <span class="built_in">static_cast</span>&lt;<span class="type">int</span>&gt;(<span class="built_in">strlen</span>(buf)));</span><br><span class="line">      <span class="comment">// 只保留前两个 buffer 的日志，其他的丢弃</span></span><br><span class="line">      buffersToWrite.<span class="built_in">erase</span>(buffersToWrite.<span class="built_in">begin</span>()<span class="number">+2</span>, buffersToWrite.<span class="built_in">end</span>());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 遍历所有待写入的 buffer，将它们的内容追加到 LogFile 对象中</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">const</span> <span class="keyword">auto</span>&amp; buffer : buffersToWrite)</span><br><span class="line">    &#123;</span><br><span class="line">      output.<span class="built_in">append</span>(buffer-&gt;<span class="built_in">data</span>(), buffer-&gt;<span class="built_in">length</span>());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (buffersToWrite.<span class="built_in">size</span>() &gt; <span class="number">2</span>)</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="comment">// 丢弃多余的buffer，只保留两个，用于回收利用，避免内存持有过多</span></span><br><span class="line">      buffersToWrite.<span class="built_in">resize</span>(<span class="number">2</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 从处理完的 buffersToWrite 中回收 buffer 作为下一个空闲缓冲区(这个一定执行)</span></span><br><span class="line">    <span class="keyword">if</span> (!newBuffer1)</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="built_in">assert</span>(!buffersToWrite.<span class="built_in">empty</span>());</span><br><span class="line">      newBuffer1 = std::<span class="built_in">move</span>(buffersToWrite.<span class="built_in">back</span>());</span><br><span class="line">      buffersToWrite.<span class="built_in">pop_back</span>();</span><br><span class="line">      newBuffer1-&gt;<span class="built_in">reset</span>(); <span class="comment">// 清空 buffer</span></span><br><span class="line">    &#125;</span><br><span class="line">	<span class="comment">//可能执行，如果是超时进来的，就不会执行，因为没有执行currentbuffer = move(nextbuffer),nextbuffer没有为空那么上面的交换</span></span><br><span class="line">     <span class="comment">//就没有执行，所以newBUffer2就不会为空，反之为空</span></span><br><span class="line">    <span class="keyword">if</span> (!newBuffer2)</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="built_in">assert</span>(!buffersToWrite.<span class="built_in">empty</span>());</span><br><span class="line">      newBuffer2 = std::<span class="built_in">move</span>(buffersToWrite.<span class="built_in">back</span>());</span><br><span class="line">      buffersToWrite.<span class="built_in">pop_back</span>();</span><br><span class="line">      newBuffer2-&gt;<span class="built_in">reset</span>(); <span class="comment">// 清空 buffer</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 清空待写入队列，并强制将 LogFile 缓冲区的数据刷到磁盘</span></span><br><span class="line">    buffersToWrite.<span class="built_in">clear</span>();</span><br><span class="line">    output.<span class="built_in">flush</span>();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 线程退出前，最后一次将 LogFile 缓冲区的数据刷到磁盘</span></span><br><span class="line">  output.<span class="built_in">flush</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如何使用：</p>
+<p>这个AsyncLogging需要配合Logger类使用</p>
+<ol>
+<li><code>LOG_INFO</code> 宏创建 <code>Logger</code> 对象</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> LOG_INFO <span class="keyword">if</span> (muduo::Logger::logLevel() &lt;= muduo::Logger::INFO) \</span></span><br><span class="line"><span class="meta">  muduo::Logger(__FILE__, __LINE__).stream()</span></span><br><span class="line"></span><br><span class="line">LOG_INFO &lt;&lt; <span class="string">&quot;hello world&quot;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>日志会创建一个临时对象，然后这个对象在结束的时候通过<code>g_output</code>将内容添加到currentBuffer</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">Logger::~<span class="built_in">Logger</span>()</span><br><span class="line">&#123;</span><br><span class="line">  impl_.<span class="built_in">finish</span>();</span><br><span class="line">  <span class="function"><span class="type">const</span> LogStream::Buffer&amp; <span class="title">buf</span><span class="params">(stream().buffer())</span></span>;</span><br><span class="line">  <span class="built_in">g_output</span>(buf.<span class="built_in">data</span>(), buf.<span class="built_in">length</span>());</span><br><span class="line">  <span class="keyword">if</span> (impl_.level_ == FATAL)</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">g_flush</span>();</span><br><span class="line">    <span class="built_in">abort</span>();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">Logger::OutputFunc g_output = defaultOutput;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">defaultOutput</span><span class="params">(<span class="type">const</span> <span class="type">char</span>* msg, <span class="type">int</span> len)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">size_t</span> n = <span class="built_in">fwrite</span>(msg, <span class="number">1</span>, len, stdout);</span><br><span class="line">    <span class="comment">// FIXME check n</span></span><br><span class="line">    (<span class="type">void</span>)n;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从这里可以看出默认的输出是输出到终端，所以我们在使用的时候需要自定义输出器</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;muduo/base/CurrentThread.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;muduo/base/AsyncLogging.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;muduo/base/Logging.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;muduo/base/Thread.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//定义全局AsyncLogging指针</span></span><br><span class="line">muduo::AsyncLogging* g_asyncLogging = <span class="literal">nullptr</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//定义异步输出函数</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">asyncOutput</span><span class="params">(<span class="type">const</span> <span class="type">char</span>* msg, <span class="type">int</span> len)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    g_asyncLogging-&gt;<span class="built_in">append</span>(msg, len);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="function">muduo::AsyncLogging <span class="title">log</span><span class="params">(<span class="string">&quot;log.txt&quot;</span>, <span class="number">0</span>)</span></span>;</span><br><span class="line">    g_asyncLogging = &amp;log;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//设置日志输出函数</span></span><br><span class="line">    muduo::Logger::<span class="built_in">setOutput</span>(asyncOutput);</span><br><span class="line">    <span class="comment">//启动异步日志线程</span></span><br><span class="line">    log.<span class="built_in">start</span>();</span><br><span class="line">    <span class="comment">//输出日志</span></span><br><span class="line">    LOG_INFO &lt;&lt; <span class="string">&quot;hello world&quot;</span>;</span><br><span class="line">    muduo::CurrentThread::<span class="built_in">sleepUsec</span>(<span class="number">1000</span> * <span class="number">1000</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2025/07/31/muduo(7)-AsyncLogging/" data-id="cuidELeddUp9z-mgaQFRIGlQO" data-title="muduo(7)-AsyncLogging" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/muduo/" rel="tag">muduo</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2025/07/31/muduo(8)-Connector/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          muduo(8)-Connector
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2025/07/29/CentOS%20yum%E8%BD%AF%E4%BB%B6%E6%BA%90/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">CentOS yum软件源</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/C-%E7%AF%87/">C-篇</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/OpenSSL/">OpenSSL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Qt/">Qt</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/muduo/">muduo</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E5%8F%91%E8%B0%83%E4%BC%98/">开发调优</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%90%9E%E4%B8%83%E6%8D%BB%E4%B8%89/">搞七捻三</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%B5%84%E6%BA%90%E8%8D%9F%E8%90%83/">资源荟萃</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%97%AE%E9%A2%98%E6%B1%87%E6%80%BB/">问题汇总</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/1panel/" rel="tag">1panel</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CRT/" rel="tag">CRT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTP/" rel="tag">CTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FRP/" rel="tag">FRP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MariaDB/" rel="tag">MariaDB</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyNodeQuery/" rel="tag">MyNodeQuery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PicGo/" rel="tag">PicGo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Qt/" rel="tag">Qt</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/" rel="tag">Spring Boot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/aria2c/" rel="tag">aria2c</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/caddy/" rel="tag">caddy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdn/" rel="tag">cdn</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cloudflare/" rel="tag">cloudflare</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cmake/" rel="tag">cmake</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/epoll/" rel="tag">epoll</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/firefox/" rel="tag">firefox</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flameshot/" rel="tag">flameshot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hy/" rel="tag">hy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/muduo/" rel="tag">muduo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mvnd/" rel="tag">mvnd</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/opengl/" rel="tag">opengl</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openssl/" rel="tag">openssl</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/protobuf/" rel="tag">protobuf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/serv00/" rel="tag">serv00</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socat/" rel="tag">socat</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socks5/" rel="tag">socks5</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/typecho/" rel="tag">typecho</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ubuntu/" rel="tag">ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vcpkg/" rel="tag">vcpkg</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vmware/" rel="tag">vmware</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vs2022/" rel="tag">vs2022</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vscode/" rel="tag">vscode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%B8%AD%E8%BD%AC/" rel="tag">中转</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/" rel="tag">内网穿透</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/" rel="tag">反向代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9F%9F%E5%90%8D%E9%82%AE%E7%AE%B1/" rel="tag">域名邮箱</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A2%E9%92%88/" rel="tag">探针</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%B2%98%E5%8C%85/" rel="tag">粘包</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%95%9C%E5%83%8F%E6%BA%90/" rel="tag">镜像源</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/1panel/" style="font-size: 10px;">1panel</a> <a href="/tags/C/" style="font-size: 18.57px;">C++</a> <a href="/tags/CRT/" style="font-size: 10px;">CRT</a> <a href="/tags/CTP/" style="font-size: 10px;">CTP</a> <a href="/tags/CentOS/" style="font-size: 12.86px;">CentOS</a> <a href="/tags/FRP/" style="font-size: 10px;">FRP</a> <a href="/tags/MariaDB/" style="font-size: 10px;">MariaDB</a> <a href="/tags/MyNodeQuery/" style="font-size: 10px;">MyNodeQuery</a> <a href="/tags/MySQL/" style="font-size: 20px;">MySQL</a> <a href="/tags/PicGo/" style="font-size: 10px;">PicGo</a> <a href="/tags/Qt/" style="font-size: 17.14px;">Qt</a> <a href="/tags/Spring-Boot/" style="font-size: 10px;">Spring Boot</a> <a href="/tags/aria2c/" style="font-size: 10px;">aria2c</a> <a href="/tags/caddy/" style="font-size: 11.43px;">caddy</a> <a href="/tags/cdn/" style="font-size: 10px;">cdn</a> <a href="/tags/cloudflare/" style="font-size: 14.29px;">cloudflare</a> <a href="/tags/cmake/" style="font-size: 11.43px;">cmake</a> <a href="/tags/docker/" style="font-size: 11.43px;">docker</a> <a href="/tags/epoll/" style="font-size: 10px;">epoll</a> <a href="/tags/firefox/" style="font-size: 10px;">firefox</a> <a href="/tags/flameshot/" style="font-size: 10px;">flameshot</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/hy/" style="font-size: 10px;">hy</a> <a href="/tags/muduo/" style="font-size: 17.14px;">muduo</a> <a href="/tags/mvnd/" style="font-size: 10px;">mvnd</a> <a href="/tags/nginx/" style="font-size: 12.86px;">nginx</a> <a href="/tags/opengl/" style="font-size: 12.86px;">opengl</a> <a href="/tags/openssl/" style="font-size: 17.14px;">openssl</a> <a href="/tags/protobuf/" style="font-size: 10px;">protobuf</a> <a href="/tags/python/" style="font-size: 10px;">python</a> <a href="/tags/redis/" style="font-size: 11.43px;">redis</a> <a href="/tags/serv00/" style="font-size: 11.43px;">serv00</a> <a href="/tags/socat/" style="font-size: 10px;">socat</a> <a href="/tags/socks5/" style="font-size: 10px;">socks5</a> <a href="/tags/typecho/" style="font-size: 11.43px;">typecho</a> <a href="/tags/ubuntu/" style="font-size: 15.71px;">ubuntu</a> <a href="/tags/vcpkg/" style="font-size: 10px;">vcpkg</a> <a href="/tags/vmware/" style="font-size: 11.43px;">vmware</a> <a href="/tags/vs2022/" style="font-size: 10px;">vs2022</a> <a href="/tags/vscode/" style="font-size: 12.86px;">vscode</a> <a href="/tags/%E4%B8%AD%E8%BD%AC/" style="font-size: 10px;">中转</a> <a href="/tags/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/" style="font-size: 10px;">内网穿透</a> <a href="/tags/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/" style="font-size: 14.29px;">反向代理</a> <a href="/tags/%E5%9F%9F%E5%90%8D%E9%82%AE%E7%AE%B1/" style="font-size: 10px;">域名邮箱</a> <a href="/tags/%E6%8E%A2%E9%92%88/" style="font-size: 10px;">探针</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 11.43px;">算法</a> <a href="/tags/%E7%B2%98%E5%8C%85/" style="font-size: 10px;">粘包</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 10px;">计算机网络</a> <a href="/tags/%E9%95%9C%E5%83%8F%E6%BA%90/" style="font-size: 10px;">镜像源</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/02/">February 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/12/">December 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/11/">November 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/10/">October 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/09/">September 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/08/">August 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/07/">July 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/05/">May 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/04/">April 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/03/">March 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/02/">February 2025</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/02/22/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/08/ubuntu%20%E5%85%8D%E5%AF%86%E6%93%8D%E4%BD%9C/">ubuntu 免密操作</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/08/Ubuntu%2025%20%E4%B8%8B%20Flameshot%20%E5%BF%AB%E6%8D%B7%E9%94%AE%E6%88%AA%E5%9B%BE%E5%A4%B1%E8%B4%A5%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/">Ubuntu 25 下 Flameshot 快捷键截图失败解决方案</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/05/%E9%80%9A%E8%BF%87%E7%BD%91%E7%BA%BF%E4%BC%A0%E8%BE%93%E6%95%B0%E6%8D%AE/">通过网线传输数据</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/04/ctypes%E5%B0%81%E8%A3%85C++%E6%8E%A5%E5%8F%A3%E7%BB%99Python%E4%BD%BF%E7%94%A8/">ctypes封装C++接口给Python使用</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

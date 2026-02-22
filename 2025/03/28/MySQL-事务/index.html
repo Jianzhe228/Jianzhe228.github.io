@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>MySQL-事务 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="一、基本概念一个事务是由一条或者多条对数据库操作的SQL语句所组成的一个不可分割的单元，只有当事务中的所 有操作都正常执行完了，整个事务才会被提交给数据库；如果有部分事务处理失败，那么事务就要回退 到最初的状态，因此，事务要么全部执行成功，要么全部失败。可以将事务理解为一个原子操作，事务中的任务是不可分割的,事务执行过程中，有的SQL出现错误，那么事务必须要回滚（rollback）到最初的状态;事">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL-事务">
+<meta property="og:url" content="http://example.com/2025/03/28/MySQL-%E4%BA%8B%E5%8A%A1/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="一、基本概念一个事务是由一条或者多条对数据库操作的SQL语句所组成的一个不可分割的单元，只有当事务中的所 有操作都正常执行完了，整个事务才会被提交给数据库；如果有部分事务处理失败，那么事务就要回退 到最初的状态，因此，事务要么全部执行成功，要么全部失败。可以将事务理解为一个原子操作，事务中的任务是不可分割的,事务执行过程中，有的SQL出现错误，那么事务必须要回滚（rollback）到最初的状态;事">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-11-21_16-42-42.png">
+<meta property="og:image" content="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-11-21_16-56-43.png">
+<meta property="og:image" content="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-11-21_17-09-59.png">
+<meta property="og:image" content="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-11-21_17-18-29.png">
+<meta property="og:image" content="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-11-21_17-30-14.png">
+<meta property="og:image" content="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-11-21_17-40-29.png">
+<meta property="article:published_time" content="2025-03-28T18:08:00.000Z">
+<meta property="article:modified_time" content="2026-02-22T06:29:37.822Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="MySQL">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-11-21_16-42-42.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-MySQL-事务" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/03/28/MySQL-%E4%BA%8B%E5%8A%A1/" class="article-date">
+  <time class="dt-published" datetime="2025-03-28T18:08:00.000Z" itemprop="datePublished">2025-03-28</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      MySQL-事务
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="一、基本概念"><a href="#一、基本概念" class="headerlink" title="一、基本概念"></a>一、基本概念</h3><p>一个事务是由一条或者多条对数据库操作的SQL语句所组成的一个不可分割的单元，只有当事务中的所 有操作都正常执行完了，整个事务才会被提交给数据库；如果有部分事务处理失败，那么事务就要回退 到最初的状态，因此，事务要么全部执行成功，要么全部失败。<code>可以将事务理解为一个原子操作，事务中的任务是不可分割的</code>,事务执行过程中，有的SQL出现错误，那么事务必须要回滚（rollback）到最初的状态;事务的所有SQL语句全部执行成功，才能提交（commit）事务，把结果写回磁盘上。</p>
+<h3 id="二、相关知识"><a href="#二、相关知识" class="headerlink" title="二、相关知识"></a>二、相关知识</h3><ol>
+<li><p>MyISAM存储引擎是不支持事务的</p>
+</li>
+<li><p>InnoDB存储引擎支持事务，同时支持行锁</p>
+</li>
+<li><p>查询MySQL事务的提交状态</p>
+ <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> @<span class="variable">@autocommit</span>;</span><br></pre></td></tr></table></figure>
+
+ <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">select</span> @<span class="variable">@autocommit</span>;</span><br><span class="line"><span class="operator">+</span><span class="comment">--------------+</span></span><br><span class="line"><span class="operator">|</span> @<span class="variable">@autocommit</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">--------------+</span></span><br><span class="line"><span class="operator">|</span>            <span class="number">1</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">--------------+</span></span><br><span class="line"><span class="number">1</span> <span class="type">row</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.01</span> sec)</span><br></pre></td></tr></table></figure>
+
+<p> 1表示自动提交，一般我们需要设置为0，改为手动提交</p>
+ <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> autocommit <span class="operator">=</span> <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
+
+ <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">set</span> autocommit <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">Query OK, <span class="number">0</span> <span class="keyword">rows</span> affected (<span class="number">0.01</span> sec)</span><br><span class="line"></span><br><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">select</span> @<span class="variable">@autocommit</span>;</span><br><span class="line"><span class="operator">+</span><span class="comment">--------------+</span></span><br><span class="line"><span class="operator">|</span> @<span class="variable">@autocommit</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">--------------+</span></span><br><span class="line"><span class="operator">|</span>            <span class="number">0</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">--------------+</span></span><br><span class="line"><span class="number">1</span> <span class="type">row</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line">mysql<span class="operator">&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>事务处理：</p>
+<ol>
+<li>BEGIN; 开启一个事务</li>
+<li>COMMIT; 提交一个事务</li>
+<li>ROLLBACK; 回滚一个事务到初始的位置</li>
+<li>SAVEPOINT point1; 设置一个名字为point1的保存点</li>
+<li>ROLLBACK TO point1; 事务回滚到保存点point1，而不是回滚到初始状态</li>
+</ol>
+</li>
+</ol>
+<h3 id="三、事务的ACID特性"><a href="#三、事务的ACID特性" class="headerlink" title="三、事务的ACID特性"></a>三、事务的ACID特性</h3><ol>
+<li><p>事务的原子性（Atomic）</p>
+<p> 事务是一个不可分割的整体，事务必须具有原子特性，及当数据修改时，要么全执行，要么全不执行， 即不允许事务部分的完成。</p>
+</li>
+<li><p>事务的一致性（Consistency）</p>
+<p> 一个事务执行之前和执行之后，数据库数据必须保持一致性状态。数据库的一致性状态必须由用户来负 责，由并发控制机制实现。就拿网上购物来说，你只有让商品出库，又让商品进入顾客的购物车才能构 成一个完整的事务。</p>
+</li>
+<li><p>事务的隔离性（Isolation）</p>
+<p> 当两个或者多个事务并发执行时，为了保证数据的安全性，将一个事物内部的操作与其它事务的操作隔 离起来，不被其它正在执行的事务所看到，使得并发执行的各个事务之间不能互相影响。</p>
+</li>
+<li><p>事务的持久性（Durability）</p>
+<p> 事务完成(commit)以后，<code>DBMS</code>保证它对数据库中的数据的修改是永久性的，即使数据库因为故障出 错，也应该能够恢复数据！</p>
+<p> 这里有一个场景：</p>
+<blockquote>
+<p>事务commit以后直接就返回了，但此时数据并不是真的写入到了磁盘中，这些数据还在内存中（脏数据），因为写入数据涉及到磁盘IO，时间较长，commit不会等待，但是如果在从内存写入磁盘的这一过程中，出现停电，重启等问题，那么如何保证数据的可恢复呢？MySQL的<code>redo log</code>和<code>undo log</code>机制解决了这一问题,这一机制保证了数据的持久性，所有说MySQL数据库重经典的一句话就是：MySQL最重要的不是数据，而是日志！</p>
+<p>事务的ACID特性：</p>
+<p>ACD:由MySQL的redo log和undo log机制保证</p>
+<p>I:由MySQL事务的锁机制保证</p>
+</blockquote>
+</li>
+</ol>
+<h3 id="四、事务并发存在的问题"><a href="#四、事务并发存在的问题" class="headerlink" title="四、事务并发存在的问题"></a>四、事务并发存在的问题</h3><ol>
+<li><strong>脏读（Dirty Read）</strong>：<code>一个事务读取了另一个事务未提交的数据</code>。例如当事务A和事务B并发执行时，当 事务A更新后，事务B查询读取到A尚未提交的数据，此时事务A回滚，则事务B读到的数据就是无效的脏 数据。（<code>事务B能够读取事务A尚未提交的数据</code>）,<code>脏读一定是不被允许的。</code></li>
+<li><strong>不可重复读（NonRepeatable Read）</strong>：<code>一个事务的操作导致另一个事务前后两次读取到不同的数据。</code> 例如当事务A和事务B并发执行时，当事务B查询读取数据后，事务A更新操作更改事务B查询到的数据， 此时事务B再次去读该数据，发现前后两次读的数据不一样（<code>事务B能够读取事务A已提交的数据，换句话说就是其他事务完成的操作能够影响到当前事务</code>）。<code>没有错误，可以接受，但是需要视业务而定</code></li>
+<li><strong>虚读（Phantom Read）幻读</strong>：<code>一个事务的操作导致另一个事务前后两次查询的结果数据量不同</code>。例如 当事务A和事务B并发执行时，当事务B查询读取数据后，事务A新增或者删除了一条满足事务B查询条件 的记录，此时事务B再去查询，发现查询到前一次不存在的记录，或者前一次查询的一些记录不见了。 （事务B读取了事务A新增加的数据或者读不到事务A删除的数据）<code>没有错误，可以接受，但是需要视业务而定</code></li>
+</ol>
+<h4 id="1、事务的隔离级别"><a href="#1、事务的隔离级别" class="headerlink" title="1、事务的隔离级别"></a>1、事务的隔离级别</h4><ol>
+<li><code>READ-UNCOMMITTED</code>。未提交读。说明在提交前一个事务可以看到另一个事务 的变化。这样读脏数据，不可重复读和虚读都是被允许的。</li>
+<li><code>READ-COMMITTED</code>。已提交读。说明读取未提交的数据是不允许的。这个级别仍然允许不可重复读和虚读产生</li>
+<li><code>REPEATABLE-READ</code>。可重复读。说明事务保证能够再次读取相同的数据而不会失败，但虚读仍然会出现。</li>
+<li><code>SERIALIZABLE</code>。串行化。是最高的事务级别，它防止读脏数据，不可重复读和虚读。(单线程执行)</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>隔离级别</th>
+<th>脏读</th>
+<th>不可重复读</th>
+<th>幻读</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>未提交读</td>
+<td>可以</td>
+<td>可以</td>
+<td>可以</td>
+</tr>
+<tr>
+<td>已提交读</td>
+<td>不可以</td>
+<td>可以</td>
+<td>可以</td>
+</tr>
+<tr>
+<td>可重复读</td>
+<td>不可以</td>
+<td>不可以</td>
+<td>可以(可以防止delete和insert,但无法防止update)</td>
+</tr>
+<tr>
+<td>串行化</td>
+<td>不可以</td>
+<td>不可以</td>
+<td>不可以</td>
+</tr>
+</tbody></table>
+<blockquote>
+<ol>
+<li>事务隔离级别越高，为避免冲突所花费的性能也就越多。</li>
+<li>在“可重复读”级别，实际上可以解决部分的虚读问题，但是不能防止update更新产生的虚读问题，要禁 止虚读产生，还是需要设置串行化隔离级别。</li>
+</ol>
+</blockquote>
+<ul>
+<li><p>设置隔离级别：</p>
+  <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SET</span> <span class="keyword">GLOBAL</span> transaction_isolation <span class="operator">=</span> <span class="string">&#x27;REPEATABLE-READ&#x27;</span>; <span class="comment">-- 示例：全局设置为可重复读,可能需要断开重连才能生效</span></span><br><span class="line"><span class="keyword">SET</span> SESSION transaction_isolation <span class="operator">=</span> <span class="string">&#x27;READ-COMMITTED&#x27;</span>; <span class="comment">-- 示例：当前会话设置为已提交读</span></span><br></pre></td></tr></table></figure>
+
+</li>
+<li><p>查询事务的隔离级别</p>
+  <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> @<span class="variable">@transaction_isolation</span>;#MySQL <span class="number">8.0</span></span><br><span class="line"><span class="keyword">select</span> @<span class="variable">@tx_isolation</span>;#MySQL <span class="number">5.7</span></span><br></pre></td></tr></table></figure>
+
+  <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">SELECT</span> @<span class="variable">@transaction_isolation</span>;</span><br><span class="line">    <span class="operator">+</span><span class="comment">-------------------------+</span></span><br><span class="line">    <span class="operator">|</span> @<span class="variable">@transaction_isolation</span> <span class="operator">|</span></span><br><span class="line">    <span class="operator">+</span><span class="comment">-------------------------+</span></span><br><span class="line">    <span class="operator">|</span> REPEATABLE<span class="operator">-</span>READ         <span class="operator">|</span></span><br><span class="line">    <span class="operator">+</span><span class="comment">-------------------------+</span></span><br><span class="line">    <span class="number">1</span> <span class="type">row</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.03</span> sec)</span><br><span class="line">    </span><br><span class="line">    mysql<span class="operator">&gt;</span></span><br></pre></td></tr></table></figure>
+<p>  MySQL默认隔离级别为<code>REPEATABLE-READ</code>,只允许虚读产生，不允许脏读和不可重复读</p>
+</li>
+<li><p>查看全局隔离级别,可能需要断开重连才能生效</p>
+  <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SHOW</span> <span class="keyword">GLOBAL</span> VARIABLES <span class="keyword">LIKE</span> <span class="string">&#x27;transaction_isolation&#x27;</span>;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="1、READ-UMCOMMIT"><a href="#1、READ-UMCOMMIT" class="headerlink" title="1、READ_UMCOMMIT"></a>1、READ_UMCOMMIT</h4><p><img src="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-11-21_16-42-42.png" alt="PixPin_2024-11-21_16-42-42"> </p>
+<p>首先，我们先执行在右边执行查询数据</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from student where name = <span class="string">&#x27;zhangsan&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>再从左边修改数据</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">update student set age = <span class="number">19</span> where name = <span class="string">&#x27;zhangsan&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>最后在右边再次查询</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from student where name = <span class="string">&#x27;zhangsan&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>发现数据发生了脏读，右边的事务读取到了左边尚未完成事务的数据,如果左边事务发生错误，就会导致数据错误！</p>
+<h4 id="2、READ-COMMITTED"><a href="#2、READ-COMMITTED" class="headerlink" title="2、READ-COMMITTED"></a>2、READ-COMMITTED</h4><p><img src="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-11-21_16-56-43.png" alt="PixPin_2024-11-21_16-56-43"> </p>
+<p>从上面可知，在左边事务未commit之前，右边是无法查看修改的数据的，在左边事务commit后，右边即可查看,<code>但存在不可重复读的情况，即其他事务提交后当前事务可以访问到变化后的数据。</code></p>
+<h4 id="3、REPEATABLE-READ"><a href="#3、REPEATABLE-READ" class="headerlink" title="3、REPEATABLE-READ"></a>3、REPEATABLE-READ</h4><p><img src="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-11-21_17-09-59.png" alt="PixPin_2024-11-21_17-09-59"> </p>
+<p>可以看见，在可重复读级别下，其他事务提交的数据无法影响到当前事务,读取的数据都是相同的。</p>
+<p><img src="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-11-21_17-18-29.png" alt="PixPin_2024-11-21_17-18-29"> </p>
+<p>可以发现，可重复读在一定程度上能够防止幻读的发生，但只能防止insert和delete，无法防止update</p>
+<p><img src="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-11-21_17-30-14.png" alt="PixPin_2024-11-21_17-30-14">  </p>
+<p>我们发现，虽然我们第七步使用select查询不到bbb这个人，但是我们还是能够对其修改，经过修改以后，能够查询到这个人，所以前后结果数量不一致，导致虚读发生。</p>
+<h4 id="4、SERIALIZABLE"><a href="#4、SERIALIZABLE" class="headerlink" title="4、SERIALIZABLE"></a>4、SERIALIZABLE</h4><p><img src="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-11-21_17-40-29.png" alt="PixPin_2024-11-21_17-40-29"> </p>
+<p>可以发现，在插入时已经阻塞住了，无法执行写操作。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2025/03/28/MySQL-%E4%BA%8B%E5%8A%A1/" data-id="cuidw3THJ3cj3ilSLD0zcEG9_" data-title="MySQL-事务" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2025/03/28/MySQL-%E6%85%A2%E6%9F%A5%E8%AF%A2%E6%97%A5%E5%BF%97%E4%BC%98%E5%8C%96SQL/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          MySQL-慢查询日志优化SQL
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2025/03/28/MySQL-%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">MySQL-事务隔离级别实现原理</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/C-%E7%AF%87/">C-篇</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/OpenSSL/">OpenSSL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Qt/">Qt</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/muduo/">muduo</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E5%8F%91%E8%B0%83%E4%BC%98/">开发调优</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%90%9E%E4%B8%83%E6%8D%BB%E4%B8%89/">搞七捻三</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%B5%84%E6%BA%90%E8%8D%9F%E8%90%83/">资源荟萃</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%97%AE%E9%A2%98%E6%B1%87%E6%80%BB/">问题汇总</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/1panel/" rel="tag">1panel</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CRT/" rel="tag">CRT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTP/" rel="tag">CTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FRP/" rel="tag">FRP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MariaDB/" rel="tag">MariaDB</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyNodeQuery/" rel="tag">MyNodeQuery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PicGo/" rel="tag">PicGo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Qt/" rel="tag">Qt</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/" rel="tag">Spring Boot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/aria2c/" rel="tag">aria2c</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/caddy/" rel="tag">caddy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdn/" rel="tag">cdn</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cloudflare/" rel="tag">cloudflare</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cmake/" rel="tag">cmake</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/epoll/" rel="tag">epoll</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/firefox/" rel="tag">firefox</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flameshot/" rel="tag">flameshot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hy/" rel="tag">hy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/muduo/" rel="tag">muduo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mvnd/" rel="tag">mvnd</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/opengl/" rel="tag">opengl</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openssl/" rel="tag">openssl</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/protobuf/" rel="tag">protobuf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/serv00/" rel="tag">serv00</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socat/" rel="tag">socat</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socks5/" rel="tag">socks5</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/typecho/" rel="tag">typecho</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ubuntu/" rel="tag">ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vcpkg/" rel="tag">vcpkg</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vmware/" rel="tag">vmware</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vs2022/" rel="tag">vs2022</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vscode/" rel="tag">vscode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%B8%AD%E8%BD%AC/" rel="tag">中转</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/" rel="tag">内网穿透</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/" rel="tag">反向代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9F%9F%E5%90%8D%E9%82%AE%E7%AE%B1/" rel="tag">域名邮箱</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A2%E9%92%88/" rel="tag">探针</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%B2%98%E5%8C%85/" rel="tag">粘包</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%95%9C%E5%83%8F%E6%BA%90/" rel="tag">镜像源</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/1panel/" style="font-size: 10px;">1panel</a> <a href="/tags/C/" style="font-size: 18.57px;">C++</a> <a href="/tags/CRT/" style="font-size: 10px;">CRT</a> <a href="/tags/CTP/" style="font-size: 10px;">CTP</a> <a href="/tags/CentOS/" style="font-size: 12.86px;">CentOS</a> <a href="/tags/FRP/" style="font-size: 10px;">FRP</a> <a href="/tags/MariaDB/" style="font-size: 10px;">MariaDB</a> <a href="/tags/MyNodeQuery/" style="font-size: 10px;">MyNodeQuery</a> <a href="/tags/MySQL/" style="font-size: 20px;">MySQL</a> <a href="/tags/PicGo/" style="font-size: 10px;">PicGo</a> <a href="/tags/Qt/" style="font-size: 17.14px;">Qt</a> <a href="/tags/Spring-Boot/" style="font-size: 10px;">Spring Boot</a> <a href="/tags/aria2c/" style="font-size: 10px;">aria2c</a> <a href="/tags/caddy/" style="font-size: 11.43px;">caddy</a> <a href="/tags/cdn/" style="font-size: 10px;">cdn</a> <a href="/tags/cloudflare/" style="font-size: 14.29px;">cloudflare</a> <a href="/tags/cmake/" style="font-size: 11.43px;">cmake</a> <a href="/tags/docker/" style="font-size: 11.43px;">docker</a> <a href="/tags/epoll/" style="font-size: 10px;">epoll</a> <a href="/tags/firefox/" style="font-size: 10px;">firefox</a> <a href="/tags/flameshot/" style="font-size: 10px;">flameshot</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/hy/" style="font-size: 10px;">hy</a> <a href="/tags/muduo/" style="font-size: 17.14px;">muduo</a> <a href="/tags/mvnd/" style="font-size: 10px;">mvnd</a> <a href="/tags/nginx/" style="font-size: 12.86px;">nginx</a> <a href="/tags/opengl/" style="font-size: 12.86px;">opengl</a> <a href="/tags/openssl/" style="font-size: 17.14px;">openssl</a> <a href="/tags/protobuf/" style="font-size: 10px;">protobuf</a> <a href="/tags/python/" style="font-size: 10px;">python</a> <a href="/tags/redis/" style="font-size: 11.43px;">redis</a> <a href="/tags/serv00/" style="font-size: 11.43px;">serv00</a> <a href="/tags/socat/" style="font-size: 10px;">socat</a> <a href="/tags/socks5/" style="font-size: 10px;">socks5</a> <a href="/tags/typecho/" style="font-size: 11.43px;">typecho</a> <a href="/tags/ubuntu/" style="font-size: 15.71px;">ubuntu</a> <a href="/tags/vcpkg/" style="font-size: 10px;">vcpkg</a> <a href="/tags/vmware/" style="font-size: 11.43px;">vmware</a> <a href="/tags/vs2022/" style="font-size: 10px;">vs2022</a> <a href="/tags/vscode/" style="font-size: 12.86px;">vscode</a> <a href="/tags/%E4%B8%AD%E8%BD%AC/" style="font-size: 10px;">中转</a> <a href="/tags/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/" style="font-size: 10px;">内网穿透</a> <a href="/tags/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/" style="font-size: 14.29px;">反向代理</a> <a href="/tags/%E5%9F%9F%E5%90%8D%E9%82%AE%E7%AE%B1/" style="font-size: 10px;">域名邮箱</a> <a href="/tags/%E6%8E%A2%E9%92%88/" style="font-size: 10px;">探针</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 11.43px;">算法</a> <a href="/tags/%E7%B2%98%E5%8C%85/" style="font-size: 10px;">粘包</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 10px;">计算机网络</a> <a href="/tags/%E9%95%9C%E5%83%8F%E6%BA%90/" style="font-size: 10px;">镜像源</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/02/">February 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/12/">December 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/11/">November 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/10/">October 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/09/">September 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/08/">August 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/07/">July 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/05/">May 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/04/">April 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/03/">March 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/02/">February 2025</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/02/22/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/08/ubuntu%20%E5%85%8D%E5%AF%86%E6%93%8D%E4%BD%9C/">ubuntu 免密操作</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/08/Ubuntu%2025%20%E4%B8%8B%20Flameshot%20%E5%BF%AB%E6%8D%B7%E9%94%AE%E6%88%AA%E5%9B%BE%E5%A4%B1%E8%B4%A5%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/">Ubuntu 25 下 Flameshot 快捷键截图失败解决方案</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/05/%E9%80%9A%E8%BF%87%E7%BD%91%E7%BA%BF%E4%BC%A0%E8%BE%93%E6%95%B0%E6%8D%AE/">通过网线传输数据</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/04/ctypes%E5%B0%81%E8%A3%85C++%E6%8E%A5%E5%8F%A3%E7%BB%99Python%E4%BD%BF%E7%94%A8/">ctypes封装C++接口给Python使用</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
