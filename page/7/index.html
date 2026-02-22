@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="https://www.228610.xyz/page/7/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:locale" content="en_US">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://www.228610.xyz"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-C++ 报错：&#39;xxx&#39; has not been declared" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/03/22/C++%20%E6%8A%A5%E9%94%99%EF%BC%9A'xxx'%20has%20not%20been%20declared/" class="article-date">
+  <time class="dt-published" datetime="2025-03-22T09:27:00.000Z" itemprop="datePublished">2025-03-22</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/C-%E7%AF%87/">C-篇</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2025/03/22/C++%20%E6%8A%A5%E9%94%99%EF%BC%9A'xxx'%20has%20not%20been%20declared/">C++ 报错：&#39;xxx&#39; has not been declared</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="‘xxx’-has-not-been-declared"><a href="#‘xxx’-has-not-been-declared" class="headerlink" title="‘xxx’ has not been declared"></a>‘xxx’ has not been declared</h3><p>原因是头文件互相包含</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[build] D:/a-mycode/C++/DDZ-NET/client-ddz/thread/include/Communication.h:87:5: error: <span class="string">&#x27;DataManager&#x27;</span> has not been declared</span><br><span class="line">[build]      DataManager::getInstance()-&gt;getCommunication()-&gt;setCards(cards, last3Cards);</span><br><span class="line">[build]      ^~~~~~~~~~~</span><br></pre></td></tr></table></figure>
+
+<p>首先我们需要知道为什么会有头文件互相包含这种错误，假如我们有两个类，类A和类B,在类A的头文件中包含类B的头文件，这意味着，类B是先于类A出现的，即类B需要先于类A被定义。如果类B也包含了类A的头文件，这就出现问题了，因为类A要求类B先出现，而类B又要求类A先出现，这就出现了循环，使编译器无法正确解析类型定义。</p>
+<p><strong>具体原因</strong>是：C++预处理器会将头文件内容直接插入到包含它的文件中，当存在循环依赖时，编译器会在某一点找不到完整的类型定义</p>
+<p>解决方案：删除其中一个头文件，防止头文件互相包含</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://www.228610.xyz/2025/03/22/C++%20%E6%8A%A5%E9%94%99%EF%BC%9A'xxx'%20has%20not%20been%20declared/" data-id="cuidnGwMm5Tm4uKhh3aquz9qp" data-title="C++ 报错：&#39;xxx&#39; has not been declared" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/" rel="tag">C++</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-C++单例类实现" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/03/20/C++%E5%8D%95%E4%BE%8B%E7%B1%BB%E5%AE%9E%E7%8E%B0/" class="article-date">
+  <time class="dt-published" datetime="2025-03-20T12:48:00.000Z" itemprop="datePublished">2025-03-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%BC%80%E5%8F%91%E8%B0%83%E4%BC%98/">开发调优</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2025/03/20/C++%E5%8D%95%E4%BE%8B%E7%B1%BB%E5%AE%9E%E7%8E%B0/">C++单例类实现</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="一、懒汉模式"><a href="#一、懒汉模式" class="headerlink" title="一、懒汉模式"></a>一、懒汉模式</h3><blockquote>
+<p>懒汉模式存在线程安全问题</p>
+</blockquote>
+<h4 id="1、双重检测锁-一坨"><a href="#1、双重检测锁-一坨" class="headerlink" title="1、双重检测锁(一坨)"></a>1、双重检测锁(一坨)</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span> DOUBLE_CHECKED_SINGLETON_H</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> DOUBLE_CHECKED_SINGLETON_H</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;mutex&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;atomic&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;memory&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">DoubleCheckedSingleton</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">// 禁用复制构造和赋值运算符</span></span><br><span class="line">    <span class="built_in">DoubleCheckedSingleton</span>(<span class="type">const</span> DoubleCheckedSingleton&amp;) = <span class="keyword">delete</span>;</span><br><span class="line">    DoubleCheckedSingleton&amp; <span class="keyword">operator</span>=(<span class="type">const</span> DoubleCheckedSingleton&amp;) = <span class="keyword">delete</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取单例实例</span></span><br><span class="line">    <span class="function"><span class="type">static</span> DoubleCheckedSingleton* <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        DoubleCheckedSingleton* p = instance.<span class="built_in">load</span>(std::memory_order_acquire);</span><br><span class="line">        <span class="keyword">if</span> (p == <span class="literal">nullptr</span>) &#123; <span class="comment">// 第一次检查（无锁）</span></span><br><span class="line">            <span class="function">std::lock_guard&lt;std::mutex&gt; <span class="title">lock</span><span class="params">(mutex)</span></span>;</span><br><span class="line">            p = instance.<span class="built_in">load</span>(std::memory_order_relaxed);</span><br><span class="line">            <span class="keyword">if</span> (p == <span class="literal">nullptr</span>) &#123; <span class="comment">// 第二次检查（有锁）</span></span><br><span class="line">                p = <span class="keyword">new</span> <span class="built_in">DoubleCheckedSingleton</span>();</span><br><span class="line">                instance.<span class="built_in">store</span>(p, std::memory_order_release);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> p;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 释放单例（在程序结束时调用）</span></span><br><span class="line">    <span class="function"><span class="type">static</span> <span class="type">void</span> <span class="title">destroyInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="function">std::lock_guard&lt;std::mutex&gt; <span class="title">lock</span><span class="params">(mutex)</span></span>;</span><br><span class="line">        <span class="keyword">if</span> (instance != <span class="literal">nullptr</span>) &#123;</span><br><span class="line">            <span class="keyword">delete</span> instance.<span class="built_in">load</span>();</span><br><span class="line">            instance = <span class="literal">nullptr</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 析构函数</span></span><br><span class="line">    ~<span class="built_in">DoubleCheckedSingleton</span>() &#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">&quot;双重检测锁单例被销毁&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="comment">// 私有构造函数，防止外部实例化</span></span><br><span class="line">    <span class="built_in">DoubleCheckedSingleton</span>() = <span class="keyword">default</span>;</span><br><span class="line"></span><br><span class="line">    <span class="type">static</span> std::atomic&lt;DoubleCheckedSingleton*&gt; instance;</span><br><span class="line">    <span class="type">static</span> std::mutex mutex;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 静态成员变量初始化</span></span><br><span class="line">std::atomic&lt;DoubleCheckedSingleton*&gt; DoubleCheckedSingleton::instance&#123;<span class="literal">nullptr</span>&#125;;</span><br><span class="line">std::mutex DoubleCheckedSingleton::mutex;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span> <span class="comment">// DOUBLE_CHECKED_SINGLETON_H</span></span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>双重检测锁在C++中存在内存顺序问题。例如，<code>instance = new DoubleCheckedSingleton()</code>这行代码在编译器优化下可能会重排序为：</p>
+<ol>
+<li>分配内存</li>
+<li>将指针赋值给instance变量</li>
+<li>构造对象</li>
+</ol>
+<p>如果执行顺序变为1→2→3，在进行到2时实例已经非空，但实例还未构建，如果此时有第三个线程想要获取实例，就会返回一个空的实例！</p>
+</blockquote>
+<h4 id="2、静态局部变量（最推荐的方式）"><a href="#2、静态局部变量（最推荐的方式）" class="headerlink" title="2、静态局部变量（最推荐的方式）"></a>2、静态局部变量（最推荐的方式）</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span> STATIC_LOCAL_SINGLETON_H</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> STATIC_LOCAL_SINGLETON_H</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">StaticLocalSingleton</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">// 禁用复制构造和赋值运算符</span></span><br><span class="line">    <span class="built_in">StaticLocalSingleton</span>(<span class="type">const</span> StaticLocalSingleton&amp;) = <span class="keyword">delete</span>;</span><br><span class="line">    StaticLocalSingleton&amp; <span class="keyword">operator</span>=(<span class="type">const</span> StaticLocalSingleton&amp;) = <span class="keyword">delete</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 获取单例实例</span></span><br><span class="line">    <span class="function"><span class="type">static</span> StaticLocalSingleton&amp; <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// C++11保证静态局部变量的初始化是线程安全的</span></span><br><span class="line">        <span class="type">static</span> StaticLocalSingleton instance;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 析构函数</span></span><br><span class="line">    ~<span class="built_in">StaticLocalSingleton</span>() &#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">&quot;静态局部变量单例被销毁&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="comment">// 私有构造函数</span></span><br><span class="line">    <span class="built_in">StaticLocalSingleton</span>() = <span class="keyword">default</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span> <span class="comment">// STATIC_LOCAL_SINGLETON_H</span></span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="二、饿汉模式"><a href="#二、饿汉模式" class="headerlink" title="二、饿汉模式"></a>二、饿汉模式</h3><blockquote>
+<p>在程序加载时就创建，天然线程安全，无需加锁</p>
+</blockquote>
+<h4 id="1、引用方式"><a href="#1、引用方式" class="headerlink" title="1、引用方式"></a>1、引用方式</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span> EAGER_SINGLETON_H</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> EAGER_SINGLETON_H</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">EagerSingleton</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">// 禁用复制构造和赋值运算符</span></span><br><span class="line">    <span class="built_in">EagerSingleton</span>(<span class="type">const</span> EagerSingleton&amp;) = <span class="keyword">delete</span>;</span><br><span class="line">    EagerSingleton&amp; <span class="keyword">operator</span>=(<span class="type">const</span> EagerSingleton&amp;) = <span class="keyword">delete</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 获取单例实例</span></span><br><span class="line">    <span class="function"><span class="type">static</span> EagerSingleton&amp; <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 析构函数</span></span><br><span class="line">    ~<span class="built_in">EagerSingleton</span>() &#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">&quot;饿汉单例被销毁&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="comment">// 私有构造函数</span></span><br><span class="line">    <span class="built_in">EagerSingleton</span>() = <span class="keyword">default</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 静态实例（在程序加载时就创建）先创建对象，不管用与不用</span></span><br><span class="line">    <span class="type">static</span> EagerSingleton instance;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 静态成员变量初始化</span></span><br><span class="line">EagerSingleton EagerSingleton::instance;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span> <span class="comment">// EAGER_SINGLETON_H</span></span></span><br></pre></td></tr></table></figure>
+
+<h4 id="2、指针方式"><a href="#2、指针方式" class="headerlink" title="2、指针方式"></a>2、指针方式</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span> EAGER_SINGLETON_PTR_H</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> EAGER_SINGLETON_PTR_H</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">EagerSingletonPtr</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">// 禁用复制构造和赋值运算符</span></span><br><span class="line">    <span class="built_in">EagerSingletonPtr</span>(<span class="type">const</span> EagerSingletonPtr&amp;) = <span class="keyword">delete</span>;</span><br><span class="line">    EagerSingletonPtr&amp; <span class="keyword">operator</span>=(<span class="type">const</span> EagerSingletonPtr&amp;) = <span class="keyword">delete</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 获取单例实例</span></span><br><span class="line">    <span class="function"><span class="type">static</span> EagerSingletonPtr* <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 释放单例资源（解决内存泄漏问题）</span></span><br><span class="line">    <span class="function"><span class="type">static</span> <span class="type">void</span> <span class="title">destroyInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (instance != <span class="literal">nullptr</span>) &#123;</span><br><span class="line">            <span class="keyword">delete</span> instance;</span><br><span class="line">            instance = <span class="literal">nullptr</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 析构函数</span></span><br><span class="line">    ~<span class="built_in">EagerSingletonPtr</span>() &#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">&quot;饿汉单例被销毁&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="comment">// 私有构造函数</span></span><br><span class="line">    <span class="built_in">EagerSingletonPtr</span>() = <span class="keyword">default</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 静态实例（在程序加载时就创建）先创建对象，不管用与不用</span></span><br><span class="line">    <span class="type">static</span> EagerSingletonPtr* instance;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 静态成员变量初始化</span></span><br><span class="line">EagerSingletonPtr* EagerSingletonPtr::instance = <span class="keyword">new</span> <span class="built_in">EagerSingletonPtr</span>();</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span> <span class="comment">// EAGER_SINGLETON_PTR_H</span></span></span><br></pre></td></tr></table></figure>
+
+<h3 id="三、补充"><a href="#三、补充" class="headerlink" title="三、补充"></a>三、补充</h3><p>C++单例类初始化顺序会导致一些问题，详细可以查看<a target="_blank" rel="noopener" href="https://guangyin.blog/index.php/archives/117/">这篇文章</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://www.228610.xyz/2025/03/20/C++%E5%8D%95%E4%BE%8B%E7%B1%BB%E5%AE%9E%E7%8E%B0/" data-id="cuidrKugpxWYu-CQFPT5i2-i3" data-title="C++单例类实现" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/" rel="tag">C++</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-redis安装和基本使用" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/03/19/redis%E5%AE%89%E8%A3%85%E5%92%8C%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/" class="article-date">
+  <time class="dt-published" datetime="2025-03-19T11:58:00.000Z" itemprop="datePublished">2025-03-19</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2025/03/19/redis%E5%AE%89%E8%A3%85%E5%92%8C%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/">redis安装和基本使用</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="一、安装redis"><a href="#一、安装redis" class="headerlink" title="一、安装redis"></a>一、安装redis</h3><p>GitHub地址：<a target="_blank" rel="noopener" href="https://github.com/redis/redis">https://github.com/redis/redis</a></p>
+<p>下载压缩包：<a target="_blank" rel="noopener" href="https://github.com/redis/redis/archive/refs/tags/7.4.2.tar.gz">https://github.com/redis/redis/archive/refs/tags/7.4.2.tar.gz</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">tar -zxvf 7.4.2.tar.gz</span><br><span class="line"><span class="built_in">cd</span> redis-7.4.2/</span><br><span class="line">make -j$(<span class="built_in">nproc</span>)</span><br><span class="line"><span class="built_in">sudo</span> make install</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>测试</p>
+<ul>
+<li>启动服务器</li>
+</ul>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">redis-server</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>连接服务器</li>
+</ul>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">redis-cli</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="二、安裝hiredis"><a href="#二、安裝hiredis" class="headerlink" title="二、安裝hiredis"></a>二、安裝hiredis</h3><p>GitHub地址：<a target="_blank" rel="noopener" href="https://github.com/redis/hiredis">https://github.com/redis/hiredis</a></p>
+<p>下载压缩包：<a target="_blank" rel="noopener" href="https://github.com/redis/hiredis/archive/refs/tags/v1.2.0.tar.gz">https://github.com/redis/hiredis/archive/refs/tags/v1.2.0.tar.gz</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">tar -zxvf v1.2.0.tar.gz</span><br><span class="line"><span class="built_in">cd</span> hiredis-1.2.0</span><br><span class="line">make -j$(<span class="built_in">nproc</span>)</span><br><span class="line"><span class="built_in">sudo</span> make install</span><br></pre></td></tr></table></figure>
+
+<h3 id="三、安装redis-plus-plus"><a href="#三、安装redis-plus-plus" class="headerlink" title="三、安装redis plus plus"></a>三、安装redis plus plus</h3><p>GitHub地址：<a target="_blank" rel="noopener" href="https://github.com/sewenew/redis-plus-plus">https://github.com/sewenew/redis-plus-plus</a></p>
+<p>下载压缩包：<a target="_blank" rel="noopener" href="https://github.com/sewenew/redis-plus-plus/archive/refs/tags/1.3.13.tar.gz">https://github.com/sewenew/redis-plus-plus/archive/refs/tags/1.3.13.tar.gz</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">tar -zxvf 1.3.13.tar.gz</span><br><span class="line"><span class="built_in">cd</span> redis-plus-plus-1.3.13</span><br><span class="line"><span class="built_in">mkdir</span> build &amp;&amp; <span class="built_in">cd</span> build</span><br><span class="line">cmake -G <span class="string">&quot;Unix Makefiles&quot;</span> ..</span><br><span class="line">make -j$(<span class="built_in">nproc</span>)</span><br><span class="line"><span class="built_in">sudo</span> make install</span><br></pre></td></tr></table></figure>
+
+<h3 id="四、CMake使用"><a href="#四、CMake使用" class="headerlink" title="四、CMake使用"></a>四、CMake使用</h3><figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#添加Redis++</span></span><br><span class="line"><span class="keyword">include_directories</span>(/usr/local/<span class="keyword">include</span>/sw/redis++)</span><br><span class="line"><span class="keyword">link_directories</span>(/usr/local/lib)</span><br><span class="line"><span class="keyword">target_link_libraries</span>(<span class="variable">$&#123;PROJECT_NAME&#125;</span> redis++ hiredis)</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://www.228610.xyz/2025/03/19/redis%E5%AE%89%E8%A3%85%E5%92%8C%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/" data-id="cuidkklhUxEA6-cN-KPIE7oTx" data-title="redis安装和基本使用" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/redis/" rel="tag">redis</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-C++ 报错：fstream打开相对路径文件发生错误" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/03/18/C++%20%E6%8A%A5%E9%94%99%EF%BC%9Afstream%E6%89%93%E5%BC%80%E7%9B%B8%E5%AF%B9%E8%B7%AF%E5%BE%84%E6%96%87%E4%BB%B6%E5%8F%91%E7%94%9F%E9%94%99%E8%AF%AF/" class="article-date">
+  <time class="dt-published" datetime="2025-03-18T15:15:00.000Z" itemprop="datePublished">2025-03-18</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/C-%E7%AF%87/">C-篇</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2025/03/18/C++%20%E6%8A%A5%E9%94%99%EF%BC%9Afstream%E6%89%93%E5%BC%80%E7%9B%B8%E5%AF%B9%E8%B7%AF%E5%BE%84%E6%96%87%E4%BB%B6%E5%8F%91%E7%94%9F%E9%94%99%E8%AF%AF/">C++ 报错：fstream打开相对路径文件发生错误</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>问题：C++使用<strong>fstream</strong>打开相对路径文件发生错误，只能使用绝对路径，下面是项目结构</p>
+<p><img src="https://images.guangyin.blog/2025/03/32e45bb0c32c9e47366727a6031a1d06.webp" alt="image-20250318231044365"></p>
+<p>如上图，原以为相对路径是相对于二进制文件(<strong>server-ddz.exe</strong>)的路径，所以使用相对路径<code>../config/config.json</code>，但是经过测试，还是相对路径不正确的问题。</p>
+<p>下面的代码是查看程序运行时的路径</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">char</span> buffer[<span class="number">256</span>];</span><br><span class="line"><span class="type">char</span>* val = <span class="built_in">getcwd</span>(buffer, <span class="built_in">sizeof</span>(buffer));</span><br><span class="line"><span class="keyword">if</span> (val)</span><br><span class="line">&#123;</span><br><span class="line">    std::cout &lt;&lt; buffer &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>经过测试，发现运行时的路径是这样的：<strong>&#x2F;home&#x2F;jianzhe&#x2F;code&#x2F;server-ddz</strong>,并不在bin目录，所以导致相对路径错误。</p>
+<p>正确的相对路径应该是：<strong>config&#x2F;config.json</strong></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://www.228610.xyz/2025/03/18/C++%20%E6%8A%A5%E9%94%99%EF%BC%9Afstream%E6%89%93%E5%BC%80%E7%9B%B8%E5%AF%B9%E8%B7%AF%E5%BE%84%E6%96%87%E4%BB%B6%E5%8F%91%E7%94%9F%E9%94%99%E8%AF%AF/" data-id="cuid_3qclVYFRRFlWIcYH1kUK" data-title="C++ 报错：fstream打开相对路径文件发生错误" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/" rel="tag">C++</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-C++ 报错：‘xxx’ does not name a type" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/03/16/C++%20%E6%8A%A5%E9%94%99%EF%BC%9A%E2%80%98xxx%E2%80%99%20does%20not%20name%20a%20type/" class="article-date">
+  <time class="dt-published" datetime="2025-03-16T08:14:00.000Z" itemprop="datePublished">2025-03-16</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/C-%E7%AF%87/">C-篇</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2025/03/16/C++%20%E6%8A%A5%E9%94%99%EF%BC%9A%E2%80%98xxx%E2%80%99%20does%20not%20name%20a%20type/">C++ 报错：‘xxx’ does not name a type</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="‘xxx’-does-not-name-a-type"><a href="#‘xxx’-does-not-name-a-type" class="headerlink" title="‘xxx’ does not name a type"></a>‘xxx’ does not name a type</h3><p>原因是由于<strong>头文件互相包含</strong>（循环依赖）导致的</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">/mnt/d/a-mycode/C++/DDZ-NET/server-ddz/tcp/include/TcpConnection.h:<span class="number">31</span>:<span class="number">5</span>: error: ‘Communication’ does <span class="keyword">not</span> name a type</span><br><span class="line">   <span class="number">31</span> |     Communication* m_reply = <span class="literal">nullptr</span>;</span><br><span class="line">      |     ^~~~~~~~~~~~~</span><br></pre></td></tr></table></figure>
+
+<p>首先我们需要知道为什么会有头文件互相包含这种错误，假如我们有两个类，类A和类B,在类A的头文件中包含类B的头文件，这意味着，类B是先于类A出现的，即类B需要先于类A被定义。如果类B也包含了类A的头文件，这就出现问题了，因为类A要求类B先出现，而类B又要求类A先出现，这就出现了循环，使编译器无法正确解析类型定义。</p>
+<p><strong>具体原因</strong>是：C++预处理器会将头文件内容直接插入到包含它的文件中，当存在循环依赖时，编译器会在某一点找不到完整的类型定义</p>
+<p>解决方案：删除其中一个头文件，防止头文件互相包含</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://www.228610.xyz/2025/03/16/C++%20%E6%8A%A5%E9%94%99%EF%BC%9A%E2%80%98xxx%E2%80%99%20does%20not%20name%20a%20type/" data-id="cuid2sZLcgQ48Di0kJAfy7AuV" data-title="C++ 报错：‘xxx’ does not name a type" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/" rel="tag">C++</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-ubuntu彻底卸载MySQL" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/03/16/ubuntu%E5%BD%BB%E5%BA%95%E5%8D%B8%E8%BD%BDMySQL/" class="article-date">
+  <time class="dt-published" datetime="2025-03-16T06:20:00.000Z" itemprop="datePublished">2025-03-16</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%90%9E%E4%B8%83%E6%8D%BB%E4%B8%89/">搞七捻三</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2025/03/16/ubuntu%E5%BD%BB%E5%BA%95%E5%8D%B8%E8%BD%BDMySQL/">ubuntu彻底卸载MySQL</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="1-停止MySQL服务"><a href="#1-停止MySQL服务" class="headerlink" title="1. 停止MySQL服务"></a><strong>1. 停止MySQL服务</strong></h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> systemctl stop mysql</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-卸载MySQL软件包"><a href="#2-卸载MySQL软件包" class="headerlink" title="2. 卸载MySQL软件包"></a><strong>2. 卸载MySQL软件包</strong></h3><p>删除所有MySQL相关的软件包（根据你的安装版本调整包名）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt purge mysql-server mysql-client mysql-common mysql-server-core-* mysql-client-core-*</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-删除残留文件和目录"><a href="#3-删除残留文件和目录" class="headerlink" title="3. 删除残留文件和目录"></a><strong>3. 删除残留文件和目录</strong></h3><p>手动删除MySQL的配置、数据和日志文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> <span class="built_in">rm</span> -rf /etc/mysql /var/lib/mysql /var/log/mysql</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-清理依赖和缓存"><a href="#4-清理依赖和缓存" class="headerlink" title="4. 清理依赖和缓存"></a><strong>4. 清理依赖和缓存</strong></h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt autoremove  <span class="comment"># 删除不再需要的依赖包</span></span><br><span class="line"><span class="built_in">sudo</span> apt autoclean   <span class="comment"># 清理软件包缓存</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="5-检查是否彻底删除"><a href="#5-检查是否彻底删除" class="headerlink" title="5. 检查是否彻底删除"></a><strong>5. 检查是否彻底删除</strong></h3><p>验证是否还有残留的MySQL文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dpkg -l | grep mysql  <span class="comment"># 检查是否有未卸载的包</span></span><br></pre></td></tr></table></figure>
+<p>如果仍有残留，手动删除相关文件</p>
+<h3 id="验证卸载是否成功"><a href="#验证卸载是否成功" class="headerlink" title="验证卸载是否成功"></a><strong>验证卸载是否成功</strong></h3><p>运行 <code>mysql</code> 命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql</span><br></pre></td></tr></table></figure>
+<p>提示 <code>Command &#39;mysql&#39; not found</code>，则表示卸载成功。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://www.228610.xyz/2025/03/16/ubuntu%E5%BD%BB%E5%BA%95%E5%8D%B8%E8%BD%BDMySQL/" data-id="cuidU3tMPvbyNBZsKYznOeT2K" data-title="ubuntu彻底卸载MySQL" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-如何在CMake中正确的添加库文件：MSVC与MinGW混用陷阱" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/03/14/%E5%A6%82%E4%BD%95%E5%9C%A8CMake%E4%B8%AD%E6%AD%A3%E7%A1%AE%E7%9A%84%E6%B7%BB%E5%8A%A0%E5%BA%93%E6%96%87%E4%BB%B6%EF%BC%9AMSVC%E4%B8%8EMinGW%E6%B7%B7%E7%94%A8%E9%99%B7%E9%98%B1/" class="article-date">
+  <time class="dt-published" datetime="2025-03-14T08:57:00.000Z" itemprop="datePublished">2025-03-14</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%BC%80%E5%8F%91%E8%B0%83%E4%BC%98/">开发调优</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2025/03/14/%E5%A6%82%E4%BD%95%E5%9C%A8CMake%E4%B8%AD%E6%AD%A3%E7%A1%AE%E7%9A%84%E6%B7%BB%E5%8A%A0%E5%BA%93%E6%96%87%E4%BB%B6%EF%BC%9AMSVC%E4%B8%8EMinGW%E6%B7%B7%E7%94%A8%E9%99%B7%E9%98%B1/">如何在CMake中正确的添加库文件：MSVC与MinGW混用陷阱</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>记一次在windows+cmake+MinGW环境下使用openssl添加库文件错误的经历</p>
+</blockquote>
+<h3 id="一、库文件介绍"><a href="#一、库文件介绍" class="headerlink" title="一、库文件介绍"></a>一、库文件介绍</h3><p>OpenSSL下载路径：<a target="_blank" rel="noopener" href="https://slproweb.com/products/Win32OpenSSL.html">https://slproweb.com/products/Win32OpenSSL.html</a></p>
+<p><img src="https://images.guangyin.blog/2025/03/353441199ff5da2d4bff65cd69227af1.webp" alt="image-20250314170922728"></p>
+<p>安装后的库文件是这样的</p>
+<ul>
+<li>bin目录</li>
+</ul>
+<p><img src="https://images.guangyin.blog/2025/03/643232ccca51770dffd9d36753dc74e1.webp" alt="image-20250314171205286"></p>
+<ul>
+<li>lib目录</li>
+</ul>
+<p><img src="https://images.guangyin.blog/2025/03/8436334c95aee648de59b060fb0cb4d7.webp" alt="image-20250314171309001"></p>
+<p>可以看到，这是一个使用<strong>MSVC</strong>编译套件编译的库</p>
+<h3 id="二、遇到的问题"><a href="#二、遇到的问题" class="headerlink" title="二、遇到的问题"></a>二、遇到的问题</h3><p>根据经验，添加库文件通常需要”掐头去尾”——即<strong>去掉lib前缀和.lib后缀</strong>。例如，对于<strong>libcrypto.lib</strong>，我尝试这样添加：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">target_link_libraries</span>(<span class="variable">$&#123;PROJECT_NAME&#125;</span> crypto)</span><br></pre></td></tr></table></figure>
+
+<p>结果报错：<code>cannot find -lcrypto</code></p>
+<p>后面我尝试指定完整文件名</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">target_link_libraries</span>(<span class="variable">$&#123;PROJECT_NAME&#125;</span> libcrypto.lib)</span><br></pre></td></tr></table></figure>
+
+<p>依然报错：<code>cannot find -lcrypto</code></p>
+<h3 id="三、问题分析"><a href="#三、问题分析" class="headerlink" title="三、问题分析"></a>三、问题分析</h3><h4 id="3-1-不同系统的库命名约定"><a href="#3-1-不同系统的库命名约定" class="headerlink" title="3.1 不同系统的库命名约定"></a>3.1 不同系统的库命名约定</h4><ul>
+<li><strong>MSVC (Windows)</strong>: 库通常命名为<code>crypto.lib</code>或<code>libcrypto.lib</code></li>
+<li><strong>GCC&#x2F;MinGW&#x2F;Linux</strong>: 库通常命名为<code>libcrypto.so</code>或<code>libcrypto.a</code></li>
+</ul>
+<h4 id="3-2、CMake的库名处理机制"><a href="#3-2、CMake的库名处理机制" class="headerlink" title="3.2、CMake的库名处理机制"></a>3.2、CMake的库名处理机制</h4><p>CMake会根据使用的生成器和编译器自动处理库名转换:</p>
+<ol>
+<li><strong>使用不带前缀和后缀的名称</strong>(<code>crypto</code>):<ul>
+<li>MSVC生成器会查找<code>crypto.lib</code></li>
+<li>GCC&#x2F;MinGW生成器会查找<code>libcrypto.a</code>或<code>libcrypto.dll.a</code></li>
+</ul>
+</li>
+<li><strong>使用带lib前缀的名称</strong>(<code>libcrypto</code>):<ul>
+<li>MinGW会查找<code>libcrypto.a</code>或<code>libcrypto.dll.a</code></li>
+<li>MSVC会查找<code>libcrypto.lib</code></li>
+</ul>
+</li>
+<li><strong>使用完整文件名带扩展名</strong>(<code>libcrypto.lib</code>):<ul>
+<li>MinGW会错误地查找<code>liblibcrypto.lib.a</code>或<code>liblibcrypto.lib.dll.a</code></li>
+</ul>
+</li>
+</ol>
+<h4 id="3-3、问题根源"><a href="#3-3、问题根源" class="headerlink" title="3.3、问题根源"></a>3.3、问题根源</h4><p><strong>跨工具链使用导致的命名不匹配</strong>：我使用MinGW编译套件，但链接了MSVC构建的OpenSSL库。</p>
+<ol>
+<li><p>当使用<code>crypto</code>引用时：</p>
+<ul>
+<li><p>MinGW尝试查找<code>libcrypto.a</code>或<code>libcrypto.dll.a</code>，但实际文件是<code>libcrypto.lib</code></p>
+</li>
+<li><p>“掐头去尾”规则只适用于同一工具链</p>
+</li>
+</ul>
+</li>
+<li><p>当使用<code>libcrypto.lib</code>引用时：</p>
+<ul>
+<li>MinGW尝试查找<code>liblibcrypto.lib.a</code>或<code>liblibcrypto.lib.dll.a</code>，这显然不存在</li>
+</ul>
+</li>
+</ol>
+<h3 id="四、解决方案"><a href="#四、解决方案" class="headerlink" title="四、解决方案"></a>四、解决方案</h3><ol>
+<li><p>方案一：使用不带扩展名的库名</p>
+ <figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">target_link_libraries</span>(<span class="variable">$&#123;PROJECT_NAME&#125;</span> Qt5::Core libcrypto)</span><br></pre></td></tr></table></figure>
+
+<p> MinGW会正确地查找<code>libcrypto.a</code>或<code>libcrypto.dll.a</code>。</p>
+</li>
+<li><p>方案二：使用绝对路径直接指定库文件</p>
+ <figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">target_link_libraries</span>(<span class="variable">$&#123;PROJECT_NAME&#125;</span> <span class="variable">$&#123;OPENSSL_INSTALL_DIR&#125;</span>/lib/libcrypto.lib)</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>总结：<strong>当使用与库构建时不同的编译器工具链时，库命名约定可能不匹配，需要特别注意库的引用方式。</strong></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://www.228610.xyz/2025/03/14/%E5%A6%82%E4%BD%95%E5%9C%A8CMake%E4%B8%AD%E6%AD%A3%E7%A1%AE%E7%9A%84%E6%B7%BB%E5%8A%A0%E5%BA%93%E6%96%87%E4%BB%B6%EF%BC%9AMSVC%E4%B8%8EMinGW%E6%B7%B7%E7%94%A8%E9%99%B7%E9%98%B1/" data-id="cuidoAwcuiWzEijJ1Akvfglxj" data-title="如何在CMake中正确的添加库文件：MSVC与MinGW混用陷阱" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cmake/" rel="tag">cmake</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-C++ 报错：cannot found -lxxx" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/03/14/C++%20%E6%8A%A5%E9%94%99%EF%BC%9Acannot%20found%20-lxxx/" class="article-date">
+  <time class="dt-published" datetime="2025-03-14T07:25:00.000Z" itemprop="datePublished">2025-03-14</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/C-%E7%AF%87/">C-篇</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2025/03/14/C++%20%E6%8A%A5%E9%94%99%EF%BC%9Acannot%20found%20-lxxx/">C++ 报错：cannot found -lxxx</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="cannot-found-lxxx动态库"><a href="#cannot-found-lxxx动态库" class="headerlink" title="cannot found -lxxx动态库"></a>cannot found -lxxx动态库</h3><p>找不到动态库文件，排查方向</p>
+<ol>
+<li><p>在当前CMakeLists.txt文件下使用<strong>link_directories</strong>指定动态库路径</p>
+ <figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span>(PROTOBUF_PATH <span class="string">&quot;D:/protobuf-cpp-3.21.12&quot;</span>)</span><br><span class="line"><span class="keyword">link_directories</span>(<span class="variable">$&#123;PROTOBUF_PATH&#125;</span>/lib)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>如果还是找不到，将<strong>link_directories</strong>的实现添加到顶层CMakeLists.txt文件中</p>
+<blockquote>
+<p>原因：你在子目录serialize中添加的上述的动态库路径，但还是报错，可能是<strong>其他同级子目录或者上层目录</strong>使用了serialize目录的相关代码，因此其他目录也需要链接该动态库，但是由于CMake添加的<strong>link_directories</strong>只在该目录及其子目录下生效，在其他同级目录和上层目录是不生效的，所以其他目录也会报出错误：<strong>cannot found -lxxx</strong></p>
+</blockquote>
+</li>
+<li><p>确保库文件名正确，详细信息可以查看这篇文章：<a target="_blank" rel="noopener" href="https://guangyin.blog/index.php/archives/81/">如何在CMake中正确的添加库文件：MSVC与MinGW混用陷阱</a></p>
+</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://www.228610.xyz/2025/03/14/C++%20%E6%8A%A5%E9%94%99%EF%BC%9Acannot%20found%20-lxxx/" data-id="cuidh5UmIQRoYgNw-N8XpAXeu" data-title="C++ 报错：cannot found -lxxx" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/" rel="tag">C++</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-C++ 报错：undefined reference to ‘xxxx’" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/03/14/C++%20%E6%8A%A5%E9%94%99%EF%BC%9Aundefined%20reference%20to%20%E2%80%98xxxx%E2%80%99/" class="article-date">
+  <time class="dt-published" datetime="2025-03-14T06:14:00.000Z" itemprop="datePublished">2025-03-14</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/C-%E7%AF%87/">C-篇</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2025/03/14/C++%20%E6%8A%A5%E9%94%99%EF%BC%9Aundefined%20reference%20to%20%E2%80%98xxxx%E2%80%99/">C++ 报错：undefined reference to ‘xxxx’</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="undefined-reference-to-‘xxx’函数"><a href="#undefined-reference-to-‘xxx’函数" class="headerlink" title="undefined reference to ‘xxx’函数"></a>undefined reference to ‘xxx’函数</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#情况1,库链接顺序不正确导致，明显特征是报错的函数是我们自己实现的函数，而不是底层函数</span></span><br><span class="line">[build] D:/a-mycode/C++/DDZ-NET/client-ddz/window/login.cpp:186: undefined reference to `DataManager::getInstance()<span class="string">&#x27;</span></span><br><span class="line"><span class="string">[build] D:/a-mycode/C++/DDZ-NET/client-ddz/window/login.cpp:187: undefined reference to `DataManager::setIp(QByteArray const&amp;)&#x27;</span></span><br><span class="line"><span class="comment">#情况2，没有找到动态库文件，明显特征是报错的函数是底层函数，而不是我们自己实现的函数</span></span><br><span class="line">[build] tcp/libtcp.a(TcpSocket.cpp.obj): In <span class="keyword">function</span> `TcpSocket::TcpSocket(QObject*)<span class="string">&#x27;:</span></span><br><span class="line"><span class="string">[build] D:/a-mycode/C++/DDZ-NET/client-ddz/tcp/TcpSocket.cpp:11: undefined reference to `__imp_WSAStartup&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>**原因是库文件找不到,**排查方向：</p>
+<ol>
+<li><p>确保不是因为函数没有实现导致的</p>
+</li>
+<li><p>确保target_link_libraries函数设置的要链接的对象<code>&lt;target&gt;</code></p>
+</li>
+<li><p>确保库链接顺序正确，需要在target_link_libraries修改摆放位置，左边库的依赖右边库</p>
+<blockquote>
+<p>例如，A库中用到了B库中的函数，这时就是A库依赖于B库，A库应该在左边，B库在A库右边，如果B库在A库左边，就会报<strong>undefined reference to</strong> 错误，而且有个<strong>明显特征是报错的函数是我们自己实现的函数，而不是底层函数</strong></p>
+</blockquote>
+</li>
+<li><p>确保在target_link_libraries已经添加了导入库</p>
+</li>
+<li><p>确保target_link_libraries的<strong>lib</strong>库或<strong>dll.a</strong>导入库文件能被找到，使用绝对路径试试</p>
+</li>
+<li><p>确保dll或so动态库文件能找到，试试添加到环境变量或添加到build目录下(与exe文件同级目录)</p>
+</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://www.228610.xyz/2025/03/14/C++%20%E6%8A%A5%E9%94%99%EF%BC%9Aundefined%20reference%20to%20%E2%80%98xxxx%E2%80%99/" data-id="cuidscbzoCPO3Y7TC6zITFI1r" data-title="C++ 报错：undefined reference to ‘xxxx’" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/" rel="tag">C++</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-C++封装OpenSSL哈希类" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/03/13/C++%E5%B0%81%E8%A3%85OpenSSL%E5%93%88%E5%B8%8C%E7%B1%BB/" class="article-date">
+  <time class="dt-published" datetime="2025-03-13T10:18:10.000Z" itemprop="datePublished">2025-03-13</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/OpenSSL/">OpenSSL</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2025/03/13/C++%E5%B0%81%E8%A3%85OpenSSL%E5%93%88%E5%B8%8C%E7%B1%BB/">C++封装OpenSSL哈希类</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="一、-基本用法"><a href="#一、-基本用法" class="headerlink" title="一、 基本用法"></a>一、 基本用法</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建MD5哈希对象</span></span><br><span class="line"><span class="function">CryptographicHash <span class="title">hash</span><span class="params">(CryptographicHash::HashType::Md5)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 添加数据</span></span><br><span class="line">hash.<span class="built_in">addData</span>(<span class="string">&quot;Hello World&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取十六进制结果</span></span><br><span class="line">std::string hexResult = hash.<span class="built_in">result</span>();</span><br><span class="line"><span class="comment">// 获取二进制结果</span></span><br><span class="line">std::string binResult = hash.<span class="built_in">result</span>(CryptographicHash::Type::Binary);</span><br></pre></td></tr></table></figure>
+
+<p><strong>必要头文件</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;openssl/evp.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;openssl/md5.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;openssl/sha.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;map&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+<p><strong>通过枚举关联算法长度和实现</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum class</span> <span class="title class_">HashType</span> : <span class="type">char</span> &#123;</span><br><span class="line">    Md5,</span><br><span class="line">    Sha1,</span><br><span class="line">    Sha224,</span><br><span class="line">    Sha256,</span><br><span class="line">    Sha384,</span><br><span class="line">    Sha512,</span><br><span class="line">    Sha3_224,</span><br><span class="line">    Sha3_256,</span><br><span class="line">    Sha3_384,</span><br><span class="line">    Sha3_512,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> hashFunc = <span class="type">const</span> EVP_MD* (*)();</span><br><span class="line"><span class="type">const</span> std::map&lt;HashType, hashFunc&gt; HashMethods = &#123;</span><br><span class="line">    &#123;HashType::Md5, EVP_md5&#125;,</span><br><span class="line">    &#123;HashType::Sha1, EVP_sha1&#125;,</span><br><span class="line">    &#123;HashType::Sha224, EVP_sha224&#125;,</span><br><span class="line">    &#123;HashType::Sha256, EVP_sha256&#125;,</span><br><span class="line">    &#123;HashType::Sha384, EVP_sha384&#125;,</span><br><span class="line">    &#123;HashType::Sha512, EVP_sha512&#125;,</span><br><span class="line">    &#123;HashType::Sha3_224, EVP_sha3_224&#125;,</span><br><span class="line">    &#123;HashType::Sha3_256, EVP_sha3_256&#125;,</span><br><span class="line">    &#123;HashType::Sha3_384, EVP_sha3_384&#125;,</span><br><span class="line">    &#123;HashType::Sha3_512, EVP_sha3_512&#125;,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="type">const</span> std::map&lt;HashType, <span class="type">int</span>&gt; HashLength</span><br><span class="line">&#123;</span><br><span class="line">    &#123;HashType::Md5,MD5_DIGEST_LENGTH&#125;,</span><br><span class="line">    &#123;HashType::Sha1,SHA_DIGEST_LENGTH&#125;,</span><br><span class="line">    &#123;HashType::Sha224,SHA224_DIGEST_LENGTH&#125;,</span><br><span class="line">    &#123;HashType::Sha256,SHA256_DIGEST_LENGTH&#125;,</span><br><span class="line">    &#123;HashType::Sha384,SHA384_DIGEST_LENGTH&#125;,</span><br><span class="line">    &#123;HashType::Sha512,SHA512_DIGEST_LENGTH&#125;,</span><br><span class="line">    &#123;HashType::Sha3_224,SHA224_DIGEST_LENGTH&#125;,</span><br><span class="line">    &#123;HashType::Sha3_256,SHA256_DIGEST_LENGTH&#125;,</span><br><span class="line">    &#123;HashType::Sha3_384,SHA384_DIGEST_LENGTH&#125;,</span><br><span class="line">    &#123;HashType::Sha3_512,SHA512_DIGEST_LENGTH&#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="二、核心实现步骤"><a href="#二、核心实现步骤" class="headerlink" title="二、核心实现步骤"></a>二、核心实现步骤</h3><h4 id="2-1、EVP-MD-CTX-new"><a href="#2-1、EVP-MD-CTX-new" class="headerlink" title="2.1、EVP_MD_CTX_new"></a>2.1、<strong>EVP_MD_CTX_new</strong></h4><p>创建并初始化一个哈希函数上下文 <code>EVP_MD_CTX</code> 对象</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">EVP_MD_CTX *<span class="title">EVP_MD_CTX_new</span><span class="params">(<span class="type">void</span>)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>返回值：一个指向 <code>EVP_MD_CTX</code> 结构体对象的指针</p>
+<p><code>EVP_MD_CTX</code> 是 OpenSSL 中用于保存哈希函数上下文信息的结构体。它包含了执行哈希计算所需的各种状态、缓冲区和上下文信息。</p>
+<p>调用 <code>EVP_MD_CTX_new</code> 函数会分配内存，并对 <code>EVP_MD_CTX</code> 结构体对象进行初始化。之后，可以将该对象传递给其他 OpenSSL 哈希函数相关的函数，以在其中进行进一步的处理和计算。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">m_ctx = <span class="built_in">EVP_MD_CTX_new</span>();</span><br><span class="line"><span class="built_in">assert</span>(m_ctx);</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-2、EVP-DigestInit-ex"><a href="#2-2、EVP-DigestInit-ex" class="headerlink" title="2.2、EVP_DigestInit_ex"></a>2.2、EVP_DigestInit_ex</h4><p>用于初始化哈希（散列）函数的上下文</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">EVP_DigestInit_ex</span><span class="params">(EVP_MD_CTX *ctx, <span class="type">const</span> EVP_MD *type, ENGINE *impl)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>参数解释：</p>
+<ul>
+<li><code>ctx</code>：指向要初始化的 <code>EVP_MD_CTX</code> 结构体指针，该结构体用于保存哈希函数的上下文信息。</li>
+<li><code>type</code>：指向 <code>EVP_MD</code> 函数指针，表示要使用的哈希函数的类型。可以使用 OpenSSL 提供的各种哈希函数类型，如 SHA256、SHA512、MD5 等。</li>
+<li><code>impl</code>：可选参数，指定在初始化哈希函数上下文时要使用的加密引擎（如果有）。</li>
+</ul>
+<p>返回值：</p>
+<ul>
+<li>1：成功</li>
+<li>0：失败</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> ret = <span class="built_in">EVP_DigestInit_ex</span>(m_ctx, HashMethods.<span class="built_in">at</span>(hashType)(),<span class="literal">NULL</span>);</span><br><span class="line"><span class="built_in">assert</span>(ret == <span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-3、EVP-DigestUpdate"><a href="#2-3、EVP-DigestUpdate" class="headerlink" title="2.3、EVP_DigestUpdate"></a>2.3、EVP_DigestUpdate</h4><p>用于更新哈希函数的上下文，<code>EVP_DigestUpdate</code> 函数将 <code>data</code> 指向的数据添加到哈希函数的上下文中，并在计算摘要时使用这些数据。可以多次调用此函数以处理连续的数据块。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">EVP_DigestUpdate</span><span class="params">(EVP_MD_CTX *ctx, <span class="type">const</span> <span class="type">void</span> *data, <span class="type">size_t</span> count)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>参数解释：</p>
+<ul>
+<li><code>ctx</code>：指向哈希函数的上下文对象的指针。</li>
+<li><code>data</code>：指向要计算摘要的数据的指针。</li>
+<li><code>count</code>：要处理的数据的字节数。</li>
+</ul>
+<p>返回值：</p>
+<ul>
+<li>1：成功。</li>
+<li>0：失败。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">const</span> <span class="type">int</span> ret = <span class="built_in">EVP_DigestUpdate</span>(m_ctx, data, length);</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-4、EVP-DigestFinal-ex"><a href="#2-4、EVP-DigestFinal-ex" class="headerlink" title="2.4、EVP_DigestFinal_ex"></a>2.4、EVP_DigestFinal_ex</h4><p>用于计算哈希函数的最终摘要，并将结果存储在指定的md缓冲区中，s记录数据长度，md和s都是传入传出参数</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">EVP_DigestFinal_ex</span><span class="params">(EVP_MD_CTX *ctx, <span class="type">unsigned</span> <span class="type">char</span> *md, <span class="type">unsigned</span> <span class="type">int</span> *s)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>参数解释：</p>
+<ul>
+<li><code>ctx</code>：指向哈希函数的上下文对象的指针。</li>
+<li><code>md</code>：指向存储摘要结果的缓冲区的指针。</li>
+<li><code>s</code>：指向用于存储摘要结果长度的变量的指针。</li>
+</ul>
+<p>返回值：</p>
+<ul>
+<li>1：成功</li>
+<li>0：失败</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">unsigned</span> <span class="type">int</span> len = <span class="number">0</span>;</span><br><span class="line"><span class="type">unsigned</span> <span class="type">char</span> md[HashLength.<span class="built_in">at</span>(m_hashType)];</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> ret = <span class="built_in">EVP_DigestFinal_ex</span>(m_ctx, md, &amp;len);</span><br></pre></td></tr></table></figure>
+
+<p>在调用 <code>EVP_DigestFinal_ex</code> 函数之前，必须先调用 <code>EVP_DigestInit_ex</code> 和 <code>EVP_DigestUpdate</code> 函数，以便初始化哈希函数上下文并处理要计算摘要的数据。</p>
+<h4 id="2-5、EVP-MD-CTX-free"><a href="#2-5、EVP-MD-CTX-free" class="headerlink" title="2.5、EVP_MD_CTX_free"></a>2.5、EVP_MD_CTX_free</h4><p>用于释放哈希函数的上下文对象所占用的内存空间</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">EVP_MD_CTX_free</span><span class="params">(EVP_MD_CTX *ctx)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>参数解释：</p>
+<ul>
+<li><code>ctx</code>：指向哈希函数的上下文对象的指针。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">CryptographicHash::~<span class="built_in">CryptographicHash</span>() &#123;</span><br><span class="line">    <span class="keyword">if</span> (m_ctx) &#123;</span><br><span class="line">        <span class="built_in">EVP_MD_CTX_free</span>(m_ctx);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="完整示例："><a href="#完整示例：" class="headerlink" title="完整示例："></a>完整示例：</h4><ul>
+<li>CryptographicHash.h</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span> CRYPTOGRAPHICHASH_H</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> CRYPTOGRAPHICHASH_H</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;map&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;openssl/evp.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;openssl/sha.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;openssl/md5.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">enum class</span> <span class="title class_">HashType</span> : <span class="type">char</span> &#123;</span><br><span class="line">    Md5,</span><br><span class="line">    Sha1,</span><br><span class="line">    Sha224,</span><br><span class="line">    Sha256,</span><br><span class="line">    Sha384,</span><br><span class="line">    Sha512,</span><br><span class="line">    Sha3_224,</span><br><span class="line">    Sha3_256,</span><br><span class="line">    Sha3_384,</span><br><span class="line">    Sha3_512,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> hashFunc = <span class="type">const</span> EVP_MD* (*)();</span><br><span class="line"><span class="type">const</span> std::map&lt;HashType, hashFunc&gt; HashMethods = &#123;</span><br><span class="line">    &#123;HashType::Md5, EVP_md5&#125;,</span><br><span class="line">    &#123;HashType::Sha1, EVP_sha1&#125;,</span><br><span class="line">    &#123;HashType::Sha224, EVP_sha224&#125;,</span><br><span class="line">    &#123;HashType::Sha256, EVP_sha256&#125;,</span><br><span class="line">    &#123;HashType::Sha384, EVP_sha384&#125;,</span><br><span class="line">    &#123;HashType::Sha512, EVP_sha512&#125;,</span><br><span class="line">    &#123;HashType::Sha3_224, EVP_sha3_224&#125;,</span><br><span class="line">    &#123;HashType::Sha3_256, EVP_sha3_256&#125;,</span><br><span class="line">    &#123;HashType::Sha3_384, EVP_sha3_384&#125;,</span><br><span class="line">    &#123;HashType::Sha3_512, EVP_sha3_512&#125;,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="type">const</span> std::map&lt;HashType, <span class="type">int</span>&gt; HashLength</span><br><span class="line">&#123;</span><br><span class="line">    &#123;HashType::Md5,MD5_DIGEST_LENGTH&#125;,</span><br><span class="line">    &#123;HashType::Sha1,SHA_DIGEST_LENGTH&#125;,</span><br><span class="line">    &#123;HashType::Sha224,SHA224_DIGEST_LENGTH&#125;,</span><br><span class="line">    &#123;HashType::Sha256,SHA256_DIGEST_LENGTH&#125;,</span><br><span class="line">    &#123;HashType::Sha384,SHA384_DIGEST_LENGTH&#125;,</span><br><span class="line">    &#123;HashType::Sha512,SHA512_DIGEST_LENGTH&#125;,</span><br><span class="line">    &#123;HashType::Sha3_224,SHA224_DIGEST_LENGTH&#125;,</span><br><span class="line">    &#123;HashType::Sha3_256,SHA256_DIGEST_LENGTH&#125;,</span><br><span class="line">    &#123;HashType::Sha3_384,SHA384_DIGEST_LENGTH&#125;,</span><br><span class="line">    &#123;HashType::Sha3_512,SHA512_DIGEST_LENGTH&#125;,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">CryptographicHash</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">enum class</span> <span class="title class_">Type</span> : <span class="type">char</span> &#123; Binary, Hex &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">CryptographicHash</span><span class="params">(HashType hashType)</span></span>;</span><br><span class="line"></span><br><span class="line">    ~<span class="built_in">CryptographicHash</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">//添加数据</span></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">addData</span><span class="params">(<span class="type">const</span> std::string &amp;data)</span> <span class="type">const</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">addData</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *data, <span class="type">int</span> length)</span> <span class="type">const</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function">std::string <span class="title">result</span><span class="params">(Type type = Type::Hex)</span> <span class="type">const</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    EVP_MD_CTX *m_ctx;</span><br><span class="line">    HashType m_hashType;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span> <span class="comment">//CRYPTOGRAPHICHASH_H</span></span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>CryptographicHash.cpp</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;CryptographicHash.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cassert&gt;</span></span></span><br><span class="line"></span><br><span class="line">CryptographicHash::<span class="built_in">CryptographicHash</span>(<span class="type">const</span> HashType hashType) &#123;</span><br><span class="line">    m_hashType = hashType;</span><br><span class="line">    m_ctx = <span class="built_in">EVP_MD_CTX_new</span>();</span><br><span class="line">    <span class="built_in">assert</span>(m_ctx);</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> ret = <span class="built_in">EVP_DigestInit_ex</span>(m_ctx, HashMethods.<span class="built_in">at</span>(hashType)(),<span class="literal">NULL</span>);</span><br><span class="line">    <span class="built_in">assert</span>(ret == <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">CryptographicHash::~<span class="built_in">CryptographicHash</span>() &#123;</span><br><span class="line">    <span class="keyword">if</span> (m_ctx) &#123;</span><br><span class="line">        <span class="built_in">EVP_MD_CTX_free</span>(m_ctx);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">CryptographicHash::addData</span><span class="params">(<span class="type">const</span> std::string &amp;data)</span> <span class="type">const</span> </span>&#123;</span><br><span class="line">    <span class="built_in">addData</span>(data.<span class="built_in">data</span>(), data.<span class="built_in">size</span>());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">CryptographicHash::addData</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *data, <span class="type">const</span> <span class="type">int</span> length)</span> <span class="type">const</span> </span>&#123;</span><br><span class="line">    <span class="type">const</span> <span class="type">int</span> ret = <span class="built_in">EVP_DigestUpdate</span>(m_ctx, data, length);</span><br><span class="line">    <span class="built_in">assert</span>(ret == <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">std::string <span class="title">CryptographicHash::result</span><span class="params">(<span class="type">const</span> Type type)</span> <span class="type">const</span> </span>&#123;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">int</span> len = <span class="number">0</span>;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">char</span> md[HashLength.<span class="built_in">at</span>(m_hashType)];</span><br><span class="line">    <span class="type">const</span> <span class="type">int</span> ret = <span class="built_in">EVP_DigestFinal_ex</span>(m_ctx, md, &amp;len);</span><br><span class="line">    <span class="built_in">assert</span>(ret == <span class="number">1</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//在将二进制哈希值转换为十六进制字符串时，二进制数据的每个字节（8 位）都会扩展为 2 个十六进制字符（每个字符 4 位）。</span></span><br><span class="line">    <span class="comment">//md 是包含原始二进制摘要数据的数组，长度为 len 字节。将其转换为十六进制字符串时：</span></span><br><span class="line">    <span class="comment">//md 中每个字节的范围是 0 到 255（0x00 到 0xFF），用十六进制表示时，每个字节正好需要2个字符：</span></span><br><span class="line">    <span class="comment">//因此: 一个字节的最大值是 255，即十六进制的 FF，占两个字符。因此，它是 res[len*2]</span></span><br><span class="line">    <span class="keyword">if</span> (type == Type::Hex) &#123;</span><br><span class="line">        <span class="type">char</span> res[len * <span class="number">2</span>];</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; len; ++i) &#123;</span><br><span class="line">            <span class="built_in">sprintf</span>(&amp;res[i * <span class="number">2</span>], <span class="string">&quot;%02x&quot;</span>, md[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> std::<span class="built_in">string</span>(res, len * <span class="number">2</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> std::<span class="built_in">string</span>(<span class="built_in">reinterpret_cast</span>&lt;<span class="type">char</span> *&gt;(md), len);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://www.228610.xyz/2025/03/13/C++%E5%B0%81%E8%A3%85OpenSSL%E5%93%88%E5%B8%8C%E7%B1%BB/" data-id="cuidszvDigl7LhUsGcldD1hKs" data-title="C++封装OpenSSL哈希类" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/openssl/" rel="tag">openssl</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+
+
+  <nav id="page-nav">
+    
+    <a class="extend prev" rel="prev" href="/page/6/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="extend next" rel="next" href="/page/8/">Next &raquo;</a>
+  </nav>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/C-%E7%AF%87/">C-篇</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/OpenSSL/">OpenSSL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Qt/">Qt</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/muduo/">muduo</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E5%8F%91%E8%B0%83%E4%BC%98/">开发调优</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%90%9E%E4%B8%83%E6%8D%BB%E4%B8%89/">搞七捻三</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%B5%84%E6%BA%90%E8%8D%9F%E8%90%83/">资源荟萃</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%97%AE%E9%A2%98%E6%B1%87%E6%80%BB/">问题汇总</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/1panel/" rel="tag">1panel</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CRT/" rel="tag">CRT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTP/" rel="tag">CTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FRP/" rel="tag">FRP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MariaDB/" rel="tag">MariaDB</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyNodeQuery/" rel="tag">MyNodeQuery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PicGo/" rel="tag">PicGo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Qt/" rel="tag">Qt</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/" rel="tag">Spring Boot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/aria2c/" rel="tag">aria2c</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/caddy/" rel="tag">caddy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdn/" rel="tag">cdn</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cloudflare/" rel="tag">cloudflare</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cmake/" rel="tag">cmake</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/epoll/" rel="tag">epoll</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/firefox/" rel="tag">firefox</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flameshot/" rel="tag">flameshot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hy/" rel="tag">hy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/muduo/" rel="tag">muduo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mvnd/" rel="tag">mvnd</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/opengl/" rel="tag">opengl</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openssl/" rel="tag">openssl</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/protobuf/" rel="tag">protobuf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/serv00/" rel="tag">serv00</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socat/" rel="tag">socat</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socks5/" rel="tag">socks5</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/typecho/" rel="tag">typecho</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ubuntu/" rel="tag">ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vcpkg/" rel="tag">vcpkg</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vmware/" rel="tag">vmware</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vs2022/" rel="tag">vs2022</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vscode/" rel="tag">vscode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%B8%AD%E8%BD%AC/" rel="tag">中转</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/" rel="tag">内网穿透</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/" rel="tag">反向代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9F%9F%E5%90%8D%E9%82%AE%E7%AE%B1/" rel="tag">域名邮箱</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A2%E9%92%88/" rel="tag">探针</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%B2%98%E5%8C%85/" rel="tag">粘包</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%95%9C%E5%83%8F%E6%BA%90/" rel="tag">镜像源</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/1panel/" style="font-size: 10px;">1panel</a> <a href="/tags/C/" style="font-size: 18.57px;">C++</a> <a href="/tags/CRT/" style="font-size: 10px;">CRT</a> <a href="/tags/CTP/" style="font-size: 10px;">CTP</a> <a href="/tags/CentOS/" style="font-size: 12.86px;">CentOS</a> <a href="/tags/FRP/" style="font-size: 10px;">FRP</a> <a href="/tags/MariaDB/" style="font-size: 10px;">MariaDB</a> <a href="/tags/MyNodeQuery/" style="font-size: 10px;">MyNodeQuery</a> <a href="/tags/MySQL/" style="font-size: 20px;">MySQL</a> <a href="/tags/PicGo/" style="font-size: 10px;">PicGo</a> <a href="/tags/Qt/" style="font-size: 17.14px;">Qt</a> <a href="/tags/Spring-Boot/" style="font-size: 10px;">Spring Boot</a> <a href="/tags/aria2c/" style="font-size: 10px;">aria2c</a> <a href="/tags/caddy/" style="font-size: 11.43px;">caddy</a> <a href="/tags/cdn/" style="font-size: 10px;">cdn</a> <a href="/tags/cloudflare/" style="font-size: 14.29px;">cloudflare</a> <a href="/tags/cmake/" style="font-size: 11.43px;">cmake</a> <a href="/tags/docker/" style="font-size: 11.43px;">docker</a> <a href="/tags/epoll/" style="font-size: 10px;">epoll</a> <a href="/tags/firefox/" style="font-size: 10px;">firefox</a> <a href="/tags/flameshot/" style="font-size: 10px;">flameshot</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/hy/" style="font-size: 10px;">hy</a> <a href="/tags/muduo/" style="font-size: 17.14px;">muduo</a> <a href="/tags/mvnd/" style="font-size: 10px;">mvnd</a> <a href="/tags/nginx/" style="font-size: 12.86px;">nginx</a> <a href="/tags/opengl/" style="font-size: 12.86px;">opengl</a> <a href="/tags/openssl/" style="font-size: 17.14px;">openssl</a> <a href="/tags/protobuf/" style="font-size: 10px;">protobuf</a> <a href="/tags/python/" style="font-size: 10px;">python</a> <a href="/tags/redis/" style="font-size: 11.43px;">redis</a> <a href="/tags/serv00/" style="font-size: 11.43px;">serv00</a> <a href="/tags/socat/" style="font-size: 10px;">socat</a> <a href="/tags/socks5/" style="font-size: 10px;">socks5</a> <a href="/tags/typecho/" style="font-size: 11.43px;">typecho</a> <a href="/tags/ubuntu/" style="font-size: 15.71px;">ubuntu</a> <a href="/tags/vcpkg/" style="font-size: 10px;">vcpkg</a> <a href="/tags/vmware/" style="font-size: 11.43px;">vmware</a> <a href="/tags/vs2022/" style="font-size: 10px;">vs2022</a> <a href="/tags/vscode/" style="font-size: 12.86px;">vscode</a> <a href="/tags/%E4%B8%AD%E8%BD%AC/" style="font-size: 10px;">中转</a> <a href="/tags/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/" style="font-size: 10px;">内网穿透</a> <a href="/tags/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/" style="font-size: 14.29px;">反向代理</a> <a href="/tags/%E5%9F%9F%E5%90%8D%E9%82%AE%E7%AE%B1/" style="font-size: 10px;">域名邮箱</a> <a href="/tags/%E6%8E%A2%E9%92%88/" style="font-size: 10px;">探针</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 11.43px;">算法</a> <a href="/tags/%E7%B2%98%E5%8C%85/" style="font-size: 10px;">粘包</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 10px;">计算机网络</a> <a href="/tags/%E9%95%9C%E5%83%8F%E6%BA%90/" style="font-size: 10px;">镜像源</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/02/">February 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/12/">December 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/11/">November 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/10/">October 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/09/">September 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/08/">August 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/07/">July 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/05/">May 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/04/">April 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/03/">March 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/02/">February 2025</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/02/22/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/08/ubuntu%20%E5%85%8D%E5%AF%86%E6%93%8D%E4%BD%9C/">ubuntu 免密操作</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/08/Ubuntu%2025%20%E4%B8%8B%20Flameshot%20%E5%BF%AB%E6%8D%B7%E9%94%AE%E6%88%AA%E5%9B%BE%E5%A4%B1%E8%B4%A5%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/">Ubuntu 25 下 Flameshot 快捷键截图失败解决方案</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/05/%E9%80%9A%E8%BF%87%E7%BD%91%E7%BA%BF%E4%BC%A0%E8%BE%93%E6%95%B0%E6%8D%AE/">通过网线传输数据</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/04/ctypes%E5%B0%81%E8%A3%85C++%E6%8E%A5%E5%8F%A3%E7%BB%99Python%E4%BD%BF%E7%94%A8/">ctypes封装C++接口给Python使用</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

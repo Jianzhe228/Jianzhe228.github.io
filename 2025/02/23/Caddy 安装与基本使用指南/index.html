@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Caddy 安装与基本使用指南 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Caddy 反向代理配置与基础使用指南Caddy 是一个用 Go 语言编写的开源 Web 服务器，以简单易用、自动 HTTPS 和强大的插件系统著称。其配置文件 Caddyfile 简洁明了，能自动处理 HTTPS 证书的申请和续期。如果不了解反向代理是什么，可以参考这篇文章。  1. 安装 Caddy1.1 官方安装方法具体安装方式参考：Caddy 安装指南。 1.2 在 Linux 上安装12">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Caddy 安装与基本使用指南">
+<meta property="og:url" content="https://www.228610.xyz/2025/02/23/Caddy%20%E5%AE%89%E8%A3%85%E4%B8%8E%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Caddy 反向代理配置与基础使用指南Caddy 是一个用 Go 语言编写的开源 Web 服务器，以简单易用、自动 HTTPS 和强大的插件系统著称。其配置文件 Caddyfile 简洁明了，能自动处理 HTTPS 证书的申请和续期。如果不了解反向代理是什么，可以参考这篇文章。  1. 安装 Caddy1.1 官方安装方法具体安装方式参考：Caddy 安装指南。 1.2 在 Linux 上安装12">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2025-02-23T16:41:00.000Z">
+<meta property="article:modified_time" content="2026-02-22T06:44:28.058Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="caddy">
+<meta property="article:tag" content="反向代理">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://www.228610.xyz"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-Caddy 安装与基本使用指南" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/02/23/Caddy%20%E5%AE%89%E8%A3%85%E4%B8%8E%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/" class="article-date">
+  <time class="dt-published" datetime="2025-02-23T16:41:00.000Z" itemprop="datePublished">2025-02-23</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%BC%80%E5%8F%91%E8%B0%83%E4%BC%98/">开发调优</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Caddy 安装与基本使用指南
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="Caddy-反向代理配置与基础使用指南"><a href="#Caddy-反向代理配置与基础使用指南" class="headerlink" title="Caddy 反向代理配置与基础使用指南"></a>Caddy 反向代理配置与基础使用指南</h1><p>Caddy 是一个用 Go 语言编写的开源 Web 服务器，以简单易用、自动 HTTPS 和强大的插件系统著称。其配置文件 <code>Caddyfile</code> 简洁明了，能自动处理 HTTPS 证书的申请和续期。如果不了解反向代理是什么，可以参考<a target="_blank" rel="noopener" href="https://guangyin.blog/index.php/archives/3/">这篇文章</a>。</p>
+<hr>
+<h2 id="1-安装-Caddy"><a href="#1-安装-Caddy" class="headerlink" title="1. 安装 Caddy"></a>1. 安装 Caddy</h2><h3 id="1-1-官方安装方法"><a href="#1-1-官方安装方法" class="headerlink" title="1.1 官方安装方法"></a>1.1 官方安装方法</h3><p>具体安装方式参考：<a target="_blank" rel="noopener" href="https://caddyserver.com/docs/install">Caddy 安装指南</a>。</p>
+<h3 id="1-2-在-Linux-上安装"><a href="#1-2-在-Linux-上安装" class="headerlink" title="1.2 在 Linux 上安装"></a>1.2 在 Linux 上安装</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt install -y debian-keyring debian-archive-keyring apt-transport-https</span><br><span class="line">curl -1sLf <span class="string">&#x27;https://dl.cloudsmith.io/public/caddy/stable/gpg.key&#x27;</span> | <span class="built_in">sudo</span> gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg</span><br><span class="line">curl -1sLf <span class="string">&#x27;https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt&#x27;</span> | <span class="built_in">sudo</span> <span class="built_in">tee</span> /etc/apt/sources.list.d/caddy-stable.list</span><br><span class="line"><span class="built_in">sudo</span> apt update</span><br><span class="line"><span class="built_in">sudo</span> apt install caddy</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-3-在-macOS-上安装"><a href="#1-3-在-macOS-上安装" class="headerlink" title="1.3 在 macOS 上安装"></a>1.3 在 macOS 上安装</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew install caddy</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-4-在-Windows-上安装"><a href="#1-4-在-Windows-上安装" class="headerlink" title="1.4 在 Windows 上安装"></a>1.4 在 Windows 上安装</h3><p>从 <a target="_blank" rel="noopener" href="https://caddyserver.com/download">Caddy 官网</a> 下载二进制文件，解压后运行。</p>
+<h3 id="1-5-启动与验证"><a href="#1-5-启动与验证" class="headerlink" title="1.5 启动与验证"></a>1.5 启动与验证</h3><p>启动 Caddy 并设置开机自启：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> systemctl start caddy</span><br><span class="line"><span class="built_in">sudo</span> systemctl <span class="built_in">enable</span> caddy</span><br></pre></td></tr></table></figure>
+
+<p>访问 <code>http://你的服务器IP</code>，若看到欢迎页面，安装成功。</p>
+<hr>
+<h2 id="2-Caddy-配置文件结构"><a href="#2-Caddy-配置文件结构" class="headerlink" title="2. Caddy 配置文件结构"></a>2. Caddy 配置文件结构</h2><p>Caddy 使用 <code>Caddyfile</code> 作为配置文件，默认位于 <code>/etc/caddy/Caddyfile</code> 或项目目录中。示例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">example.com &#123;</span><br><span class="line">    root * /var/www/html</span><br><span class="line">    file_server</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="3-反向代理配置示例"><a href="#3-反向代理配置示例" class="headerlink" title="3. 反向代理配置示例"></a>3. 反向代理配置示例</h2><h3 id="3-1-场景"><a href="#3-1-场景" class="headerlink" title="3.1 场景"></a>3.1 场景</h3><p>将 <code>example.com</code> 的请求代理到 <code>localhost:8080</code>，并启用 HTTPS。</p>
+<h3 id="3-2-配置"><a href="#3-2-配置" class="headerlink" title="3.2 配置"></a>3.2 配置</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">example.com &#123;</span><br><span class="line">    reverse_proxy localhost:8080</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-3-工作原理"><a href="#3-3-工作原理" class="headerlink" title="3.3 工作原理"></a>3.3 工作原理</h3><ul>
+<li><strong>自动 HTTPS</strong>：Caddy 通过 Let’s Encrypt 申请证书，默认将 HTTP 重定向到 HTTPS。</li>
+<li><strong>反向代理</strong>：请求转发到 <code>localhost:8080</code>。</li>
+</ul>
+<hr>
+<h2 id="4-其他使用场景"><a href="#4-其他使用场景" class="headerlink" title="4. 其他使用场景"></a>4. 其他使用场景</h2><h3 id="4-1-静态文件服务"><a href="#4-1-静态文件服务" class="headerlink" title="4.1 静态文件服务"></a>4.1 静态文件服务</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">example.com &#123;</span><br><span class="line">    root * /var/www/html</span><br><span class="line">    file_server</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>root</code>：指定文件目录。</li>
+<li><code>file_server</code>：启用文件服务。</li>
+</ul>
+<h3 id="4-2-负载均衡"><a href="#4-2-负载均衡" class="headerlink" title="4.2 负载均衡"></a>4.2 负载均衡</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">example.com &#123;</span><br><span class="line">    reverse_proxy /api/* &#123;</span><br><span class="line">        to localhost:8080 localhost:8081</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>/api/*</code>：匹配路径。</li>
+<li><code>to</code>：多后端负载均衡。</li>
+</ul>
+<h3 id="4-3-日志配置"><a href="#4-3-日志配置" class="headerlink" title="4.3 日志配置"></a>4.3 日志配置</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">example.com &#123;</span><br><span class="line">    <span class="built_in">log</span> &#123;</span><br><span class="line">        output file /var/log/caddy/access.log</span><br><span class="line">        format json</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>format json</code>：日志格式现代化。</li>
+</ul>
+<hr>
+<h2 id="5-测试和重载配置"><a href="#5-测试和重载配置" class="headerlink" title="5. 测试和重载配置"></a>5. 测试和重载配置</h2><p>验证配置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">caddy validate</span><br></pre></td></tr></table></figure>
+
+<p>重载配置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">caddy reload</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="6-更多资源"><a href="#6-更多资源" class="headerlink" title="6. 更多资源"></a>6. 更多资源</h2><ul>
+<li>官方文档：<a target="_blank" rel="noopener" href="https://caddyserver.com/docs/">Caddy 官方文档</a></li>
+<li>社区支持：<a target="_blank" rel="noopener" href="https://caddy.community/">Caddy 论坛</a></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://www.228610.xyz/2025/02/23/Caddy%20%E5%AE%89%E8%A3%85%E4%B8%8E%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/" data-id="cuidI8C4AYwzrJYel7XztvG_5" data-title="Caddy 安装与基本使用指南" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/caddy/" rel="tag">caddy</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/" rel="tag">反向代理</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2025/02/23/docker%E5%AE%89%E8%A3%85-%E5%9B%BD%E5%A4%96%E6%9C%8D%E5%8A%A1%E5%99%A8/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          docker安装-国外服务器
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2025/02/23/%5B%E8%BD%AC%E8%BD%BD%5D%20%E5%9C%A8%201Panel%20%E4%B8%8B%E6%90%AD%E5%BB%BA%20MyNodeQuery%20%E5%AE%9E%E6%97%B6%E7%9B%91%E6%8E%A7%20VPS/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">[转载] 在 1Panel 下搭建 MyNodeQuery 实时监控 VPS</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/C-%E7%AF%87/">C-篇</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/OpenSSL/">OpenSSL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Qt/">Qt</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/muduo/">muduo</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E5%8F%91%E8%B0%83%E4%BC%98/">开发调优</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%90%9E%E4%B8%83%E6%8D%BB%E4%B8%89/">搞七捻三</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%B5%84%E6%BA%90%E8%8D%9F%E8%90%83/">资源荟萃</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%97%AE%E9%A2%98%E6%B1%87%E6%80%BB/">问题汇总</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/1panel/" rel="tag">1panel</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CRT/" rel="tag">CRT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTP/" rel="tag">CTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FRP/" rel="tag">FRP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MariaDB/" rel="tag">MariaDB</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyNodeQuery/" rel="tag">MyNodeQuery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PicGo/" rel="tag">PicGo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Qt/" rel="tag">Qt</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/" rel="tag">Spring Boot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/aria2c/" rel="tag">aria2c</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/caddy/" rel="tag">caddy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdn/" rel="tag">cdn</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cloudflare/" rel="tag">cloudflare</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cmake/" rel="tag">cmake</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/epoll/" rel="tag">epoll</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/firefox/" rel="tag">firefox</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flameshot/" rel="tag">flameshot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hy/" rel="tag">hy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/muduo/" rel="tag">muduo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mvnd/" rel="tag">mvnd</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/opengl/" rel="tag">opengl</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openssl/" rel="tag">openssl</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/protobuf/" rel="tag">protobuf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/serv00/" rel="tag">serv00</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socat/" rel="tag">socat</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socks5/" rel="tag">socks5</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/typecho/" rel="tag">typecho</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ubuntu/" rel="tag">ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vcpkg/" rel="tag">vcpkg</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vmware/" rel="tag">vmware</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vs2022/" rel="tag">vs2022</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vscode/" rel="tag">vscode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%B8%AD%E8%BD%AC/" rel="tag">中转</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/" rel="tag">内网穿透</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/" rel="tag">反向代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9F%9F%E5%90%8D%E9%82%AE%E7%AE%B1/" rel="tag">域名邮箱</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A2%E9%92%88/" rel="tag">探针</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%B2%98%E5%8C%85/" rel="tag">粘包</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%95%9C%E5%83%8F%E6%BA%90/" rel="tag">镜像源</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/1panel/" style="font-size: 10px;">1panel</a> <a href="/tags/C/" style="font-size: 18.57px;">C++</a> <a href="/tags/CRT/" style="font-size: 10px;">CRT</a> <a href="/tags/CTP/" style="font-size: 10px;">CTP</a> <a href="/tags/CentOS/" style="font-size: 12.86px;">CentOS</a> <a href="/tags/FRP/" style="font-size: 10px;">FRP</a> <a href="/tags/MariaDB/" style="font-size: 10px;">MariaDB</a> <a href="/tags/MyNodeQuery/" style="font-size: 10px;">MyNodeQuery</a> <a href="/tags/MySQL/" style="font-size: 20px;">MySQL</a> <a href="/tags/PicGo/" style="font-size: 10px;">PicGo</a> <a href="/tags/Qt/" style="font-size: 17.14px;">Qt</a> <a href="/tags/Spring-Boot/" style="font-size: 10px;">Spring Boot</a> <a href="/tags/aria2c/" style="font-size: 10px;">aria2c</a> <a href="/tags/caddy/" style="font-size: 11.43px;">caddy</a> <a href="/tags/cdn/" style="font-size: 10px;">cdn</a> <a href="/tags/cloudflare/" style="font-size: 14.29px;">cloudflare</a> <a href="/tags/cmake/" style="font-size: 11.43px;">cmake</a> <a href="/tags/docker/" style="font-size: 11.43px;">docker</a> <a href="/tags/epoll/" style="font-size: 10px;">epoll</a> <a href="/tags/firefox/" style="font-size: 10px;">firefox</a> <a href="/tags/flameshot/" style="font-size: 10px;">flameshot</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/hy/" style="font-size: 10px;">hy</a> <a href="/tags/muduo/" style="font-size: 17.14px;">muduo</a> <a href="/tags/mvnd/" style="font-size: 10px;">mvnd</a> <a href="/tags/nginx/" style="font-size: 12.86px;">nginx</a> <a href="/tags/opengl/" style="font-size: 12.86px;">opengl</a> <a href="/tags/openssl/" style="font-size: 17.14px;">openssl</a> <a href="/tags/protobuf/" style="font-size: 10px;">protobuf</a> <a href="/tags/python/" style="font-size: 10px;">python</a> <a href="/tags/redis/" style="font-size: 11.43px;">redis</a> <a href="/tags/serv00/" style="font-size: 11.43px;">serv00</a> <a href="/tags/socat/" style="font-size: 10px;">socat</a> <a href="/tags/socks5/" style="font-size: 10px;">socks5</a> <a href="/tags/typecho/" style="font-size: 11.43px;">typecho</a> <a href="/tags/ubuntu/" style="font-size: 15.71px;">ubuntu</a> <a href="/tags/vcpkg/" style="font-size: 10px;">vcpkg</a> <a href="/tags/vmware/" style="font-size: 11.43px;">vmware</a> <a href="/tags/vs2022/" style="font-size: 10px;">vs2022</a> <a href="/tags/vscode/" style="font-size: 12.86px;">vscode</a> <a href="/tags/%E4%B8%AD%E8%BD%AC/" style="font-size: 10px;">中转</a> <a href="/tags/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/" style="font-size: 10px;">内网穿透</a> <a href="/tags/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/" style="font-size: 14.29px;">反向代理</a> <a href="/tags/%E5%9F%9F%E5%90%8D%E9%82%AE%E7%AE%B1/" style="font-size: 10px;">域名邮箱</a> <a href="/tags/%E6%8E%A2%E9%92%88/" style="font-size: 10px;">探针</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 11.43px;">算法</a> <a href="/tags/%E7%B2%98%E5%8C%85/" style="font-size: 10px;">粘包</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 10px;">计算机网络</a> <a href="/tags/%E9%95%9C%E5%83%8F%E6%BA%90/" style="font-size: 10px;">镜像源</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/02/">February 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/12/">December 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/11/">November 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/10/">October 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/09/">September 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/08/">August 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/07/">July 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/05/">May 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/04/">April 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/03/">March 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/02/">February 2025</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/02/22/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/08/ubuntu%20%E5%85%8D%E5%AF%86%E6%93%8D%E4%BD%9C/">ubuntu 免密操作</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/08/Ubuntu%2025%20%E4%B8%8B%20Flameshot%20%E5%BF%AB%E6%8D%B7%E9%94%AE%E6%88%AA%E5%9B%BE%E5%A4%B1%E8%B4%A5%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/">Ubuntu 25 下 Flameshot 快捷键截图失败解决方案</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/05/%E9%80%9A%E8%BF%87%E7%BD%91%E7%BA%BF%E4%BC%A0%E8%BE%93%E6%95%B0%E6%8D%AE/">通过网线传输数据</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/04/ctypes%E5%B0%81%E8%A3%85C++%E6%8E%A5%E5%8F%A3%E7%BB%99Python%E4%BD%BF%E7%94%A8/">ctypes封装C++接口给Python使用</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>vcpkg 安装和使用 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="一、vcpkg 简介vcpkg 是微软开发的 C++ 包管理器，用于简化 C++ 库的获取、编译和集成过程。它包含超过 2000 个开源库的精选注册表，这些库经过 vcpkg 的持续集成管道验证，确保可以协同工作。 二、安装和设置1. 克隆 vcpkg 仓库12git clone https:&#x2F;&#x2F;github.com&#x2F;microsoft&#x2F;vcpkg.gitcd vcpkg  vcpkg 仓库包含：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="vcpkg 安装和使用">
+<meta property="og:url" content="https://www.228610.xyz/2025/10/28/vcpkg%20%E5%AE%89%E8%A3%85%E5%92%8C%E4%BD%BF%E7%94%A8/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="一、vcpkg 简介vcpkg 是微软开发的 C++ 包管理器，用于简化 C++ 库的获取、编译和集成过程。它包含超过 2000 个开源库的精选注册表，这些库经过 vcpkg 的持续集成管道验证，确保可以协同工作。 二、安装和设置1. 克隆 vcpkg 仓库12git clone https:&#x2F;&#x2F;github.com&#x2F;microsoft&#x2F;vcpkg.gitcd vcpkg  vcpkg 仓库包含：">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://images.guangyin.blog/2025/10/cc0c80555581deccb1935d801d0dfc81.png">
+<meta property="article:published_time" content="2025-10-28T13:48:00.000Z">
+<meta property="article:modified_time" content="2026-02-22T06:44:28.063Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="C++">
+<meta property="article:tag" content="vcpkg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://images.guangyin.blog/2025/10/cc0c80555581deccb1935d801d0dfc81.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://www.228610.xyz"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-vcpkg 安装和使用" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/10/28/vcpkg%20%E5%AE%89%E8%A3%85%E5%92%8C%E4%BD%BF%E7%94%A8/" class="article-date">
+  <time class="dt-published" datetime="2025-10-28T13:48:00.000Z" itemprop="datePublished">2025-10-28</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%BC%80%E5%8F%91%E8%B0%83%E4%BC%98/">开发调优</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      vcpkg 安装和使用
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="一、vcpkg-简介"><a href="#一、vcpkg-简介" class="headerlink" title="一、vcpkg 简介"></a>一、vcpkg 简介</h2><p><strong>vcpkg</strong> 是微软开发的 C++ 包管理器，用于简化 C++ 库的获取、编译和集成过程。它包含超过 2000 个开源库的精选注册表，这些库经过 vcpkg 的持续集成管道验证，确保可以协同工作。</p>
+<h2 id="二、安装和设置"><a href="#二、安装和设置" class="headerlink" title="二、安装和设置"></a>二、安装和设置</h2><h3 id="1-克隆-vcpkg-仓库"><a href="#1-克隆-vcpkg-仓库" class="headerlink" title="1. 克隆 vcpkg 仓库"></a>1. 克隆 vcpkg 仓库</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/microsoft/vcpkg.git</span><br><span class="line"><span class="built_in">cd</span> vcpkg</span><br></pre></td></tr></table></figure>
+
+<p>vcpkg 仓库包含：</p>
+<ul>
+<li>获取 vcpkg 可执行文件的脚本</li>
+<li>由 vcpkg 社区维护的精选开源库注册表</li>
+<li>构建和安装库所需的配方和元数据（不包含库源代码）</li>
+</ul>
+<h3 id="2-运行引导脚本"><a href="#2-运行引导脚本" class="headerlink" title="2. 运行引导脚本"></a>2. 运行引导脚本</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Windows (PowerShell)</span></span><br><span class="line">.\bootstrap-vcpkg.bat</span><br><span class="line"></span><br><span class="line"><span class="comment"># Linux/macOS</span></span><br><span class="line">./bootstrap-vcpkg.sh</span><br></pre></td></tr></table></figure>
+
+<p>引导脚本会：</p>
+<ul>
+<li>执行先决条件检查</li>
+<li>下载 vcpkg 可执行文件</li>
+</ul>
+<h3 id="3-设置环境变量"><a href="#3-设置环境变量" class="headerlink" title="3. 设置环境变量"></a>3. 设置环境变量</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># PowerShell</span></span><br><span class="line"><span class="variable">$env</span>:VCPKG_ROOT=<span class="string">&quot;C:\path\to\vcpkg&quot;</span></span><br><span class="line"><span class="variable">$env</span>:PATH=<span class="string">&quot;<span class="variable">$env</span>:VCPKG_ROOT;<span class="variable">$env</span>:PATH&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># CMD</span></span><br><span class="line"><span class="built_in">set</span> <span class="string">&quot;VCPKG_ROOT=C:\path\to\vcpkg&quot;</span></span><br><span class="line"><span class="built_in">set</span> PATH=%VCPKG_ROOT%;%PATH%</span><br></pre></td></tr></table></figure>
+
+<p><strong>作用：</strong></p>
+<ul>
+<li><code>VCPKG_ROOT</code>：帮助 Visual Studio 定位 vcpkg 实例</li>
+<li>添加到 <code>PATH</code>：确保可以直接从命令行运行 vcpkg 命令</li>
+<li>执行：<code>vcpkg integrate install</code></li>
+</ul>
+<h2 id="三、核心文件详解"><a href="#三、核心文件详解" class="headerlink" title="三、核心文件详解"></a>三、核心文件详解</h2><h3 id="1-vcpkg-json（清单文件）"><a href="#1-vcpkg-json（清单文件）" class="headerlink" title="1. vcpkg.json（清单文件）"></a>1. <strong>vcpkg.json（清单文件）</strong></h3><p>这是项目的依赖清单文件，定义项目所需的包。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;dependencies&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="string">&quot;fmt&quot;</span></span><br><span class="line">    <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>作用：</strong></p>
+<ul>
+<li>声明项目依赖的库</li>
+<li>vcpkg 读取此文件以了解需要安装哪些依赖项</li>
+<li>与 CMake 集成，为项目提供所需的依赖项</li>
+<li>应纳入版本控制</li>
+<li>运行<code>vcpkg install</code>会根据vcpkg.json安装依赖</li>
+</ul>
+<p><strong>创建方法：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">vcpkg new --application        <span class="comment"># 创建清单文件</span></span><br><span class="line">vcpkg add port <span class="built_in">fmt</span>             <span class="comment"># 添加依赖包</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-vcpkg-configuration-json（配置文件）"><a href="#2-vcpkg-configuration-json（配置文件）" class="headerlink" title="2. vcpkg-configuration.json（配置文件）"></a>2. <strong>vcpkg-configuration.json（配置文件）</strong></h3><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;default-registry&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;kind&quot;</span><span class="punctuation">:</span> <span class="string">&quot;git&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;baseline&quot;</span><span class="punctuation">:</span> <span class="string">&quot;...&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;repository&quot;</span><span class="punctuation">:</span> <span class="string">&quot;...&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>作用：</strong></p>
+<ul>
+<li>引入基线（baseline），对项目依赖项设置最低版本约束</li>
+<li>确保不同开发环境之间的版本一致性</li>
+<li>建议纳入版本控制</li>
+<li>通常由 <code>vcpkg new</code> 自动生成，一般不需手动修改</li>
+</ul>
+<h3 id="3-CMakePresets-json（CMake-预设文件）"><a href="#3-CMakePresets-json（CMake-预设文件）" class="headerlink" title="3. CMakePresets.json（CMake 预设文件）"></a>3. <strong>CMakePresets.json（CMake 预设文件）</strong></h3><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;version&quot;</span><span class="punctuation">:</span> <span class="number">3</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;configurePresets&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;windows-base&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;hidden&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;generator&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Ninja&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;binaryDir&quot;</span><span class="punctuation">:</span> <span class="string">&quot;$&#123;sourceDir&#125;/out/build/$&#123;presetName&#125;&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;installDir&quot;</span><span class="punctuation">:</span> <span class="string">&quot;$&#123;sourceDir&#125;/out/install/$&#123;presetName&#125;&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;cacheVariables&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;CMAKE_C_COMPILER&quot;</span><span class="punctuation">:</span> <span class="string">&quot;cl.exe&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;CMAKE_CXX_COMPILER&quot;</span><span class="punctuation">:</span> <span class="string">&quot;cl.exe&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;CMAKE_TOOLCHAIN_FILE&quot;</span><span class="punctuation">:</span> <span class="string">&quot;$env&#123;VCPKG_ROOT&#125;/scripts/buildsystems/vcpkg.cmake&quot;</span> <span class="comment">//添加CMAKE_TOOLCHAIN_FILE</span></span><br><span class="line">      <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;condition&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;equals&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;lhs&quot;</span><span class="punctuation">:</span> <span class="string">&quot;$&#123;hostSystemName&#125;&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;rhs&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Windows&quot;</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;x64-debug&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;displayName&quot;</span><span class="punctuation">:</span> <span class="string">&quot;x64 Debug&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;inherits&quot;</span><span class="punctuation">:</span> <span class="string">&quot;windows-base&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;architecture&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="string">&quot;x64&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;strategy&quot;</span><span class="punctuation">:</span> <span class="string">&quot;external&quot;</span></span><br><span class="line">      <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;cacheVariables&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;CMAKE_BUILD_TYPE&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Debug&quot;</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;x64-release&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;displayName&quot;</span><span class="punctuation">:</span> <span class="string">&quot;x64 Release&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;inherits&quot;</span><span class="punctuation">:</span> <span class="string">&quot;x64-debug&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;cacheVariables&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;CMAKE_BUILD_TYPE&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Release&quot;</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;linux-debug&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;displayName&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Linux Debug&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;generator&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Ninja&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;binaryDir&quot;</span><span class="punctuation">:</span> <span class="string">&quot;$&#123;sourceDir&#125;/out/build/$&#123;presetName&#125;&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;installDir&quot;</span><span class="punctuation">:</span> <span class="string">&quot;$&#123;sourceDir&#125;/out/install/$&#123;presetName&#125;&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;cacheVariables&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;CMAKE_BUILD_TYPE&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Debug&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;CMAKE_TOOLCHAIN_FILE&quot;</span><span class="punctuation">:</span> <span class="string">&quot;$env&#123;VCPKG_ROOT&#125;/scripts/buildsystems/vcpkg.cmake&quot;</span><span class="comment">//添加CMAKE_TOOLCHAIN_FILE</span></span><br><span class="line">      <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;condition&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;equals&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;lhs&quot;</span><span class="punctuation">:</span> <span class="string">&quot;$&#123;hostSystemName&#125;&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;rhs&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Linux&quot;</span></span><br><span class="line">      <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;vendor&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;microsoft.com/VisualStudioRemoteSettings/CMake/1.0&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">          <span class="attr">&quot;sourceDir&quot;</span><span class="punctuation">:</span> <span class="string">&quot;$env&#123;HOME&#125;/.vs/$ms&#123;projectDirName&#125;&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;macos-debug&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;displayName&quot;</span><span class="punctuation">:</span> <span class="string">&quot;macOS Debug&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;generator&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Ninja&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;binaryDir&quot;</span><span class="punctuation">:</span> <span class="string">&quot;$&#123;sourceDir&#125;/out/build/$&#123;presetName&#125;&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;installDir&quot;</span><span class="punctuation">:</span> <span class="string">&quot;$&#123;sourceDir&#125;/out/install/$&#123;presetName&#125;&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;cacheVariables&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;CMAKE_BUILD_TYPE&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Debug&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;CMAKE_TOOLCHAIN_FILE&quot;</span><span class="punctuation">:</span> <span class="string">&quot;$env&#123;VCPKG_ROOT&#125;/scripts/buildsystems/vcpkg.cmake&quot;</span><span class="comment">//添加CMAKE_TOOLCHAIN_FILE</span></span><br><span class="line">      <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;condition&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;equals&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;lhs&quot;</span><span class="punctuation">:</span> <span class="string">&quot;$&#123;hostSystemName&#125;&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;rhs&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Darwin&quot;</span></span><br><span class="line">      <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;vendor&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;microsoft.com/VisualStudioRemoteSettings/CMake/1.0&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">          <span class="attr">&quot;sourceDir&quot;</span><span class="punctuation">:</span> <span class="string">&quot;$env&#123;HOME&#125;/.vs/$ms&#123;projectDirName&#125;&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>作用：</strong></p>
+<ul>
+<li>配置 CMake 使用 vcpkg 的工具链文件</li>
+<li>设置 <code>CMAKE_TOOLCHAIN_FILE</code> 指向 vcpkg 的自定义工具链</li>
+<li>使 CMake 能够自动链接 vcpkg 安装的库</li>
+<li>定义构建预设（生成器、输出目录等）</li>
+<li>应纳入版本控制，团队共享</li>
+</ul>
+<p><strong>关键配置：</strong></p>
+<ul>
+<li><code>CMAKE_TOOLCHAIN_FILE</code>：vcpkg 与 CMake 集成的核心</li>
+<li>路径：<code>$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake</code></li>
+</ul>
+<h3 id="4-CMakeUserPresets-json（用户级预设文件-可选）"><a href="#4-CMakeUserPresets-json（用户级预设文件-可选）" class="headerlink" title="4. CMakeUserPresets.json（用户级预设文件 可选）"></a>4. <strong>CMakeUserPresets.json（用户级预设文件 可选）</strong></h3><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;version&quot;</span><span class="punctuation">:</span> <span class="number">2</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;configurePresets&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;default&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;inherits&quot;</span><span class="punctuation">:</span> <span class="string">&quot;vcpkg&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;environment&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;VCPKG_ROOT&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&lt;path to vcpkg&gt;&quot;</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>作用：</strong></p>
+<ul>
+<li>设置用户特定的配置（如本地 vcpkg 路径）</li>
+<li>继承 <code>CMakePresets.json</code> 中的预设</li>
+<li><strong>不应纳入版本控制</strong>（因为包含特定于用户的路径）</li>
+<li>一般不需要配置，只需要在环境变量中配置好<code>VCPKG_ROOT</code>+CMakePresets.json指定<code>CMAKE_TOOLCHAIN_FILE</code>即可</li>
+</ul>
+<h3 id="5-CMakeLists-txt（CMake-构建脚本）"><a href="#5-CMakeLists-txt（CMake-构建脚本）" class="headerlink" title="5. CMakeLists.txt（CMake 构建脚本）"></a>5. <strong>CMakeLists.txt（CMake 构建脚本）</strong></h3><figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">cmake_minimum_required</span>(VERSION <span class="number">3.10</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">project</span>(HelloWorld)</span><br><span class="line"></span><br><span class="line"><span class="keyword">find_package</span>(fmt CONFIG REQUIRED)</span><br><span class="line"></span><br><span class="line"><span class="keyword">add_executable</span>(HelloWorld helloworld.cpp)</span><br><span class="line"></span><br><span class="line"><span class="keyword">target_link_libraries</span>(HelloWorld PRIVATE fmt::fmt)</span><br></pre></td></tr></table></figure>
+
+<p><strong>各行作用：</strong></p>
+<ul>
+<li><code>cmake_minimum_required(VERSION 3.10)</code>：指定 CMake 最低版本要求</li>
+<li><code>project(HelloWorld)</code>：设置项目名称</li>
+<li><code>find_package(fmt CONFIG REQUIRED)</code>：查找 fmt 库的 CMake 配置文件<ul>
+<li><code>CONFIG</code>：使用库的 CMake 配置模式</li>
+<li><code>REQUIRED</code>：未找到时生成错误</li>
+</ul>
+</li>
+<li><code>add_executable(HelloWorld helloworld.cpp)</code>：创建可执行目标</li>
+<li><code>target_link_libraries(HelloWorld PRIVATE fmt::fmt)</code>：链接 fmt 库<ul>
+<li><code>PRIVATE</code>：依赖仅用于构建，不传播到其他项目</li>
+</ul>
+</li>
+</ul>
+<h2 id="四、工作流程"><a href="#四、工作流程" class="headerlink" title="四、工作流程"></a>四、工作流程</h2><h3 id="1-初始化项目"><a href="#1-初始化项目" class="headerlink" title="1. 初始化项目"></a>1. 初始化项目</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">vcpkg new --application           <span class="comment"># 创建 vcpkg.json 和 vcpkg-configuration.json</span></span><br><span class="line">vcpkg add port <span class="built_in">fmt</span>                <span class="comment"># 添加依赖</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-配置-CMake"><a href="#2-配置-CMake" class="headerlink" title="2. 配置 CMake"></a>2. 配置 CMake</h3><ul>
+<li>创建&#x2F;修改 <code>CMakePresets.json</code></li>
+<li>创建 <code>CMakeUserPresets.json</code>（设置本地路径）</li>
+<li>编写 <code>CMakeLists.txt</code></li>
+</ul>
+<h3 id="3-构建和运行"><a href="#3-构建和运行" class="headerlink" title="3. 构建和运行"></a>3. 构建和运行</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cmake --preset=default            <span class="comment"># 配置项目</span></span><br><span class="line">cmake --build build               <span class="comment"># 构建项目</span></span><br><span class="line">./build/HelloWorld                <span class="comment"># 运行程序</span></span><br></pre></td></tr></table></figure>
+
+<p>在 Visual Studio 中：</p>
+<ul>
+<li>使用 “Build &gt; Build All” 构建</li>
+<li>使用 “Debug &gt; Start” 运行</li>
+</ul>
+<h2 id="五、vcpkg-工作原理"><a href="#五、vcpkg-工作原理" class="headerlink" title="五、vcpkg 工作原理"></a>五、vcpkg 工作原理</h2><h3 id="清单模式（Manifest-Mode）"><a href="#清单模式（Manifest-Mode）" class="headerlink" title="清单模式（Manifest Mode）"></a>清单模式（Manifest Mode）</h3><ul>
+<li>vcpkg 读取 <code>vcpkg.json</code> 自动安装依赖</li>
+<li>依赖安装到项目本地（而非全局）</li>
+<li>更适合现代 C++ 项目管理</li>
+</ul>
+<h3 id="CMake-集成"><a href="#CMake-集成" class="headerlink" title="CMake 集成"></a>CMake 集成</h3><ol>
+<li>vcpkg 提供自定义工具链文件</li>
+<li>CMake 通过工具链文件找到 vcpkg 安装的库</li>
+<li><code>find_package()</code> 自动定位库的配置文件</li>
+<li>自动配置包含路径和链接库</li>
+</ol>
+<h2 id="六、最佳实践"><a href="#六、最佳实践" class="headerlink" title="六、最佳实践"></a>六、最佳实践</h2><ol>
+<li><p><strong>版本控制</strong></p>
+<ul>
+<li>✅ 纳入：<code>vcpkg.json</code>、<code>vcpkg-configuration.json</code>、<code>CMakePresets.json</code></li>
+<li>❌ 不纳入：<code>CMakeUserPresets.json</code>、<code>build/</code> 目录</li>
+</ul>
+</li>
+<li><p><strong>环境变量</strong></p>
+<ul>
+<li>设置 <code>VCPKG_ROOT</code> 环境变量（永久性设置更佳）</li>
+<li>添加到 PATH 以便命令行使用</li>
+</ul>
+</li>
+<li><p><strong>依赖管理</strong></p>
+<ul>
+<li>使用清单模式而非全局安装</li>
+<li>定期更新基线以获取安全更新</li>
+</ul>
+</li>
+<li><p><strong>跨平台开发</strong></p>
+<ul>
+<li>vcpkg 支持 Windows、Linux、macOS</li>
+<li>使用相同的清单文件在不同平台工作</li>
+</ul>
+</li>
+</ol>
+<h2 id="七、常用命令"><a href="#七、常用命令" class="headerlink" title="七、常用命令"></a>七、常用命令</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">vcpkg new --application           <span class="comment"># 初始化项目</span></span><br><span class="line">vcpkg add port &lt;package&gt;          <span class="comment"># 添加依赖</span></span><br><span class="line">vcpkg remove port &lt;package&gt;       <span class="comment"># 移除依赖</span></span><br><span class="line">vcpkg search &lt;keyword&gt;            <span class="comment"># 搜索可用包</span></span><br><span class="line">vcpkg list                        <span class="comment"># 列出已安装的包</span></span><br><span class="line">vcpkg update                      <span class="comment"># 更新 vcpkg 本身</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="八、使用优化"><a href="#八、使用优化" class="headerlink" title="八、使用优化"></a>八、使用优化</h2><h3 id="linux优化"><a href="#linux优化" class="headerlink" title="linux优化"></a>linux优化</h3><p>保存为 <code>setup_vcpkg_opt.sh</code>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/bash</span><br><span class="line">set -e</span><br><span class="line"></span><br><span class="line"># ========== 配置参数 ==========</span><br><span class="line">CACHE_DIR=&quot;/root/.vcpkg-cache&quot;</span><br><span class="line">BASHRC=&quot;/root/.bashrc&quot;</span><br><span class="line"></span><br><span class="line">echo &quot;? 配置 vcpkg 优化环境 (缓存 + Ninja + 并行 + apt)&quot;</span><br><span class="line"></span><br><span class="line"># ========== 1. 安装系统依赖（用 apt，避免 vcpkg 重编译基础库） ==========</span><br><span class="line">echo &quot;? 使用 apt 安装构建工具和常见依赖...&quot;</span><br><span class="line">sudo apt update -y</span><br><span class="line">sudo apt install -y \</span><br><span class="line">    build-essential \</span><br><span class="line">    ninja-build \</span><br><span class="line">    cmake \</span><br><span class="line">    pkg-config \</span><br><span class="line">    git \</span><br><span class="line">    curl \</span><br><span class="line">    unzip \</span><br><span class="line">    zip \</span><br><span class="line">    tar \</span><br><span class="line">    libssl-dev \</span><br><span class="line">    libcurl4-openssl-dev \</span><br><span class="line">    zlib1g-dev \</span><br><span class="line">    libsqlite3-dev</span><br><span class="line"></span><br><span class="line"># ========== 2. 配置 vcpkg 缓存 ==========</span><br><span class="line">echo &quot;? 配置缓存目录: $CACHE_DIR&quot;</span><br><span class="line">mkdir -p $CACHE_DIR</span><br><span class="line">chmod -R 777 $CACHE_DIR</span><br><span class="line"></span><br><span class="line">if ! grep -q &quot;VCPKG_BINARY_SOURCES&quot; $BASHRC; then</span><br><span class="line">    echo &quot;export VCPKG_BINARY_SOURCES=\&quot;clear;files,$CACHE_DIR,readwrite\&quot;&quot; &gt;&gt; $BASHRC</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line"># ========== 3. 启用 Ninja 构建 ==========</span><br><span class="line">if ! grep -q &quot;VCPKG_USE_NINJA&quot; $BASHRC; then</span><br><span class="line">    echo &quot;export VCPKG_USE_NINJA=1&quot; &gt;&gt; $BASHRC</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line"># ========== 4. 启用并行编译 ==========</span><br><span class="line">if ! grep -q &quot;VCPKG_MAX_CONCURRENCY&quot; $BASHRC; then</span><br><span class="line">    echo &quot;export VCPKG_MAX_CONCURRENCY=\$(nproc)&quot; &gt;&gt; $BASHRC</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line"># ========== 5. 立即生效 ==========</span><br><span class="line">export VCPKG_BINARY_SOURCES=&quot;clear;files,$CACHE_DIR,readwrite&quot;</span><br><span class="line">export VCPKG_USE_NINJA=1</span><br><span class="line">export VCPKG_MAX_CONCURRENCY=$(nproc)</span><br><span class="line"></span><br><span class="line"># ========== 6. 提示结果 ==========</span><br><span class="line">echo &quot;✅ 已配置 vcpkg 缓存: $CACHE_DIR&quot;</span><br><span class="line">echo &quot;✅ Ninja 已通过 apt 安装并启用&quot;</span><br><span class="line">echo &quot;✅ VCPKG_MAX_CONCURRENCY=$(nproc) (CPU核心数)&quot;</span><br><span class="line">echo &quot;? 所有配置已写入 $BASHRC，下次登录自动生效&quot;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">source ~/.bashrc</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://images.guangyin.blog/2025/10/cc0c80555581deccb1935d801d0dfc81.png" alt="image-20251010154330419"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">export PATH=$VCPKG_ROOT:$PATH</span><br><span class="line">export VCPKG_USE_NINJA=1</span><br><span class="line">export VCPKG_MAX_CONCURRENCY=$(nproc)</span><br><span class="line">export VCPKG_BINARY_SOURCES=&quot;clear;files,/root/.vcpkg-cache,readwrite&quot;</span><br><span class="line">export CMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake</span><br></pre></td></tr></table></figure>
+<p>添加<code>CMAKE_PREFIX_PATH</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p ~/.config/cmake</span><br><span class="line">nano ~/.config/cmake/init.cmake</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="windows优化"><a href="#windows优化" class="headerlink" title="windows优化"></a>windows优化</h3><ol>
+<li>在环境变量中添加path</li>
+<li>添加<code>VCPKG_BINARY_SOURCES</code>，内容为 <code>clear;files,C:\Users\Jianzhe\tools\vcpkg\.vcpkg-cache,readwrite</code></li>
+<li>添加<code>VCPKG_MAX_CONCURRENCY</code>，内容为<code>核心数量，如16</code></li>
+<li>添加<code>VCPKG_USE_NINJA</code>，内容为 <code>1</code></li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://www.228610.xyz/2025/10/28/vcpkg%20%E5%AE%89%E8%A3%85%E5%92%8C%E4%BD%BF%E7%94%A8/" data-id="cuidhD9__wMOlEUnhkOpLf6OX" data-title="vcpkg 安装和使用" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/vcpkg/" rel="tag">vcpkg</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2025/10/29/%E4%BD%BF%E7%94%A8vs2022%E7%9A%84CRT%E6%A3%80%E6%B5%8B%E5%86%85%E5%AD%98%E6%B3%84%E9%9C%B2/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          使用vs2022的CRT检测内存泄露
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2025/10/01/%E5%9F%9F%E5%90%8D%E9%82%AE%E7%AE%B1%E6%90%AD%E5%BB%BA/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">域名邮箱搭建</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/C-%E7%AF%87/">C-篇</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/OpenSSL/">OpenSSL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Qt/">Qt</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/muduo/">muduo</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E5%8F%91%E8%B0%83%E4%BC%98/">开发调优</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%90%9E%E4%B8%83%E6%8D%BB%E4%B8%89/">搞七捻三</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%B5%84%E6%BA%90%E8%8D%9F%E8%90%83/">资源荟萃</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%97%AE%E9%A2%98%E6%B1%87%E6%80%BB/">问题汇总</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/1panel/" rel="tag">1panel</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CRT/" rel="tag">CRT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTP/" rel="tag">CTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FRP/" rel="tag">FRP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MariaDB/" rel="tag">MariaDB</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyNodeQuery/" rel="tag">MyNodeQuery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PicGo/" rel="tag">PicGo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Qt/" rel="tag">Qt</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/" rel="tag">Spring Boot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/aria2c/" rel="tag">aria2c</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/caddy/" rel="tag">caddy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdn/" rel="tag">cdn</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cloudflare/" rel="tag">cloudflare</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cmake/" rel="tag">cmake</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/epoll/" rel="tag">epoll</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/firefox/" rel="tag">firefox</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flameshot/" rel="tag">flameshot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hy/" rel="tag">hy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/muduo/" rel="tag">muduo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mvnd/" rel="tag">mvnd</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/opengl/" rel="tag">opengl</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openssl/" rel="tag">openssl</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/protobuf/" rel="tag">protobuf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/serv00/" rel="tag">serv00</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socat/" rel="tag">socat</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socks5/" rel="tag">socks5</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/typecho/" rel="tag">typecho</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ubuntu/" rel="tag">ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vcpkg/" rel="tag">vcpkg</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vmware/" rel="tag">vmware</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vs2022/" rel="tag">vs2022</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vscode/" rel="tag">vscode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%B8%AD%E8%BD%AC/" rel="tag">中转</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/" rel="tag">内网穿透</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/" rel="tag">反向代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9F%9F%E5%90%8D%E9%82%AE%E7%AE%B1/" rel="tag">域名邮箱</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A2%E9%92%88/" rel="tag">探针</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%B2%98%E5%8C%85/" rel="tag">粘包</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%95%9C%E5%83%8F%E6%BA%90/" rel="tag">镜像源</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/1panel/" style="font-size: 10px;">1panel</a> <a href="/tags/C/" style="font-size: 18.57px;">C++</a> <a href="/tags/CRT/" style="font-size: 10px;">CRT</a> <a href="/tags/CTP/" style="font-size: 10px;">CTP</a> <a href="/tags/CentOS/" style="font-size: 12.86px;">CentOS</a> <a href="/tags/FRP/" style="font-size: 10px;">FRP</a> <a href="/tags/MariaDB/" style="font-size: 10px;">MariaDB</a> <a href="/tags/MyNodeQuery/" style="font-size: 10px;">MyNodeQuery</a> <a href="/tags/MySQL/" style="font-size: 20px;">MySQL</a> <a href="/tags/PicGo/" style="font-size: 10px;">PicGo</a> <a href="/tags/Qt/" style="font-size: 17.14px;">Qt</a> <a href="/tags/Spring-Boot/" style="font-size: 10px;">Spring Boot</a> <a href="/tags/aria2c/" style="font-size: 10px;">aria2c</a> <a href="/tags/caddy/" style="font-size: 11.43px;">caddy</a> <a href="/tags/cdn/" style="font-size: 10px;">cdn</a> <a href="/tags/cloudflare/" style="font-size: 14.29px;">cloudflare</a> <a href="/tags/cmake/" style="font-size: 11.43px;">cmake</a> <a href="/tags/docker/" style="font-size: 11.43px;">docker</a> <a href="/tags/epoll/" style="font-size: 10px;">epoll</a> <a href="/tags/firefox/" style="font-size: 10px;">firefox</a> <a href="/tags/flameshot/" style="font-size: 10px;">flameshot</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/hy/" style="font-size: 10px;">hy</a> <a href="/tags/muduo/" style="font-size: 17.14px;">muduo</a> <a href="/tags/mvnd/" style="font-size: 10px;">mvnd</a> <a href="/tags/nginx/" style="font-size: 12.86px;">nginx</a> <a href="/tags/opengl/" style="font-size: 12.86px;">opengl</a> <a href="/tags/openssl/" style="font-size: 17.14px;">openssl</a> <a href="/tags/protobuf/" style="font-size: 10px;">protobuf</a> <a href="/tags/python/" style="font-size: 10px;">python</a> <a href="/tags/redis/" style="font-size: 11.43px;">redis</a> <a href="/tags/serv00/" style="font-size: 11.43px;">serv00</a> <a href="/tags/socat/" style="font-size: 10px;">socat</a> <a href="/tags/socks5/" style="font-size: 10px;">socks5</a> <a href="/tags/typecho/" style="font-size: 11.43px;">typecho</a> <a href="/tags/ubuntu/" style="font-size: 15.71px;">ubuntu</a> <a href="/tags/vcpkg/" style="font-size: 10px;">vcpkg</a> <a href="/tags/vmware/" style="font-size: 11.43px;">vmware</a> <a href="/tags/vs2022/" style="font-size: 10px;">vs2022</a> <a href="/tags/vscode/" style="font-size: 12.86px;">vscode</a> <a href="/tags/%E4%B8%AD%E8%BD%AC/" style="font-size: 10px;">中转</a> <a href="/tags/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/" style="font-size: 10px;">内网穿透</a> <a href="/tags/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/" style="font-size: 14.29px;">反向代理</a> <a href="/tags/%E5%9F%9F%E5%90%8D%E9%82%AE%E7%AE%B1/" style="font-size: 10px;">域名邮箱</a> <a href="/tags/%E6%8E%A2%E9%92%88/" style="font-size: 10px;">探针</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 11.43px;">算法</a> <a href="/tags/%E7%B2%98%E5%8C%85/" style="font-size: 10px;">粘包</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 10px;">计算机网络</a> <a href="/tags/%E9%95%9C%E5%83%8F%E6%BA%90/" style="font-size: 10px;">镜像源</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/02/">February 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/12/">December 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/11/">November 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/10/">October 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/09/">September 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/08/">August 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/07/">July 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/05/">May 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/04/">April 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/03/">March 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/02/">February 2025</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/02/22/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/08/ubuntu%20%E5%85%8D%E5%AF%86%E6%93%8D%E4%BD%9C/">ubuntu 免密操作</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/08/Ubuntu%2025%20%E4%B8%8B%20Flameshot%20%E5%BF%AB%E6%8D%B7%E9%94%AE%E6%88%AA%E5%9B%BE%E5%A4%B1%E8%B4%A5%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/">Ubuntu 25 下 Flameshot 快捷键截图失败解决方案</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/05/%E9%80%9A%E8%BF%87%E7%BD%91%E7%BA%BF%E4%BC%A0%E8%BE%93%E6%95%B0%E6%8D%AE/">通过网线传输数据</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/04/ctypes%E5%B0%81%E8%A3%85C++%E6%8E%A5%E5%8F%A3%E7%BB%99Python%E4%BD%BF%E7%94%A8/">ctypes封装C++接口给Python使用</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

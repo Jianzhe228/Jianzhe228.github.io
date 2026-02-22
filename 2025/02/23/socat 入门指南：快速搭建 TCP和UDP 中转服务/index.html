@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>socat 入门指南：快速搭建 TCP和UDP 中转服务 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Socat 是一个强大的命令行工具，用于在两个数据流之间建立连接。它不仅可以用于代理流量，还可以转发任何类型的网络流量，包括 TCP、UDP、SSL 等。 安装 socat1apt install socat -y  启动中转服务基本用法Socat 的基本语法如下： 1socat &lt;协议&gt;-LISTEN:&lt;监听端口&gt;,fork &lt;协议&gt;:&lt;目的主机IP&amp;g">
+<meta property="og:type" content="article">
+<meta property="og:title" content="socat 入门指南：快速搭建 TCP和UDP 中转服务">
+<meta property="og:url" content="https://www.228610.xyz/2025/02/23/socat%20%E5%85%A5%E9%97%A8%E6%8C%87%E5%8D%97%EF%BC%9A%E5%BF%AB%E9%80%9F%E6%90%AD%E5%BB%BA%20TCP%E5%92%8CUDP%20%E4%B8%AD%E8%BD%AC%E6%9C%8D%E5%8A%A1/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Socat 是一个强大的命令行工具，用于在两个数据流之间建立连接。它不仅可以用于代理流量，还可以转发任何类型的网络流量，包括 TCP、UDP、SSL 等。 安装 socat1apt install socat -y  启动中转服务基本用法Socat 的基本语法如下： 1socat &lt;协议&gt;-LISTEN:&lt;监听端口&gt;,fork &lt;协议&gt;:&lt;目的主机IP&amp;g">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2025-02-23T16:44:00.000Z">
+<meta property="article:modified_time" content="2026-02-22T06:44:28.062Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="socat">
+<meta property="article:tag" content="中转">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://www.228610.xyz"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-socat 入门指南：快速搭建 TCP和UDP 中转服务" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/02/23/socat%20%E5%85%A5%E9%97%A8%E6%8C%87%E5%8D%97%EF%BC%9A%E5%BF%AB%E9%80%9F%E6%90%AD%E5%BB%BA%20TCP%E5%92%8CUDP%20%E4%B8%AD%E8%BD%AC%E6%9C%8D%E5%8A%A1/" class="article-date">
+  <time class="dt-published" datetime="2025-02-23T16:44:00.000Z" itemprop="datePublished">2025-02-23</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%90%9E%E4%B8%83%E6%8D%BB%E4%B8%89/">搞七捻三</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      socat 入门指南：快速搭建 TCP和UDP 中转服务
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p><code>Socat</code> 是一个强大的命令行工具，用于在两个数据流之间建立连接。它不仅可以用于代理流量，还可以转发任何类型的网络流量，包括 TCP、UDP、SSL 等。</p>
+<h2 id="安装-socat"><a href="#安装-socat" class="headerlink" title="安装 socat"></a>安装 <code>socat</code></h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt install socat -y</span><br></pre></td></tr></table></figure>
+
+<h2 id="启动中转服务"><a href="#启动中转服务" class="headerlink" title="启动中转服务"></a>启动中转服务</h2><h3 id="基本用法"><a href="#基本用法" class="headerlink" title="基本用法"></a>基本用法</h3><p><code>Socat</code> 的基本语法如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">socat &lt;协议&gt;-LISTEN:&lt;监听端口&gt;,fork &lt;协议&gt;:&lt;目的主机IP&gt;:&lt;端口&gt;</span><br></pre></td></tr></table></figure>
+
+<p>例如，以下命令将监听本地的 UDP 端口 <code>59823</code>，并将所有接收到的数据转发到 <code>213.4.2.3</code> 的 <code>59823</code> 端口：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">socat UDP4-LISTEN:59823,fork UDP:213.4.2.3:59823</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong><code>UDP4-LISTEN:59823</code></strong>：表示 <code>socat</code> 将在本地监听 UDP 端口 <code>59823</code>。</li>
+<li><strong><code>fork</code></strong>：表示 <code>socat</code> 将为每个连接创建一个新的子进程，允许多个客户端同时连接。</li>
+<li><strong><code>UDP:213.4.2.3:59823</code></strong>：表示 <code>socat</code> 将把所有接收到的数据转发到 <code>213.4.2.3</code> 的 <code>59823</code> 端口。</li>
+</ul>
+<h3 id="后台运行"><a href="#后台运行" class="headerlink" title="后台运行"></a>后台运行</h3><p>默认情况下，<code>socat</code> 会阻塞当前终端会话。如果希望 <code>socat</code> 在后台运行，可以在命令末尾添加 <code>&amp;</code> 符号：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">socat UDP4-LISTEN:59823,fork UDP:213.4.2.3:59823 &amp;</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用-nohup-防止进程终止"><a href="#使用-nohup-防止进程终止" class="headerlink" title="使用 nohup 防止进程终止"></a>使用 <code>nohup</code> 防止进程终止</h3><p>如果希望在关闭终端后 <code>socat</code> 仍然运行，可以使用 <code>nohup</code> 命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">nohup</span> socat UDP4-LISTEN:59823,fork UDP4:213.4.2.3:59823 &gt;/dev/null 2&gt;&amp;1 &amp;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong><code>nohup</code></strong>：防止进程因终端关闭而终止。</li>
+<li><strong><code>&gt;/dev/null 2&gt;&amp;1</code></strong>：将输出重定向到 <code>/dev/null</code>，避免生成日志文件。</li>
+</ul>
+<h3 id="优化端口绑定"><a href="#优化端口绑定" class="headerlink" title="优化端口绑定"></a>优化端口绑定</h3><p>可以使用 <code>reuseaddr</code> 参数来优化端口绑定，防止端口被占用：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">nohup</span> socat UDP4-LISTEN:59823,reuseaddr,fork UDP4:213.4.2.3:59823 &gt;/dev/null 2&gt;&amp;1 &amp;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong><code>reuseaddr</code></strong>：允许 <code>socat</code> 在端口被占用时重新绑定。</li>
+</ul>
+<h2 id="终止所有-socat-进程"><a href="#终止所有-socat-进程" class="headerlink" title="终止所有 socat 进程"></a>终止所有 <code>socat</code> 进程</h2><p>如果需要终止所有 <code>socat</code> 进程，可以使用以下命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查找所有 socat 进程的 PID</span></span><br><span class="line">pgrep socat</span><br><span class="line"></span><br><span class="line"><span class="comment"># 终止所有相关进程</span></span><br><span class="line"><span class="built_in">sudo</span> <span class="built_in">kill</span> -9 $(pgrep socat)</span><br></pre></td></tr></table></figure>
+
+<h2 id="使用-systemd-托管服务（推荐）"><a href="#使用-systemd-托管服务（推荐）" class="headerlink" title="使用 systemd 托管服务（推荐）"></a>使用 <code>systemd</code> 托管服务（推荐）</h2><p>为了更方便地管理 <code>socat</code> 服务，可以使用 <code>systemd</code> 来托管服务。</p>
+<h3 id="创建-systemd-服务文件"><a href="#创建-systemd-服务文件" class="headerlink" title="创建 systemd 服务文件"></a>创建 <code>systemd</code> 服务文件</h3><p>创建文件 <code>/etc/systemd/system/socat-udp.service</code>，内容如下：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[Unit]</span></span><br><span class="line"><span class="attr">Description</span>=Socat UDP Forwarding</span><br><span class="line"><span class="attr">After</span>=network.target</span><br><span class="line"></span><br><span class="line"><span class="section">[Service]</span></span><br><span class="line"><span class="attr">ExecStart</span>=/usr/bin/socat UDP4-LISTEN:<span class="number">59823</span>,reuseaddr UDP4:<span class="number">213.136</span>.<span class="number">83.240</span>:<span class="number">59823</span></span><br><span class="line"><span class="attr">Restart</span>=<span class="literal">on</span>-failure</span><br><span class="line"><span class="attr">User</span>=root</span><br><span class="line"></span><br><span class="line"><span class="section">[Install]</span></span><br><span class="line"><span class="attr">WantedBy</span>=multi-user.target</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong><code>ExecStart</code></strong>：指定 <code>socat</code> 启动命令。</li>
+<li><strong><code>Restart=on-failure</code></strong>：在服务失败时自动重启。</li>
+<li><strong><code>User=root</code></strong>：以 <code>root</code> 用户身份运行服务。</li>
+</ul>
+<h3 id="启用并启动服务"><a href="#启用并启动服务" class="headerlink" title="启用并启动服务"></a>启用并启动服务</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> systemctl daemon-reload</span><br><span class="line"><span class="built_in">sudo</span> systemctl start socat-udp</span><br><span class="line"><span class="built_in">sudo</span> systemctl <span class="built_in">enable</span> socat-udp</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong><code>daemon-reload</code></strong>：重新加载 <code>systemd</code> 配置。</li>
+<li><strong><code>start</code></strong>：启动服务。</li>
+<li><strong><code>enable</code></strong>：设置服务开机自启。</li>
+</ul>
+<h3 id="检查服务状态"><a href="#检查服务状态" class="headerlink" title="检查服务状态"></a>检查服务状态</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> systemctl status socat-udp</span><br></pre></td></tr></table></figure>
+
+<h2 id="删除服务"><a href="#删除服务" class="headerlink" title="删除服务"></a>删除服务</h2><p>如果需要删除 <code>socat</code> 服务，可以按照以下步骤操作：</p>
+<h3 id="停止并禁用服务"><a href="#停止并禁用服务" class="headerlink" title="停止并禁用服务"></a>停止并禁用服务</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 停止服务</span></span><br><span class="line"><span class="built_in">sudo</span> systemctl stop socat-udp</span><br><span class="line"></span><br><span class="line"><span class="comment"># 禁用开机自启</span></span><br><span class="line"><span class="built_in">sudo</span> systemctl <span class="built_in">disable</span> socat-udp</span><br></pre></td></tr></table></figure>
+
+<h3 id="删除服务文件"><a href="#删除服务文件" class="headerlink" title="删除服务文件"></a>删除服务文件</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> <span class="built_in">rm</span> /etc/systemd/system/socat-udp.service</span><br></pre></td></tr></table></figure>
+
+<h3 id="重新加载-systemd-配置"><a href="#重新加载-systemd-配置" class="headerlink" title="重新加载 systemd 配置"></a>重新加载 <code>systemd</code> 配置</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> systemctl daemon-reload</span><br></pre></td></tr></table></figure>
+
+<h3 id="验证服务是否已删除"><a href="#验证服务是否已删除" class="headerlink" title="验证服务是否已删除"></a>验证服务是否已删除</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 检查服务状态（预期输出 &quot;not found&quot;）</span></span><br><span class="line">systemctl status socat-udp</span><br><span class="line"></span><br><span class="line"><span class="comment"># 确认服务文件已删除</span></span><br><span class="line"><span class="built_in">ls</span> /etc/systemd/system/socat-udp.service</span><br></pre></td></tr></table></figure>
+
+<h3 id="额外清理（可选）"><a href="#额外清理（可选）" class="headerlink" title="额外清理（可选）"></a>额外清理（可选）</h3><ol>
+<li>终止残留进程：</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查找进程 PID</span></span><br><span class="line">pgrep socat</span><br><span class="line"></span><br><span class="line"><span class="comment"># 终止进程</span></span><br><span class="line"><span class="built_in">sudo</span> <span class="built_in">kill</span> -9 &lt;PID&gt;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>清理日志：</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看服务日志</span></span><br><span class="line">journalctl -u socat-udp</span><br><span class="line"></span><br><span class="line"><span class="comment"># 清理日志（谨慎操作）</span></span><br><span class="line"><span class="built_in">sudo</span> journalctl --vacuum-time=1d  <span class="comment"># 保留最近 1 天的日志</span></span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>删除专用用户&#x2F;组（如有）：</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> userdel &lt;用户名&gt;</span><br><span class="line"><span class="built_in">sudo</span> groupdel &lt;组名&gt;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="使用场景：通过-socat-转发本地-SSH-流量"><a href="#使用场景：通过-socat-转发本地-SSH-流量" class="headerlink" title="使用场景：通过 socat 转发本地 SSH 流量"></a>使用场景：通过 <code>socat</code> 转发本地 SSH 流量</h2><h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>假设你有一台远程服务器（IP 为 <code>203.0.113.1</code>），它运行着 SSH 服务，监听端口 <code>22</code>。然而，由于某些原因（比如防火墙限制），你无法直接通过 <code>203.0.113.1:22</code> 访问这台服务器。你有一台中转服务器（IP 为 <code>198.51.100.1</code>），它可以直接访问目标服务器。现在，你希望通过中转服务器将本地机器的 SSH 流量转发到目标服务器。</p>
+<h3 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h3><ul>
+<li>在本地机器上，通过访问中转服务器的某个端口（例如 <code>2222</code>），间接连接到目标服务器的 SSH 服务（<code>203.0.113.1:22</code>）。</li>
+</ul>
+<h3 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h3><h4 id="1-在中转服务器上安装-socat"><a href="#1-在中转服务器上安装-socat" class="headerlink" title="1. 在中转服务器上安装 socat"></a>1. 在中转服务器上安装 <code>socat</code></h4><p>首先，在中转服务器（<code>198.51.100.1</code>）上安装 <code>socat</code>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt update</span><br><span class="line"><span class="built_in">sudo</span> apt install socat -y</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-在中转服务器上启动-socat-转发服务"><a href="#2-在中转服务器上启动-socat-转发服务" class="headerlink" title="2. 在中转服务器上启动 socat 转发服务"></a>2. 在中转服务器上启动 <code>socat</code> 转发服务</h4><p>在中转服务器上运行以下命令，将本地端口 <code>2222</code> 的流量转发到目标服务器的 <code>22</code> 端口：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">socat TCP4-LISTEN:2222,fork TCP:203.0.113.1:22</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong><code>TCP4-LISTEN:2222</code></strong>：在中转服务器上监听 TCP 端口 <code>2222</code>。</li>
+<li><strong><code>fork</code></strong>：允许多个客户端同时连接。</li>
+<li><strong><code>TCP:203.0.113.1:22</code></strong>：将流量转发到目标服务器的 <code>22</code> 端口。</li>
+</ul>
+<h4 id="3-在本地机器上通过中转服务器连接目标服务器"><a href="#3-在本地机器上通过中转服务器连接目标服务器" class="headerlink" title="3. 在本地机器上通过中转服务器连接目标服务器"></a>3. 在本地机器上通过中转服务器连接目标服务器</h4><p>现在，你可以在本地机器上通过中转服务器的 <code>2222</code> 端口连接到目标服务器的 SSH 服务：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh -p 2222 user@198.51.100.1</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong><code>-p 2222</code></strong>：指定连接中转服务器的 <code>2222</code> 端口。</li>
+<li><strong><code>user@198.51.100.1</code></strong>：使用中转服务器的 IP 地址和用户名。</li>
+</ul>
+<h4 id="4-验证连接"><a href="#4-验证连接" class="headerlink" title="4. 验证连接"></a>4. 验证连接</h4><p>如果一切正常，你会通过中转服务器成功连接到目标服务器的 SSH 服务。</p>
+<hr>
+<h3 id="关键名词解释"><a href="#关键名词解释" class="headerlink" title="关键名词解释"></a>关键名词解释</h3><ol>
+<li><p><strong><code>TCP4-LISTEN</code></strong>：</p>
+<ul>
+<li>表示 <code>socat</code> 监听一个 TCP 端口。</li>
+<li>例如：<code>TCP4-LISTEN:2222</code> 表示监听本地的 <code>2222</code> 端口。</li>
+</ul>
+</li>
+<li><p><strong><code>fork</code></strong>：</p>
+<ul>
+<li>允许多个客户端同时连接到监听端口。</li>
+<li>如果没有 <code>fork</code>，<code>socat</code> 只能处理一个连接，后续连接会被拒绝。</li>
+</ul>
+</li>
+<li><p><strong><code>TCP:&lt;目标IP&gt;:&lt;目标端口&gt;</code></strong>：</p>
+<ul>
+<li>表示将流量转发到指定的目标 IP 和端口。</li>
+<li>例如：<code>TCP:203.0.113.1:22</code> 表示将流量转发到 <code>203.0.113.1</code> 的 <code>22</code> 端口。</li>
+</ul>
+</li>
+<li><p><strong><code>nohup</code></strong>：</p>
+<ul>
+<li>防止进程因终端关闭而终止。</li>
+<li>例如：<code>nohup socat ... &amp;</code> 可以让 <code>socat</code> 在后台运行，即使关闭终端也不会停止。</li>
+</ul>
+</li>
+<li><p><strong><code>reuseaddr</code></strong>：</p>
+<ul>
+<li>允许 <code>socat</code> 在端口被占用时重新绑定。</li>
+<li>例如：<code>TCP4-LISTEN:2222,reuseaddr</code> 可以避免端口冲突。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h3 id="进阶：使用-systemd-托管-socat-服务"><a href="#进阶：使用-systemd-托管-socat-服务" class="headerlink" title="进阶：使用 systemd 托管 socat 服务"></a>进阶：使用 <code>systemd</code> 托管 <code>socat</code> 服务</h3><p>如果你希望 <code>socat</code> 服务在中转服务器上长期运行，可以使用 <code>systemd</code> 托管服务。</p>
+<h4 id="1-创建-systemd-服务文件"><a href="#1-创建-systemd-服务文件" class="headerlink" title="1. 创建 systemd 服务文件"></a>1. 创建 <code>systemd</code> 服务文件</h4><p>在中转服务器上创建文件 <code>/etc/systemd/system/socat-ssh.service</code>，内容如下：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[Unit]</span></span><br><span class="line"><span class="attr">Description</span>=Socat SSH Forwarding</span><br><span class="line"><span class="attr">After</span>=network.target</span><br><span class="line"></span><br><span class="line"><span class="section">[Service]</span></span><br><span class="line"><span class="attr">ExecStart</span>=/usr/bin/socat TCP-LISTEN:<span class="number">2222</span>,reuseaddr,fork TCP:<span class="number">203.0</span>.<span class="number">113.1</span>:<span class="number">22</span></span><br><span class="line"><span class="attr">Restart</span>=<span class="literal">on</span>-failure</span><br><span class="line"><span class="attr">User</span>=root</span><br><span class="line"></span><br><span class="line"><span class="section">[Install]</span></span><br><span class="line"><span class="attr">WantedBy</span>=multi-user.target</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-启用并启动服务"><a href="#2-启用并启动服务" class="headerlink" title="2. 启用并启动服务"></a>2. 启用并启动服务</h4><p>运行以下命令启用并启动服务：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> systemctl daemon-reload</span><br><span class="line"><span class="built_in">sudo</span> systemctl start socat-ssh</span><br><span class="line"><span class="built_in">sudo</span> systemctl <span class="built_in">enable</span> socat-ssh</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-检查服务状态"><a href="#3-检查服务状态" class="headerlink" title="3. 检查服务状态"></a>3. 检查服务状态</h4><p>运行以下命令检查服务状态：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> systemctl status socat-ssh</span><br></pre></td></tr></table></figure>
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p><strong><code>Socat</code><strong>非常适合简单的 TCP&#x2F;UDP 流量转发和调试，如作为中转节点转发流量。担并不能担任反向代理，对于复杂Web 流量或高并发场景，socat并不适用，需要使用</strong><code>Nginx</code><strong>或</strong><code>Caddy</code></strong>。</p>
+<p>相关链接：</p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://typecho.jianzhe.us.kg/index.php/archives/3/">Caddy 基本使用指南</a></li>
+<li><a target="_blank" rel="noopener" href="https://typecho.jianzhe.us.kg/index.php/archives/22/">Nginx 安装与基本使用指南</a></li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://www.228610.xyz/2025/02/23/socat%20%E5%85%A5%E9%97%A8%E6%8C%87%E5%8D%97%EF%BC%9A%E5%BF%AB%E9%80%9F%E6%90%AD%E5%BB%BA%20TCP%E5%92%8CUDP%20%E4%B8%AD%E8%BD%AC%E6%9C%8D%E5%8A%A1/" data-id="cuidtjYGROzvoUObhHjHndnj8" data-title="socat 入门指南：快速搭建 TCP和UDP 中转服务" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/socat/" rel="tag">socat</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E4%B8%AD%E8%BD%AC/" rel="tag">中转</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2025/02/23/%E6%BA%90%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%AF%81%E4%B9%A6%E4%B8%8E%E8%BE%B9%E7%BC%98%E8%AF%81%E4%B9%A6/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          源服务器证书与边缘证书
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2025/02/23/vscode%20C++%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">vscode C++环境搭建</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/C-%E7%AF%87/">C-篇</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/OpenSSL/">OpenSSL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Qt/">Qt</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/muduo/">muduo</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E5%8F%91%E8%B0%83%E4%BC%98/">开发调优</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%90%9E%E4%B8%83%E6%8D%BB%E4%B8%89/">搞七捻三</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%B5%84%E6%BA%90%E8%8D%9F%E8%90%83/">资源荟萃</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%97%AE%E9%A2%98%E6%B1%87%E6%80%BB/">问题汇总</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/1panel/" rel="tag">1panel</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CRT/" rel="tag">CRT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTP/" rel="tag">CTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FRP/" rel="tag">FRP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MariaDB/" rel="tag">MariaDB</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyNodeQuery/" rel="tag">MyNodeQuery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PicGo/" rel="tag">PicGo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Qt/" rel="tag">Qt</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/" rel="tag">Spring Boot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/aria2c/" rel="tag">aria2c</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/caddy/" rel="tag">caddy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdn/" rel="tag">cdn</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cloudflare/" rel="tag">cloudflare</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cmake/" rel="tag">cmake</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/epoll/" rel="tag">epoll</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/firefox/" rel="tag">firefox</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flameshot/" rel="tag">flameshot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hy/" rel="tag">hy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/muduo/" rel="tag">muduo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mvnd/" rel="tag">mvnd</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/opengl/" rel="tag">opengl</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openssl/" rel="tag">openssl</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/protobuf/" rel="tag">protobuf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/serv00/" rel="tag">serv00</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socat/" rel="tag">socat</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socks5/" rel="tag">socks5</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/typecho/" rel="tag">typecho</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ubuntu/" rel="tag">ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vcpkg/" rel="tag">vcpkg</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vmware/" rel="tag">vmware</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vs2022/" rel="tag">vs2022</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vscode/" rel="tag">vscode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%B8%AD%E8%BD%AC/" rel="tag">中转</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/" rel="tag">内网穿透</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/" rel="tag">反向代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9F%9F%E5%90%8D%E9%82%AE%E7%AE%B1/" rel="tag">域名邮箱</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A2%E9%92%88/" rel="tag">探针</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%B2%98%E5%8C%85/" rel="tag">粘包</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%95%9C%E5%83%8F%E6%BA%90/" rel="tag">镜像源</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/1panel/" style="font-size: 10px;">1panel</a> <a href="/tags/C/" style="font-size: 18.57px;">C++</a> <a href="/tags/CRT/" style="font-size: 10px;">CRT</a> <a href="/tags/CTP/" style="font-size: 10px;">CTP</a> <a href="/tags/CentOS/" style="font-size: 12.86px;">CentOS</a> <a href="/tags/FRP/" style="font-size: 10px;">FRP</a> <a href="/tags/MariaDB/" style="font-size: 10px;">MariaDB</a> <a href="/tags/MyNodeQuery/" style="font-size: 10px;">MyNodeQuery</a> <a href="/tags/MySQL/" style="font-size: 20px;">MySQL</a> <a href="/tags/PicGo/" style="font-size: 10px;">PicGo</a> <a href="/tags/Qt/" style="font-size: 17.14px;">Qt</a> <a href="/tags/Spring-Boot/" style="font-size: 10px;">Spring Boot</a> <a href="/tags/aria2c/" style="font-size: 10px;">aria2c</a> <a href="/tags/caddy/" style="font-size: 11.43px;">caddy</a> <a href="/tags/cdn/" style="font-size: 10px;">cdn</a> <a href="/tags/cloudflare/" style="font-size: 14.29px;">cloudflare</a> <a href="/tags/cmake/" style="font-size: 11.43px;">cmake</a> <a href="/tags/docker/" style="font-size: 11.43px;">docker</a> <a href="/tags/epoll/" style="font-size: 10px;">epoll</a> <a href="/tags/firefox/" style="font-size: 10px;">firefox</a> <a href="/tags/flameshot/" style="font-size: 10px;">flameshot</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/hy/" style="font-size: 10px;">hy</a> <a href="/tags/muduo/" style="font-size: 17.14px;">muduo</a> <a href="/tags/mvnd/" style="font-size: 10px;">mvnd</a> <a href="/tags/nginx/" style="font-size: 12.86px;">nginx</a> <a href="/tags/opengl/" style="font-size: 12.86px;">opengl</a> <a href="/tags/openssl/" style="font-size: 17.14px;">openssl</a> <a href="/tags/protobuf/" style="font-size: 10px;">protobuf</a> <a href="/tags/python/" style="font-size: 10px;">python</a> <a href="/tags/redis/" style="font-size: 11.43px;">redis</a> <a href="/tags/serv00/" style="font-size: 11.43px;">serv00</a> <a href="/tags/socat/" style="font-size: 10px;">socat</a> <a href="/tags/socks5/" style="font-size: 10px;">socks5</a> <a href="/tags/typecho/" style="font-size: 11.43px;">typecho</a> <a href="/tags/ubuntu/" style="font-size: 15.71px;">ubuntu</a> <a href="/tags/vcpkg/" style="font-size: 10px;">vcpkg</a> <a href="/tags/vmware/" style="font-size: 11.43px;">vmware</a> <a href="/tags/vs2022/" style="font-size: 10px;">vs2022</a> <a href="/tags/vscode/" style="font-size: 12.86px;">vscode</a> <a href="/tags/%E4%B8%AD%E8%BD%AC/" style="font-size: 10px;">中转</a> <a href="/tags/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/" style="font-size: 10px;">内网穿透</a> <a href="/tags/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/" style="font-size: 14.29px;">反向代理</a> <a href="/tags/%E5%9F%9F%E5%90%8D%E9%82%AE%E7%AE%B1/" style="font-size: 10px;">域名邮箱</a> <a href="/tags/%E6%8E%A2%E9%92%88/" style="font-size: 10px;">探针</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 11.43px;">算法</a> <a href="/tags/%E7%B2%98%E5%8C%85/" style="font-size: 10px;">粘包</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 10px;">计算机网络</a> <a href="/tags/%E9%95%9C%E5%83%8F%E6%BA%90/" style="font-size: 10px;">镜像源</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/02/">February 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/12/">December 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/11/">November 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/10/">October 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/09/">September 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/08/">August 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/07/">July 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/05/">May 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/04/">April 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/03/">March 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/02/">February 2025</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/02/22/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/08/ubuntu%20%E5%85%8D%E5%AF%86%E6%93%8D%E4%BD%9C/">ubuntu 免密操作</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/08/Ubuntu%2025%20%E4%B8%8B%20Flameshot%20%E5%BF%AB%E6%8D%B7%E9%94%AE%E6%88%AA%E5%9B%BE%E5%A4%B1%E8%B4%A5%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/">Ubuntu 25 下 Flameshot 快捷键截图失败解决方案</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/05/%E9%80%9A%E8%BF%87%E7%BD%91%E7%BA%BF%E4%BC%A0%E8%BE%93%E6%95%B0%E6%8D%AE/">通过网线传输数据</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/04/ctypes%E5%B0%81%E8%A3%85C++%E6%8E%A5%E5%8F%A3%E7%BB%99Python%E4%BD%BF%E7%94%A8/">ctypes封装C++接口给Python使用</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>域名邮箱搭建 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="一、前置条件： GMail邮箱账号 cloudflare账号 resend.com账号 域名  二、域名邮件接收使用cloudflare的邮箱服务，将域名邮箱转发到你的gmail邮箱，添加对于的dns记录   配置Catch-all，选择发送到电子邮件，目标使用gmail邮箱 三、域名邮件发送使用resend.com服务，免费发送邮件额度：3000&#x2F;月，100&#x2F;天 将域名添加到">
+<meta property="og:type" content="article">
+<meta property="og:title" content="域名邮箱搭建">
+<meta property="og:url" content="https://www.228610.xyz/2025/10/01/%E5%9F%9F%E5%90%8D%E9%82%AE%E7%AE%B1%E6%90%AD%E5%BB%BA/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="一、前置条件： GMail邮箱账号 cloudflare账号 resend.com账号 域名  二、域名邮件接收使用cloudflare的邮箱服务，将域名邮箱转发到你的gmail邮箱，添加对于的dns记录   配置Catch-all，选择发送到电子邮件，目标使用gmail邮箱 三、域名邮件发送使用resend.com服务，免费发送邮件额度：3000&#x2F;月，100&#x2F;天 将域名添加到">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="c:\Users\Jianzhe\AppData\Roaming\Typora\typora-user-images\image-20251001220334461.png">
+<meta property="og:image" content="c:\Users\Jianzhe\AppData\Roaming\Typora\typora-user-images\image-20251001220447757.png">
+<meta property="og:image" content="c:\Users\Jianzhe\AppData\Roaming\Typora\typora-user-images\image-20251001220619945.png">
+<meta property="og:image" content="c:\Users\Jianzhe\AppData\Roaming\Typora\typora-user-images\image-20251001012036868.png">
+<meta property="og:image" content="c:\Users\Jianzhe\AppData\Roaming\Typora\typora-user-images\image-20251001012230381.png">
+<meta property="og:image" content="c:\Users\Jianzhe\AppData\Roaming\Typora\typora-user-images\image-20251001012537971.png">
+<meta property="og:image" content="c:\Users\Jianzhe\AppData\Roaming\Typora\typora-user-images\image-20251001012652172.png">
+<meta property="article:published_time" content="2025-10-01T14:08:00.000Z">
+<meta property="article:modified_time" content="2026-02-22T06:44:28.064Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="cloudflare">
+<meta property="article:tag" content="域名邮箱">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="c:\Users\Jianzhe\AppData\Roaming\Typora\typora-user-images\image-20251001220334461.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://www.228610.xyz"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-域名邮箱搭建" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/10/01/%E5%9F%9F%E5%90%8D%E9%82%AE%E7%AE%B1%E6%90%AD%E5%BB%BA/" class="article-date">
+  <time class="dt-published" datetime="2025-10-01T14:08:00.000Z" itemprop="datePublished">2025-10-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%90%9E%E4%B8%83%E6%8D%BB%E4%B8%89/">搞七捻三</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      域名邮箱搭建
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="一、前置条件："><a href="#一、前置条件：" class="headerlink" title="一、前置条件："></a>一、前置条件：</h1><ol>
+<li>GMail邮箱账号</li>
+<li>cloudflare账号</li>
+<li>resend.com账号</li>
+<li>域名</li>
+</ol>
+<h1 id="二、域名邮件接收"><a href="#二、域名邮件接收" class="headerlink" title="二、域名邮件接收"></a>二、域名邮件接收</h1><p>使用cloudflare的邮箱服务，将域名邮箱转发到你的gmail邮箱，添加对于的dns记录</p>
+<p><img src="C:\Users\Jianzhe\AppData\Roaming\Typora\typora-user-images\image-20251001220334461.png" alt="image-20251001220334461"></p>
+<p><img src="C:\Users\Jianzhe\AppData\Roaming\Typora\typora-user-images\image-20251001220447757.png" alt="image-20251001220447757"></p>
+<p>配置Catch-all，选择发送到电子邮件，目标使用gmail邮箱<img src="C:\Users\Jianzhe\AppData\Roaming\Typora\typora-user-images\image-20251001220619945.png" alt="image-20251001220619945"></p>
+<h1 id="三、域名邮件发送"><a href="#三、域名邮件发送" class="headerlink" title="三、域名邮件发送"></a>三、域名邮件发送</h1><p>使用resend.com服务，免费发送邮件额度：3000&#x2F;月，100&#x2F;天</p>
+<p>将域名添加到resend</p>
+<p><img src="C:\Users\Jianzhe\AppData\Roaming\Typora\typora-user-images\image-20251001012036868.png" alt="image-20251001012036868"></p>
+<p>在cloudflare上面添加相应的dns记录，可以等了cloudflare快捷添加，待出现三个<code>Verified</code>就表示成功了</p>
+<p><img src="C:\Users\Jianzhe\AppData\Roaming\Typora\typora-user-images\image-20251001012230381.png" alt="image-20251001012230381"></p>
+<h1 id="四、GMail添加邮箱"><a href="#四、GMail添加邮箱" class="headerlink" title="四、GMail添加邮箱"></a>四、GMail添加邮箱</h1><p>进入Gmail设置 → “账号和导入” → “用这个地址发送邮件” → 点击”添加其他电子邮件地址”。取消勾选 <code>视为别名</code>，点击下一步</p>
+<p><img src="C:\Users\Jianzhe\AppData\Roaming\Typora\typora-user-images\image-20251001012537971.png" alt="image-20251001012537971"></p>
+<p>添加SMTP配置</p>
+<ul>
+<li>Host：smtp.resend.com</li>
+<li>Port：465</li>
+<li>User：resend</li>
+<li>Password：你的resend key</li>
+</ul>
+<p>点击添加账号后，去到cloudflare配置的目标邮箱点击确认认证即可，然后<strong>设置为默认发信地址</strong>即可</p>
+<p><img src="C:\Users\Jianzhe\AppData\Roaming\Typora\typora-user-images\image-20251001012652172.png" alt="image-20251001012652172"></p>
+<p>至此，你可以通过cloudflare转发域名邮箱到gmail，在gmail上使用域名邮箱发送或回复邮件。</p>
+<h1 id="五、简单的发件程序"><a href="#五、简单的发件程序" class="headerlink" title="五、简单的发件程序"></a>五、简单的发件程序</h1><p>对于日常的发送邮件而不需要回复邮件，可以使用如下python代码进行发送，下面是一个python gui程序，方便发送邮件</p>
+<h2 id="1、email-sender-py"><a href="#1、email-sender-py" class="headerlink" title="1、email_sender.py"></a>1、email_sender.py</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br></pre></td><td class="code"><pre><span class="line">import os</span><br><span class="line">import sys</span><br><span class="line">import base64</span><br><span class="line">from pathlib import Path</span><br><span class="line">import tkinter as tk</span><br><span class="line">from tkinter import filedialog, messagebox</span><br><span class="line">import requests</span><br><span class="line"></span><br><span class="line"># Windows 高分屏适配，避免字体模糊</span><br><span class="line">if sys.platform == &quot;win32&quot;:</span><br><span class="line">    try:</span><br><span class="line">        from ctypes import windll</span><br><span class="line">        windll.shcore.SetProcessDpiAwareness(1)</span><br><span class="line">    except Exception:</span><br><span class="line">        pass</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class EmailSenderApp:</span><br><span class="line">    &quot;&quot;&quot;极简 Resend 邮件发送器：仅保留发送功能&quot;&quot;&quot;</span><br><span class="line"></span><br><span class="line">    def __init__(self, root):</span><br><span class="line">        self.root = root</span><br><span class="line">        self.root.title(&quot;Resend 邮件发送器&quot;)</span><br><span class="line">        self.root.geometry(&quot;720x560&quot;)</span><br><span class="line">        self.api_key = os.getenv(&quot;RESEND_KEY&quot;)</span><br><span class="line"></span><br><span class="line">        self.attachments = []</span><br><span class="line"></span><br><span class="line">        self.build_ui()</span><br><span class="line"></span><br><span class="line">        if not self.api_key:</span><br><span class="line">            messagebox.showwarning(&quot;提示&quot;, &quot;未检测到 RESEND_KEY 环境变量，发送前请先配置。&quot;)</span><br><span class="line"></span><br><span class="line">    def build_ui(self):</span><br><span class="line">        pad = 10</span><br><span class="line">        frm = tk.Frame(self.root)</span><br><span class="line">        frm.pack(fill=tk.BOTH, expand=True, padx=pad, pady=pad)</span><br><span class="line"></span><br><span class="line">        # From</span><br><span class="line">        tk.Label(frm, text=&quot;From&quot;).grid(row=0, column=0, sticky=&quot;w&quot;)</span><br><span class="line">        self.from_entry = tk.Entry(frm)</span><br><span class="line">        self.from_entry.grid(row=0, column=1, sticky=&quot;we&quot;, padx=(6, 0))</span><br><span class="line"></span><br><span class="line">        # To</span><br><span class="line">        tk.Label(frm, text=&quot;To&quot;).grid(row=1, column=0, sticky=&quot;w&quot;, pady=(6, 0))</span><br><span class="line">        self.to_entry = tk.Entry(frm)</span><br><span class="line">        self.to_entry.grid(row=1, column=1, sticky=&quot;we&quot;, padx=(6, 0), pady=(6, 0))</span><br><span class="line"></span><br><span class="line">        # Subject</span><br><span class="line">        tk.Label(frm, text=&quot;Subject&quot;).grid(row=2, column=0, sticky=&quot;w&quot;, pady=(6, 0))</span><br><span class="line">        self.subject_entry = tk.Entry(frm)</span><br><span class="line">        self.subject_entry.grid(row=2, column=1, sticky=&quot;we&quot;, padx=(6, 0), pady=(6, 0))</span><br><span class="line"></span><br><span class="line">        # Message</span><br><span class="line">        tk.Label(frm, text=&quot;Message&quot;).grid(row=3, column=0, sticky=&quot;nw&quot;, pady=(6, 0))</span><br><span class="line">        msg_frame = tk.Frame(frm)</span><br><span class="line">        msg_frame.grid(row=3, column=1, sticky=&quot;nsew&quot;, padx=(6, 0), pady=(6, 0))</span><br><span class="line">        self.msg_text = tk.Text(msg_frame, height=12, wrap=tk.WORD)</span><br><span class="line">        self.msg_text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)</span><br><span class="line">        msg_scroll = tk.Scrollbar(msg_frame, command=self.msg_text.yview)</span><br><span class="line">        msg_scroll.pack(side=tk.RIGHT, fill=tk.Y)</span><br><span class="line">        self.msg_text.configure(yscrollcommand=msg_scroll.set)</span><br><span class="line"></span><br><span class="line">        # Attachments</span><br><span class="line">        attach_bar = tk.Frame(frm)</span><br><span class="line">        attach_bar.grid(row=4, column=1, sticky=&quot;w&quot;, pady=(6, 0))</span><br><span class="line">        tk.Button(attach_bar, text=&quot;添加附件&quot;, command=self.add_attachments).pack(side=tk.LEFT)</span><br><span class="line">        tk.Button(attach_bar, text=&quot;移除选中&quot;, command=self.remove_attachment).pack(side=tk.LEFT, padx=(6, 0))</span><br><span class="line"></span><br><span class="line">        self.attach_list = tk.Listbox(frm, height=4)</span><br><span class="line">        self.attach_list.grid(row=5, column=1, sticky=&quot;nsew&quot;, padx=(6, 0), pady=(6, 0))</span><br><span class="line"></span><br><span class="line">        # Buttons</span><br><span class="line">        btn_bar = tk.Frame(frm)</span><br><span class="line">        btn_bar.grid(row=6, column=1, sticky=&quot;e&quot;, pady=(10, 0))</span><br><span class="line">        tk.Button(btn_bar, text=&quot;清空&quot;, command=self.clear_form).pack(side=tk.RIGHT)</span><br><span class="line">        tk.Button(btn_bar, text=&quot;发送&quot;, command=self.send_email).pack(side=tk.RIGHT, padx=(0, 8))</span><br><span class="line"></span><br><span class="line">        # Layout weights</span><br><span class="line">        frm.columnconfigure(1, weight=1)</span><br><span class="line">        frm.rowconfigure(3, weight=1)</span><br><span class="line">        frm.rowconfigure(5, weight=1)</span><br><span class="line"></span><br><span class="line">    def add_attachments(self):</span><br><span class="line">        files = filedialog.askopenfilenames(title=&quot;选择附件&quot;)</span><br><span class="line">        for f in files:</span><br><span class="line">            self.attachments.append(f)</span><br><span class="line">            self.attach_list.insert(tk.END, Path(f).name)</span><br><span class="line"></span><br><span class="line">    def remove_attachment(self):</span><br><span class="line">        sel = self.attach_list.curselection()</span><br><span class="line">        if not sel:</span><br><span class="line">            return</span><br><span class="line">        idx = sel[0]</span><br><span class="line">        self.attach_list.delete(idx)</span><br><span class="line">        self.attachments.pop(idx)</span><br><span class="line"></span><br><span class="line">    def clear_form(self):</span><br><span class="line">        self.from_entry.delete(0, tk.END)</span><br><span class="line">        self.to_entry.delete(0, tk.END)</span><br><span class="line">        self.subject_entry.delete(0, tk.END)</span><br><span class="line">        self.msg_text.delete(&quot;1.0&quot;, tk.END)</span><br><span class="line">        self.attachments.clear()</span><br><span class="line">        self.attach_list.delete(0, tk.END)</span><br><span class="line"></span><br><span class="line">    def send_email(self):</span><br><span class="line">        if not self.api_key:</span><br><span class="line">            messagebox.showerror(&quot;错误&quot;, &quot;未配置 RESEND_KEY 环境变量。&quot;)</span><br><span class="line">            return</span><br><span class="line"></span><br><span class="line">        from_email = self.from_entry.get().strip()</span><br><span class="line">        to_email = self.to_entry.get().strip()</span><br><span class="line">        subject = self.subject_entry.get().strip()</span><br><span class="line">        message = self.msg_text.get(&quot;1.0&quot;, tk.END).strip()</span><br><span class="line"></span><br><span class="line">        if not all([from_email, to_email, subject, message]):</span><br><span class="line">            messagebox.showerror(&quot;错误&quot;, &quot;请填写 From、To、Subject 和 Message。&quot;)</span><br><span class="line">            return</span><br><span class="line"></span><br><span class="line">        payload = &#123;</span><br><span class="line">            &quot;from&quot;: from_email,</span><br><span class="line">            &quot;to&quot;: [to_email],</span><br><span class="line">            &quot;subject&quot;: subject,</span><br><span class="line">            &quot;html&quot;: f&quot;&lt;html&gt;&lt;body&gt;&lt;pre&gt;&#123;message&#125;&lt;/pre&gt;&lt;/body&gt;&lt;/html&gt;&quot;,</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        if self.attachments:</span><br><span class="line">            att = []</span><br><span class="line">            for p in self.attachments:</span><br><span class="line">                try:</span><br><span class="line">                    with open(p, &quot;rb&quot;) as fh:</span><br><span class="line">                        att.append(&#123;</span><br><span class="line">                            &quot;filename&quot;: Path(p).name,</span><br><span class="line">                            &quot;content&quot;: base64.b64encode(fh.read()).decode(),</span><br><span class="line">                        &#125;)</span><br><span class="line">                except Exception as e:</span><br><span class="line">                    messagebox.showerror(&quot;错误&quot;, f&quot;读取附件失败: &#123;Path(p).name&#125; - &#123;e&#125;&quot;)</span><br><span class="line">                    return</span><br><span class="line">            payload[&quot;attachments&quot;] = att</span><br><span class="line"></span><br><span class="line">        try:</span><br><span class="line">            resp = requests.post(</span><br><span class="line">                &quot;https://api.resend.com/emails&quot;,</span><br><span class="line">                json=payload,</span><br><span class="line">                headers=&#123;</span><br><span class="line">                    &quot;Authorization&quot;: f&quot;Bearer &#123;self.api_key&#125;&quot;,</span><br><span class="line">                    &quot;Content-Type&quot;: &quot;application/json&quot;,</span><br><span class="line">                &#125;,</span><br><span class="line">                timeout=30,</span><br><span class="line">            )</span><br><span class="line">            if resp.status_code == 200:</span><br><span class="line">                messagebox.showinfo(&quot;成功&quot;, &quot;邮件已发送。&quot;)</span><br><span class="line">                self.clear_form()</span><br><span class="line">            else:</span><br><span class="line">                try:</span><br><span class="line">                    msg = resp.json().get(&quot;message&quot;, resp.text)</span><br><span class="line">                except Exception:</span><br><span class="line">                    msg = resp.text</span><br><span class="line">                messagebox.showerror(&quot;发送失败&quot;, msg)</span><br><span class="line">        except Exception as e:</span><br><span class="line">            messagebox.showerror(&quot;错误&quot;, f&quot;请求失败: &#123;e&#125;&quot;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def main():</span><br><span class="line">    root = tk.Tk()</span><br><span class="line">    EmailSenderApp(root)</span><br><span class="line">    root.mainloop()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">if __name__ == &quot;__main__&quot;:</span><br><span class="line">    main()</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="2、requirements-txt"><a href="#2、requirements-txt" class="headerlink" title="2、requirements.txt"></a>2、requirements.txt</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">requests==2.31.0</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://www.228610.xyz/2025/10/01/%E5%9F%9F%E5%90%8D%E9%82%AE%E7%AE%B1%E6%90%AD%E5%BB%BA/" data-id="cuide_Nl4j5O1wvAURCDh7FkA" data-title="域名邮箱搭建" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cloudflare/" rel="tag">cloudflare</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%9F%9F%E5%90%8D%E9%82%AE%E7%AE%B1/" rel="tag">域名邮箱</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2025/10/28/vcpkg%20%E5%AE%89%E8%A3%85%E5%92%8C%E4%BD%BF%E7%94%A8/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          vcpkg 安装和使用
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2025/09/29/Hysteria2%20%E4%B8%80%E9%94%AE%E6%90%AD%E5%BB%BA%E8%84%9A%E6%9C%AC/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Hysteria2 一键搭建脚本</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/C-%E7%AF%87/">C-篇</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/OpenSSL/">OpenSSL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Qt/">Qt</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/muduo/">muduo</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E5%8F%91%E8%B0%83%E4%BC%98/">开发调优</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%90%9E%E4%B8%83%E6%8D%BB%E4%B8%89/">搞七捻三</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%B5%84%E6%BA%90%E8%8D%9F%E8%90%83/">资源荟萃</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%97%AE%E9%A2%98%E6%B1%87%E6%80%BB/">问题汇总</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/1panel/" rel="tag">1panel</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CRT/" rel="tag">CRT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTP/" rel="tag">CTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FRP/" rel="tag">FRP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MariaDB/" rel="tag">MariaDB</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyNodeQuery/" rel="tag">MyNodeQuery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PicGo/" rel="tag">PicGo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Qt/" rel="tag">Qt</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/" rel="tag">Spring Boot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/aria2c/" rel="tag">aria2c</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/caddy/" rel="tag">caddy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdn/" rel="tag">cdn</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cloudflare/" rel="tag">cloudflare</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cmake/" rel="tag">cmake</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/epoll/" rel="tag">epoll</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/firefox/" rel="tag">firefox</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flameshot/" rel="tag">flameshot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hy/" rel="tag">hy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/muduo/" rel="tag">muduo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mvnd/" rel="tag">mvnd</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/opengl/" rel="tag">opengl</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openssl/" rel="tag">openssl</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/protobuf/" rel="tag">protobuf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/serv00/" rel="tag">serv00</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socat/" rel="tag">socat</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socks5/" rel="tag">socks5</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/typecho/" rel="tag">typecho</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ubuntu/" rel="tag">ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vcpkg/" rel="tag">vcpkg</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vmware/" rel="tag">vmware</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vs2022/" rel="tag">vs2022</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vscode/" rel="tag">vscode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%B8%AD%E8%BD%AC/" rel="tag">中转</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/" rel="tag">内网穿透</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/" rel="tag">反向代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9F%9F%E5%90%8D%E9%82%AE%E7%AE%B1/" rel="tag">域名邮箱</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A2%E9%92%88/" rel="tag">探针</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%B2%98%E5%8C%85/" rel="tag">粘包</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%95%9C%E5%83%8F%E6%BA%90/" rel="tag">镜像源</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/1panel/" style="font-size: 10px;">1panel</a> <a href="/tags/C/" style="font-size: 18.57px;">C++</a> <a href="/tags/CRT/" style="font-size: 10px;">CRT</a> <a href="/tags/CTP/" style="font-size: 10px;">CTP</a> <a href="/tags/CentOS/" style="font-size: 12.86px;">CentOS</a> <a href="/tags/FRP/" style="font-size: 10px;">FRP</a> <a href="/tags/MariaDB/" style="font-size: 10px;">MariaDB</a> <a href="/tags/MyNodeQuery/" style="font-size: 10px;">MyNodeQuery</a> <a href="/tags/MySQL/" style="font-size: 20px;">MySQL</a> <a href="/tags/PicGo/" style="font-size: 10px;">PicGo</a> <a href="/tags/Qt/" style="font-size: 17.14px;">Qt</a> <a href="/tags/Spring-Boot/" style="font-size: 10px;">Spring Boot</a> <a href="/tags/aria2c/" style="font-size: 10px;">aria2c</a> <a href="/tags/caddy/" style="font-size: 11.43px;">caddy</a> <a href="/tags/cdn/" style="font-size: 10px;">cdn</a> <a href="/tags/cloudflare/" style="font-size: 14.29px;">cloudflare</a> <a href="/tags/cmake/" style="font-size: 11.43px;">cmake</a> <a href="/tags/docker/" style="font-size: 11.43px;">docker</a> <a href="/tags/epoll/" style="font-size: 10px;">epoll</a> <a href="/tags/firefox/" style="font-size: 10px;">firefox</a> <a href="/tags/flameshot/" style="font-size: 10px;">flameshot</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/hy/" style="font-size: 10px;">hy</a> <a href="/tags/muduo/" style="font-size: 17.14px;">muduo</a> <a href="/tags/mvnd/" style="font-size: 10px;">mvnd</a> <a href="/tags/nginx/" style="font-size: 12.86px;">nginx</a> <a href="/tags/opengl/" style="font-size: 12.86px;">opengl</a> <a href="/tags/openssl/" style="font-size: 17.14px;">openssl</a> <a href="/tags/protobuf/" style="font-size: 10px;">protobuf</a> <a href="/tags/python/" style="font-size: 10px;">python</a> <a href="/tags/redis/" style="font-size: 11.43px;">redis</a> <a href="/tags/serv00/" style="font-size: 11.43px;">serv00</a> <a href="/tags/socat/" style="font-size: 10px;">socat</a> <a href="/tags/socks5/" style="font-size: 10px;">socks5</a> <a href="/tags/typecho/" style="font-size: 11.43px;">typecho</a> <a href="/tags/ubuntu/" style="font-size: 15.71px;">ubuntu</a> <a href="/tags/vcpkg/" style="font-size: 10px;">vcpkg</a> <a href="/tags/vmware/" style="font-size: 11.43px;">vmware</a> <a href="/tags/vs2022/" style="font-size: 10px;">vs2022</a> <a href="/tags/vscode/" style="font-size: 12.86px;">vscode</a> <a href="/tags/%E4%B8%AD%E8%BD%AC/" style="font-size: 10px;">中转</a> <a href="/tags/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/" style="font-size: 10px;">内网穿透</a> <a href="/tags/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/" style="font-size: 14.29px;">反向代理</a> <a href="/tags/%E5%9F%9F%E5%90%8D%E9%82%AE%E7%AE%B1/" style="font-size: 10px;">域名邮箱</a> <a href="/tags/%E6%8E%A2%E9%92%88/" style="font-size: 10px;">探针</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 11.43px;">算法</a> <a href="/tags/%E7%B2%98%E5%8C%85/" style="font-size: 10px;">粘包</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 10px;">计算机网络</a> <a href="/tags/%E9%95%9C%E5%83%8F%E6%BA%90/" style="font-size: 10px;">镜像源</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/02/">February 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/12/">December 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/11/">November 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/10/">October 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/09/">September 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/08/">August 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/07/">July 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/05/">May 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/04/">April 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/03/">March 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/02/">February 2025</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/02/22/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/08/ubuntu%20%E5%85%8D%E5%AF%86%E6%93%8D%E4%BD%9C/">ubuntu 免密操作</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/08/Ubuntu%2025%20%E4%B8%8B%20Flameshot%20%E5%BF%AB%E6%8D%B7%E9%94%AE%E6%88%AA%E5%9B%BE%E5%A4%B1%E8%B4%A5%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/">Ubuntu 25 下 Flameshot 快捷键截图失败解决方案</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/05/%E9%80%9A%E8%BF%87%E7%BD%91%E7%BA%BF%E4%BC%A0%E8%BE%93%E6%95%B0%E6%8D%AE/">通过网线传输数据</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/04/ctypes%E5%B0%81%E8%A3%85C++%E6%8E%A5%E5%8F%A3%E7%BB%99Python%E4%BD%BF%E7%94%A8/">ctypes封装C++接口给Python使用</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
