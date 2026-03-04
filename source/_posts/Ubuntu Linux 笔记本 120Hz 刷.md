@@ -1,4 +1,4 @@
-title: Ubuntu Linux 笔记本 120Hz 刷
+title: Ubuntu Linux 笔记本 120Hz 刷新率显示120hz
 date: 2026-03-04 22:21:35
 categories: 搞七捻三
 tags: [ubuntu]

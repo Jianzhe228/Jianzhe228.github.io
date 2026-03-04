@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """博客文章管理工具 - 发布与删除文章"""
 
+import os
 import subprocess
 import sys
 from datetime import datetime
@@ -69,6 +70,33 @@ def read_content():
     return "\n".join(lines)
 
 
+def git_auto_push(title):
+    """自动 git add、commit、push"""
+    repo_dir = Path(__file__).parent
+    try:
+        subprocess.run(["git", "add", "."], cwd=repo_dir, check=True)
+        subprocess.run(["git", "commit", "-m", title], cwd=repo_dir, check=True)
+        subprocess.run(["git", "push"], cwd=repo_dir, check=True)
+        print("已自动提交并推送到远程仓库")
+    except subprocess.CalledProcessError as e:
+        print(f"Git 操作失败: {e}")
+
+
+def search_posts():
+    """搜索并列出文章，返回匹配的文章列表"""
+    keyword = input("\n搜索关键词（留空列出全部）: ").strip()
+    posts = sorted(POSTS_DIR.glob("*.md"))
+    if keyword:
+        posts = [p for p in posts if keyword.lower() in p.stem.lower()]
+    if not posts:
+        print("没有匹配的文章")
+        return []
+    print()
+    for i, p in enumerate(posts, 1):
+        print(f"  {i}. {p.stem}")
+    return posts
+
+
 def publish():
     """发布新文章"""
     title = input("\n文章标题: ").strip()
@@ -104,23 +132,14 @@ def publish():
             f.write("\n")
 
     print(f"\n创建成功: {post_path}")
+    git_auto_push(title)
 
 
 def delete():
     """删除文章（移到回收站）"""
-    keyword = input("\n搜索关键词（留空列出全部）: ").strip()
-
-    posts = sorted(POSTS_DIR.glob("*.md"))
-    if keyword:
-        posts = [p for p in posts if keyword.lower() in p.stem.lower()]
-
+    posts = search_posts()
     if not posts:
-        print("没有匹配的文章")
         return
-
-    print()
-    for i, p in enumerate(posts, 1):
-        print(f"  {i}. {p.stem}")
 
     choice = input("\n选择编号（0 取消）: ").strip()
     if not choice.isdigit() or int(choice) == 0:
@@ -140,25 +159,52 @@ def delete():
     try:
         subprocess.run(["trash-put", str(target)], check=True)
         print(f"已移到回收站: {target.name}")
+        git_auto_push(target.stem)
     except FileNotFoundError:
         print("未找到 trash-put，请安装: sudo apt install trash-cli")
     except subprocess.CalledProcessError as e:
         print(f"删除失败: {e}")
 
 
+def edit():
+    """修改文章"""
+    posts = search_posts()
+    if not posts:
+        return
+
+    choice = input("\n选择编号（0 取消）: ").strip()
+    if not choice.isdigit() or int(choice) == 0:
+        return
+
+    idx = int(choice)
+    if idx < 1 or idx > len(posts):
+        print("无效编号")
+        return
+
+    target = posts[idx - 1]
+    editor = os.environ.get("EDITOR", "xdg-open")
+    print(f"正在打开: {target.name}")
+    subprocess.run([editor, str(target)])
+    input("编辑完成后按回车提交...")
+    git_auto_push(target.stem)
+
+
 def main():
     while True:
         print("\n=== 博客文章管理 ===")
         print("1. 发布文章")
-        print("2. 删除文章")
-        print("3. 退出")
+        print("2. 修改文章")
+        print("3. 删除文章")
+        print("4. 退出")
 
         choice = input("选择操作: ").strip()
         if choice == "1":
             publish()
         elif choice == "2":
-            delete()
+            edit()
         elif choice == "3":
+            delete()
+        elif choice == "4":
             break
         else:
             print("无效选择")
