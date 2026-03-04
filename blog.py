@@ -182,11 +182,30 @@ def edit():
         return
 
     target = posts[idx - 1]
+    old_title = target.stem
+
     editor = os.environ.get("EDITOR", "xdg-open")
     print(f"正在打开: {target.name}")
     subprocess.run([editor, str(target)])
     input("编辑完成后按回车提交...")
-    git_auto_push(target.stem)
+
+    # 检测标题是否修改，若修改则重命名文件
+    try:
+        text = target.read_text(encoding="utf-8")
+        for line in text.splitlines():
+            if line.startswith("title:"):
+                new_title = line[len("title:"):].strip()
+                if new_title and new_title != old_title:
+                    new_path = target.parent / f"{new_title}.md"
+                    target.rename(new_path)
+                    print(f"文件已重命名: {old_title}.md → {new_title}.md")
+                    git_auto_push(new_title)
+                    return
+                break
+    except Exception as e:
+        print(f"检测标题失败: {e}")
+
+    git_auto_push(old_title)
 
 
 def main():
