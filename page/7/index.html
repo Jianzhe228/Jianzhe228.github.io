@@ -71,6 +71,154 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-C++生成随机数" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/03/28/C++%E7%94%9F%E6%88%90%E9%9A%8F%E6%9C%BA%E6%95%B0/" class="article-date">
+  <time class="dt-published" datetime="2025-03-28T06:29:00.000Z" itemprop="datePublished">2025-03-28</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%BC%80%E5%8F%91%E8%B0%83%E4%BC%98/">开发调优</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2025/03/28/C++%E7%94%9F%E6%88%90%E9%9A%8F%E6%9C%BA%E6%95%B0/">C++生成随机数</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="一、random-device"><a href="#一、random-device" class="headerlink" title="一、random_device"></a>一、random_device</h3><p>创建随机设备对象,通过本设备的随机数生成器生成随机种子，而不是使用时间生产随机种子</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">std::random_device rd;</span><br></pre></td></tr></table></figure>
+
+<h3 id="二、mt19937"><a href="#二、mt19937" class="headerlink" title="二、mt19937"></a>二、mt19937</h3><p>创建随机数引擎对象，参数是创建的随机设备对象random_device，随机设备对象重载了<code>()</code>,rd()在这里是可调用对象</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">std::mt19937 <span class="title">gen</span><span class="params">(rd())</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="三、uniform-int-distribution"><a href="#三、uniform-int-distribution" class="headerlink" title="三、uniform_int_distribution"></a>三、uniform_int_distribution</h3><p> 创建随机数分布对象-均匀分布，参数是范围，最小值和最大值的范围，范围是闭区间</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">std::uniform_int_distribution&lt;<span class="type">int</span>&gt; <span class="title">dis</span><span class="params">(min,max)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="四、生成随机数"><a href="#四、生成随机数" class="headerlink" title="四、生成随机数"></a>四、生成随机数</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> randomNumber = <span class="built_in">dis</span>(gen);</span><br></pre></td></tr></table></figure>
+
+<h3 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h3><p>生成一个随机数数组</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">std::vector&lt;<span class="type">int</span>&gt; <span class="title">generateRandomArray</span><span class="params">(<span class="type">int</span> size)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    std::vector&lt;<span class="type">int</span>&gt; arr;</span><br><span class="line">    std::random_device rd;</span><br><span class="line">    <span class="function">std::mt19937 <span class="title">gen</span><span class="params">(rd())</span></span>;</span><br><span class="line">    <span class="function">std::uniform_int_distribution&lt;<span class="type">int</span>&gt; <span class="title">dis</span><span class="params">(<span class="number">0</span>, <span class="number">10000</span>)</span></span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">size_t</span> i = <span class="number">0</span>; i &lt; size; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        arr.<span class="built_in">push_back</span>(<span class="built_in">dis</span>(gen));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> arr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://www.228610.xyz/2025/03/28/C++%E7%94%9F%E6%88%90%E9%9A%8F%E6%9C%BA%E6%95%B0/" data-id="cuidpuxSLHBS49Xq4dxHe3QmF" data-title="C++生成随机数" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/" rel="tag">C++</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-排序算法" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/03/28/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/" class="article-date">
+  <time class="dt-published" datetime="2025-03-28T05:06:00.000Z" itemprop="datePublished">2025-03-28</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2025/03/28/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/">排序算法</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>From: 爱编程的大丙<br>Author: 爱编程的大丙<br>原文链接：<a target="_blank" rel="noopener" href="https://subingwen.cn/data-structure/sort/">八大排序算法</a></p>
+</blockquote>
+<h3 id="一、冒泡排序"><a href="#一、冒泡排序" class="headerlink" title="一、冒泡排序"></a>一、冒泡排序</h3><ol>
+<li>冒泡排序是稳定排序,原因是相等的值不交换，且只与相邻元素交换，不会打乱原有顺序</li>
+<li>做法：每次都从待排序的部分挑选出一个最大值放在最后（挑选的方式是相邻元素都比较一次）</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">bubble_sort</span><span class="params">(std::vector&lt;<span class="type">int</span>&gt;&amp; arr)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">int</span> length = arr.<span class="built_in">size</span>() - <span class="number">1</span>;</span><br><span class="line">    <span class="comment">// isSwap用于减少循环轮数，防止已经排好序后继续排序</span></span><br><span class="line">    <span class="type">bool</span> isSwap = <span class="literal">false</span>;</span><br><span class="line">    <span class="comment">// i 控制循环轮数</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; length; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        isSwap = <span class="literal">false</span>;</span><br><span class="line">        <span class="comment">// j不能从j=i+1开始，一次完整的内循环只能将最大的数字放在相对最后的位置，并没有对左边的数字进行排序</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">0</span>; j &lt; length - i; ++j)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (arr[j] &gt; arr[j + <span class="number">1</span>])</span><br><span class="line">            &#123;</span><br><span class="line">                std::<span class="built_in">swap</span>(arr[j], arr[j + <span class="number">1</span>]);</span><br><span class="line">                isSwap = <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (!isSwap)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="二、选择排序"><a href="#二、选择排序" class="headerlink" title="二、选择排序"></a>二、选择排序</h3><ol>
+<li>选择排序是<strong>不稳定排序</strong> 原因是会出现长距离交换，会打乱原有的顺序</li>
+<li>做法：每次都从待排序的部分找到最大或最小值的位置然后交换放在相对最前的位置</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">selected_sort</span><span class="params">(std::vector&lt;<span class="type">int</span>&gt;&amp; arr)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">int</span> length = arr.<span class="built_in">size</span>() - <span class="number">1</span>;</span><br><span class="line">    <span class="comment">// i 控制循环轮数</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; length; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="type">int</span> minPos = i;</span><br><span class="line">        <span class="comment">// 找到最大或最小值的位置</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> j = i + <span class="number">1</span>; j &lt;= length; ++j)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (arr[minPos] &gt; arr[j])</span><br><span class="line">            &#123;</span><br><span class="line">                minPos = j;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (minPos != i)</span><br><span class="line">        &#123;</span><br><span class="line">            std::<span class="built_in">swap</span>(arr[i], arr[minPos]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="三、插入排序"><a href="#三、插入排序" class="headerlink" title="三、插入排序"></a>三、插入排序</h3><ol>
+<li>插入排序是稳定排序， 原因是我们是根据待排序数组的顺序进行排序的，且与相邻元素比较，不会出现长距离交换的情况</li>
+<li>做法：从待排序的数组中选出第一个元素A，让这个元素和已排好序的数组的最后一个进行比较B，如果A&lt;B,则将A后移一位覆盖数据，从此往复，知道找到小于B的元素，然后将B插入到该位置</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">insert_sort</span><span class="params">(std::vector&lt;<span class="type">int</span>&gt;&amp; arr)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">int</span> length = arr.<span class="built_in">size</span>() - <span class="number">1</span>;</span><br><span class="line">    <span class="comment">// i表示待排序的数组</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= length; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 使用一个临时的变量存储待排序的第一个元素，方便后续插入数据和移动覆盖数据</span></span><br><span class="line">        <span class="type">int</span> temp = arr[i];</span><br><span class="line">        <span class="type">int</span> j = i - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span> (j &gt;= <span class="number">0</span> &amp;&amp; arr[j] &gt; temp)</span><br><span class="line">        &#123;</span><br><span class="line">            arr[j + <span class="number">1</span>] = arr[j];</span><br><span class="line">            --j;</span><br><span class="line">        &#125;</span><br><span class="line">        arr[j + <span class="number">1</span>] = temp;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="四、-希尔排序"><a href="#四、-希尔排序" class="headerlink" title="四、 希尔排序"></a>四、 希尔排序</h3><ol>
+<li>插入排序的优化版 但并不是稳定排序 原因是：交换的元素并不是相邻的元素，存在长距离交换的情况</li>
+<li>做法：利用插入排序趋向排好序的数组排序速度快的特点，将一个大数组分为一个个小数组对其进行插入排序，又因为每一个小数组都趋向于有序，所以排序速度很快，最后会导致整个大数组都趋向于有序，这样就能提高排序速度</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">shell_sort</span><span class="params">(std::vector&lt;<span class="type">int</span>&gt;&amp; arr)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">int</span> length = arr.<span class="built_in">size</span>();</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> gap = length / <span class="number">2</span>; gap &gt; <span class="number">0</span>; gap /= <span class="number">2</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = gap; i &lt; length; ++i)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="type">int</span> temp = arr[i];</span><br><span class="line">            <span class="type">int</span> j = i - gap;</span><br><span class="line">            <span class="keyword">while</span> (j &gt;= <span class="number">0</span> &amp;&amp; arr[j] &gt; temp)</span><br><span class="line">            &#123;</span><br><span class="line">                arr[j + gap] = arr[j];</span><br><span class="line">                j -= gap;</span><br><span class="line">            &#125;</span><br><span class="line">            arr[j + gap] = temp;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="五、快速排序"><a href="#五、快速排序" class="headerlink" title="五、快速排序"></a>五、快速排序</h3><ol>
+<li>快速排序是不稳定排序，原因是因为交换的元素并不是相邻的元素，会出现长距离交换元素的情况</li>
+<li>做法：快速排序采用分治法，通常在中间取一个基准数，然后将比基准数小的元素放在左边，比基准数大的元素放在右边，如果左边的元素比基准数大，右边的元素比基准数小，则交换这两个元素的位置，直到所有元素都排好序，即left&gt;right停止，然后重新划分子数组，通过不断递归的方式，当所有的子数组都排好序后，整个数组也就排好序了</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">quick_sort</span><span class="params">(std::vector&lt;<span class="type">int</span>&gt;&amp; arr)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (arr.<span class="built_in">empty</span>())</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">quick_sort</span>(arr, <span class="number">0</span>, arr.<span class="built_in">size</span>() - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">quick_sort</span><span class="params">(std::vector&lt;<span class="type">int</span>&gt;&amp; arr, <span class="type">int</span> left, <span class="type">int</span> right)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (left &gt;= right)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 基准数 取中间元素作为基准数,left + (right - left) / 2是为了防止left+right溢出</span></span><br><span class="line">    <span class="type">int</span> pivotValue = arr[left + (right - left) / <span class="number">2</span>];</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> begin = left - <span class="number">1</span>, end = right + <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> (begin &lt; end)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">do</span></span><br><span class="line">        &#123;</span><br><span class="line">            begin++;</span><br><span class="line">        &#125; <span class="keyword">while</span> (arr[begin] &lt; pivotValue);</span><br><span class="line">        <span class="keyword">do</span></span><br><span class="line">        &#123;</span><br><span class="line">            end--;</span><br><span class="line">        &#125; <span class="keyword">while</span> (arr[end] &gt; pivotValue);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (begin &lt; end)</span><br><span class="line">        &#123;</span><br><span class="line">            std::<span class="built_in">swap</span>(arr[begin], arr[end]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">quick_sort</span>(arr, left, end);</span><br><span class="line">    <span class="comment">// 下面这个的left参数不能使用begin+1,否则会导致一个元素会排序两次</span></span><br><span class="line">    <span class="built_in">quick_sort</span>(arr, end + <span class="number">1</span>, right);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="六、归并排序"><a href="#六、归并排序" class="headerlink" title="六、归并排序"></a>六、归并排序</h3><ol>
+<li>归并排序是稳定排序, 原因是：交换的是相邻的元素且是有序的，相等的元素不会交换位置</li>
+<li>通过不断递归将数组分到不可再分为止，最后每一个子数组都是一个元素，然后将具有同一个分支的两个子数组进行合并，合并成一个有序数组最后，当所有的子数组都合并成一个有序数组后，整个数组也就排好序了</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">merge_sort</span><span class="params">(std::vector&lt;<span class="type">int</span>&gt;&amp; arr)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (arr.<span class="built_in">empty</span>())</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function">std::vector&lt;<span class="type">int</span>&gt; <span class="title">temp</span><span class="params">(arr.size())</span></span>;</span><br><span class="line">    <span class="built_in">merge_sort</span>(arr, temp, <span class="number">0</span>, arr.<span class="built_in">size</span>() - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">merge_sort</span><span class="params">(std::vector&lt;<span class="type">int</span>&gt;&amp; arr, std::vector&lt;<span class="type">int</span>&gt;&amp; temp, <span class="type">int</span> left, <span class="type">int</span> right)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (left &gt;= right)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">int</span> mid = left + (right - left) / <span class="number">2</span>;</span><br><span class="line">    <span class="comment">// 递归分割数组</span></span><br><span class="line">    <span class="built_in">merge_sort</span>(arr, temp, left, mid);</span><br><span class="line">    <span class="built_in">merge_sort</span>(arr, temp, mid + <span class="number">1</span>, right);</span><br><span class="line">    <span class="comment">// 合并同一个分支上的两个有序数组(开始时每一个子数组都是1个元素)</span></span><br><span class="line">    <span class="type">int</span> i = left, j = mid + <span class="number">1</span>, index = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (i &lt;= mid &amp;&amp; j &lt;= right)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (arr[i] &lt; arr[j])</span><br><span class="line">        &#123;</span><br><span class="line">            temp[index++] = arr[i++];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            temp[index++] = arr[j++];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 将剩余的元素放入临时数组,只会有一个while循环执行</span></span><br><span class="line">    <span class="keyword">while</span> (i &lt;= mid)</span><br><span class="line">    &#123;</span><br><span class="line">        temp[index++] = arr[i++];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> (j &lt;= right)</span><br><span class="line">    &#123;</span><br><span class="line">        temp[index++] = arr[j++];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 将临时数组中的元素放入原数组</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> k = <span class="number">0</span>; k &lt; index; ++k)</span><br><span class="line">    &#123;</span><br><span class="line">        arr[left + k] = temp[k];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="七、堆排序"><a href="#七、堆排序" class="headerlink" title="七、堆排序"></a>七、堆排序</h3><ol>
+<li>堆排序是不稳定排序，因为顶部元素和最后一个非叶子节点交换时是长距离交换，会打乱顺序</li>
+<li>做法：先构建大根堆，通过将第一个元素和最后一个元素交换后，最后一个元素就是最大的元素，然后将剩下的元素进行再次堆排序，直到所有的元素都排好序为止</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">head_sort</span><span class="params">(std::vector&lt;<span class="type">int</span>&gt;&amp; arr, <span class="type">int</span> length, <span class="type">int</span> parent)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// 不需要构建满二叉树，我们默认数组就是满二叉树</span></span><br><span class="line">    <span class="type">int</span> maxIndex = parent;</span><br><span class="line">    <span class="type">int</span> leftChild = <span class="number">2</span> * parent + <span class="number">1</span>;</span><br><span class="line">    <span class="type">int</span> rightChild = <span class="number">2</span> * parent + <span class="number">2</span>;</span><br><span class="line">    <span class="comment">// 找到最大值的索引</span></span><br><span class="line">    <span class="keyword">if</span> (leftChild &lt; length &amp;&amp; arr[leftChild] &gt; arr[maxIndex])</span><br><span class="line">    &#123;</span><br><span class="line">        maxIndex = leftChild;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (rightChild &lt; length &amp;&amp; arr[rightChild] &gt; arr[maxIndex])</span><br><span class="line">    &#123;</span><br><span class="line">        maxIndex = rightChild;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 如果最大值不是父节点，则交换父节点和最大值的值</span></span><br><span class="line">    <span class="keyword">if</span> (maxIndex != parent)</span><br><span class="line">    &#123;</span><br><span class="line">        std::<span class="built_in">swap</span>(arr[parent], arr[maxIndex]);</span><br><span class="line">        <span class="comment">// 继续递归调整交换后的子树，继续比较其与其子树的大小</span></span><br><span class="line">        <span class="built_in">head_sort</span>(arr, length, maxIndex);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">head_sort</span><span class="params">(std::vector&lt;<span class="type">int</span>&gt;&amp; arr)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (arr.<span class="built_in">empty</span>())</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 由于大根堆的性质，父节点的值大于等于子节点的值，所以我们从最后一个非叶子节点开始调整</span></span><br><span class="line">    <span class="comment">// 逐个向上比较全部的非叶子节点，直到将最大的非叶子节点调整到根节点，此时根节点就是最大值</span></span><br><span class="line">    <span class="comment">// 然后将根节点和最后一个叶子节点交换(将最大值放在最后)，然后重新构建大根堆</span></span><br><span class="line">    <span class="comment">// 循环这个过程，直到所有的非叶子节点都调整完毕</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">//arr.size()/2-1就是最后一个元素的父节点,构建大根堆</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = arr.<span class="built_in">size</span>() / <span class="number">2</span> - <span class="number">1</span>; i &gt;= <span class="number">0</span>; --i)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">head_sort</span>(arr, arr.<span class="built_in">size</span>(), i);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//开始排序操作</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = arr.<span class="built_in">size</span>() - <span class="number">1</span>; i &gt; <span class="number">0</span>; --i)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 交换根节点和最后一个叶子节点,i就是最后一个叶子节点的索引</span></span><br><span class="line">        std::<span class="built_in">swap</span>(arr[<span class="number">0</span>], arr[i]);</span><br><span class="line">        <span class="comment">// 重新构建大根堆，length是去掉最后一个叶子节点的长度，即去掉节点i后的长度</span></span><br><span class="line">        <span class="built_in">head_sort</span>(arr, i, <span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>推荐链接：<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_50886514/article/details/119045154?fromshare">六大排序算法：插入排序、希尔排序、选择排序、冒泡排序、堆排序、快速排序</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://www.228610.xyz/2025/03/28/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/" data-id="cuidRFL6MNUScRylvGXbk2kqL" data-title="排序算法" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-C++ 报错：&#39;xxx&#39; has not been declared" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2025/03/22/C++%20%E6%8A%A5%E9%94%99%EF%BC%9A'xxx'%20has%20not%20been%20declared/" class="article-date">
@@ -107,7 +255,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/22/C++%20%E6%8A%A5%E9%94%99%EF%BC%9A'xxx'%20has%20not%20been%20declared/" data-id="cuidlp9yRdgOmLRb-Bn0Ioyd6" data-title="C++ 报错：&#39;xxx&#39; has not been declared" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/22/C++%20%E6%8A%A5%E9%94%99%EF%BC%9A'xxx'%20has%20not%20been%20declared/" data-id="cuideDUWBBACVR0cwQcBosdPb" data-title="C++ 报错：&#39;xxx&#39; has not been declared" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -177,7 +325,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/20/C++%E5%8D%95%E4%BE%8B%E7%B1%BB%E5%AE%9E%E7%8E%B0/" data-id="cuidAN89oynOT5X1tJ-O5IMfz" data-title="C++单例类实现" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/20/C++%E5%8D%95%E4%BE%8B%E7%B1%BB%E5%AE%9E%E7%8E%B0/" data-id="cuidwiAi0dktqT6d2--ZKdFig" data-title="C++单例类实现" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -247,7 +395,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/19/redis%E5%AE%89%E8%A3%85%E5%92%8C%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/" data-id="cuidWbH9bpkBwnzAVfjr3bMLc" data-title="redis安装和基本使用" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/19/redis%E5%AE%89%E8%A3%85%E5%92%8C%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/" data-id="cuidw7i11Y2ZMzmxXWySCkMI_" data-title="redis安装和基本使用" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -299,7 +447,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/18/C++%20%E6%8A%A5%E9%94%99%EF%BC%9Afstream%E6%89%93%E5%BC%80%E7%9B%B8%E5%AF%B9%E8%B7%AF%E5%BE%84%E6%96%87%E4%BB%B6%E5%8F%91%E7%94%9F%E9%94%99%E8%AF%AF/" data-id="cuidWAvYvgNRBgxXwfl749e_l" data-title="C++ 报错：fstream打开相对路径文件发生错误" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/18/C++%20%E6%8A%A5%E9%94%99%EF%BC%9Afstream%E6%89%93%E5%BC%80%E7%9B%B8%E5%AF%B9%E8%B7%AF%E5%BE%84%E6%96%87%E4%BB%B6%E5%8F%91%E7%94%9F%E9%94%99%E8%AF%AF/" data-id="cuidc5v0gooUaWyqteu2v_tuj" data-title="C++ 报错：fstream打开相对路径文件发生错误" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -349,7 +497,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/16/C++%20%E6%8A%A5%E9%94%99%EF%BC%9A%E2%80%98xxx%E2%80%99%20does%20not%20name%20a%20type/" data-id="cuidZUWtXzCDVwxxqPnYt20HW" data-title="C++ 报错：‘xxx’ does not name a type" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/16/C++%20%E6%8A%A5%E9%94%99%EF%BC%9A%E2%80%98xxx%E2%80%99%20does%20not%20name%20a%20type/" data-id="cuidwm_OHKq-9yWgnePgh8o0F" data-title="C++ 报错：‘xxx’ does not name a type" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -409,7 +557,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/16/ubuntu%E5%BD%BB%E5%BA%95%E5%8D%B8%E8%BD%BDMySQL/" data-id="cuidPYKTHTyor0ceuuHKTF1ki" data-title="ubuntu彻底卸载MySQL" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/16/ubuntu%E5%BD%BB%E5%BA%95%E5%8D%B8%E8%BD%BDMySQL/" data-id="cuidIjOGtsTCJfyLqUJ2oftB3" data-title="ubuntu彻底卸载MySQL" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -523,7 +671,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/14/%E5%A6%82%E4%BD%95%E5%9C%A8CMake%E4%B8%AD%E6%AD%A3%E7%A1%AE%E7%9A%84%E6%B7%BB%E5%8A%A0%E5%BA%93%E6%96%87%E4%BB%B6%EF%BC%9AMSVC%E4%B8%8EMinGW%E6%B7%B7%E7%94%A8%E9%99%B7%E9%98%B1/" data-id="cuidld-YZZ-y4jBVz8_7htLIA" data-title="如何在CMake中正确的添加库文件：MSVC与MinGW混用陷阱" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/14/%E5%A6%82%E4%BD%95%E5%9C%A8CMake%E4%B8%AD%E6%AD%A3%E7%A1%AE%E7%9A%84%E6%B7%BB%E5%8A%A0%E5%BA%93%E6%96%87%E4%BB%B6%EF%BC%9AMSVC%E4%B8%8EMinGW%E6%B7%B7%E7%94%A8%E9%99%B7%E9%98%B1/" data-id="cuidSoEJCdyxUnbTZLeeHnJK0" data-title="如何在CMake中正确的添加库文件：MSVC与MinGW混用陷阱" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -580,203 +728,11 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/14/C++%20%E6%8A%A5%E9%94%99%EF%BC%9Acannot%20found%20-lxxx/" data-id="cuidnrwaPSZSAgh1_ov89mk4d" data-title="C++ 报错：cannot found -lxxx" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/14/C++%20%E6%8A%A5%E9%94%99%EF%BC%9Acannot%20found%20-lxxx/" data-id="cuiducz8IYTgimkofynQ5_AyR" data-title="C++ 报错：cannot found -lxxx" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/" rel="tag">C++</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-C++ 报错：undefined reference to ‘xxxx’" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2025/03/14/C++%20%E6%8A%A5%E9%94%99%EF%BC%9Aundefined%20reference%20to%20%E2%80%98xxxx%E2%80%99/" class="article-date">
-  <time class="dt-published" datetime="2025-03-14T06:14:00.000Z" itemprop="datePublished">2025-03-14</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/C-%E7%AF%87/">C-篇</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2025/03/14/C++%20%E6%8A%A5%E9%94%99%EF%BC%9Aundefined%20reference%20to%20%E2%80%98xxxx%E2%80%99/">C++ 报错：undefined reference to ‘xxxx’</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h3 id="undefined-reference-to-‘xxx’函数"><a href="#undefined-reference-to-‘xxx’函数" class="headerlink" title="undefined reference to ‘xxx’函数"></a>undefined reference to ‘xxx’函数</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#情况1,库链接顺序不正确导致，明显特征是报错的函数是我们自己实现的函数，而不是底层函数</span></span><br><span class="line">[build] D:/a-mycode/C++/DDZ-NET/client-ddz/window/login.cpp:186: undefined reference to `DataManager::getInstance()<span class="string">&#x27;</span></span><br><span class="line"><span class="string">[build] D:/a-mycode/C++/DDZ-NET/client-ddz/window/login.cpp:187: undefined reference to `DataManager::setIp(QByteArray const&amp;)&#x27;</span></span><br><span class="line"><span class="comment">#情况2，没有找到动态库文件，明显特征是报错的函数是底层函数，而不是我们自己实现的函数</span></span><br><span class="line">[build] tcp/libtcp.a(TcpSocket.cpp.obj): In <span class="keyword">function</span> `TcpSocket::TcpSocket(QObject*)<span class="string">&#x27;:</span></span><br><span class="line"><span class="string">[build] D:/a-mycode/C++/DDZ-NET/client-ddz/tcp/TcpSocket.cpp:11: undefined reference to `__imp_WSAStartup&#x27;</span></span><br></pre></td></tr></table></figure>
-
-<p>**原因是库文件找不到,**排查方向：</p>
-<ol>
-<li><p>确保不是因为函数没有实现导致的</p>
-</li>
-<li><p>确保target_link_libraries函数设置的要链接的对象<code>&lt;target&gt;</code></p>
-</li>
-<li><p>确保库链接顺序正确，需要在target_link_libraries修改摆放位置，左边库的依赖右边库</p>
-<blockquote>
-<p>例如，A库中用到了B库中的函数，这时就是A库依赖于B库，A库应该在左边，B库在A库右边，如果B库在A库左边，就会报<strong>undefined reference to</strong> 错误，而且有个<strong>明显特征是报错的函数是我们自己实现的函数，而不是底层函数</strong></p>
-</blockquote>
-</li>
-<li><p>确保在target_link_libraries已经添加了导入库</p>
-</li>
-<li><p>确保target_link_libraries的<strong>lib</strong>库或<strong>dll.a</strong>导入库文件能被找到，使用绝对路径试试</p>
-</li>
-<li><p>确保dll或so动态库文件能找到，试试添加到环境变量或添加到build目录下(与exe文件同级目录)</p>
-</li>
-</ol>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/14/C++%20%E6%8A%A5%E9%94%99%EF%BC%9Aundefined%20reference%20to%20%E2%80%98xxxx%E2%80%99/" data-id="cuidtVy8iuicvlpbPDcUDlJ7b" data-title="C++ 报错：undefined reference to ‘xxxx’" class="article-share-link"><span class="fa fa-share">Share</span></a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/" rel="tag">C++</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-C++封装OpenSSL哈希类" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2025/03/13/C++%E5%B0%81%E8%A3%85OpenSSL%E5%93%88%E5%B8%8C%E7%B1%BB/" class="article-date">
-  <time class="dt-published" datetime="2025-03-13T10:18:10.000Z" itemprop="datePublished">2025-03-13</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/OpenSSL/">OpenSSL</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2025/03/13/C++%E5%B0%81%E8%A3%85OpenSSL%E5%93%88%E5%B8%8C%E7%B1%BB/">C++封装OpenSSL哈希类</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h3 id="一、-基本用法"><a href="#一、-基本用法" class="headerlink" title="一、 基本用法"></a>一、 基本用法</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建MD5哈希对象</span></span><br><span class="line"><span class="function">CryptographicHash <span class="title">hash</span><span class="params">(CryptographicHash::HashType::Md5)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 添加数据</span></span><br><span class="line">hash.<span class="built_in">addData</span>(<span class="string">&quot;Hello World&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取十六进制结果</span></span><br><span class="line">std::string hexResult = hash.<span class="built_in">result</span>();</span><br><span class="line"><span class="comment">// 获取二进制结果</span></span><br><span class="line">std::string binResult = hash.<span class="built_in">result</span>(CryptographicHash::Type::Binary);</span><br></pre></td></tr></table></figure>
-
-<p><strong>必要头文件</strong></p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;openssl/evp.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;openssl/md5.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;openssl/sha.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;map&gt;</span></span></span><br></pre></td></tr></table></figure>
-
-<p><strong>通过枚举关联算法长度和实现</strong></p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum class</span> <span class="title class_">HashType</span> : <span class="type">char</span> &#123;</span><br><span class="line">    Md5,</span><br><span class="line">    Sha1,</span><br><span class="line">    Sha224,</span><br><span class="line">    Sha256,</span><br><span class="line">    Sha384,</span><br><span class="line">    Sha512,</span><br><span class="line">    Sha3_224,</span><br><span class="line">    Sha3_256,</span><br><span class="line">    Sha3_384,</span><br><span class="line">    Sha3_512,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> hashFunc = <span class="type">const</span> EVP_MD* (*)();</span><br><span class="line"><span class="type">const</span> std::map&lt;HashType, hashFunc&gt; HashMethods = &#123;</span><br><span class="line">    &#123;HashType::Md5, EVP_md5&#125;,</span><br><span class="line">    &#123;HashType::Sha1, EVP_sha1&#125;,</span><br><span class="line">    &#123;HashType::Sha224, EVP_sha224&#125;,</span><br><span class="line">    &#123;HashType::Sha256, EVP_sha256&#125;,</span><br><span class="line">    &#123;HashType::Sha384, EVP_sha384&#125;,</span><br><span class="line">    &#123;HashType::Sha512, EVP_sha512&#125;,</span><br><span class="line">    &#123;HashType::Sha3_224, EVP_sha3_224&#125;,</span><br><span class="line">    &#123;HashType::Sha3_256, EVP_sha3_256&#125;,</span><br><span class="line">    &#123;HashType::Sha3_384, EVP_sha3_384&#125;,</span><br><span class="line">    &#123;HashType::Sha3_512, EVP_sha3_512&#125;,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="type">const</span> std::map&lt;HashType, <span class="type">int</span>&gt; HashLength</span><br><span class="line">&#123;</span><br><span class="line">    &#123;HashType::Md5,MD5_DIGEST_LENGTH&#125;,</span><br><span class="line">    &#123;HashType::Sha1,SHA_DIGEST_LENGTH&#125;,</span><br><span class="line">    &#123;HashType::Sha224,SHA224_DIGEST_LENGTH&#125;,</span><br><span class="line">    &#123;HashType::Sha256,SHA256_DIGEST_LENGTH&#125;,</span><br><span class="line">    &#123;HashType::Sha384,SHA384_DIGEST_LENGTH&#125;,</span><br><span class="line">    &#123;HashType::Sha512,SHA512_DIGEST_LENGTH&#125;,</span><br><span class="line">    &#123;HashType::Sha3_224,SHA224_DIGEST_LENGTH&#125;,</span><br><span class="line">    &#123;HashType::Sha3_256,SHA256_DIGEST_LENGTH&#125;,</span><br><span class="line">    &#123;HashType::Sha3_384,SHA384_DIGEST_LENGTH&#125;,</span><br><span class="line">    &#123;HashType::Sha3_512,SHA512_DIGEST_LENGTH&#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<h3 id="二、核心实现步骤"><a href="#二、核心实现步骤" class="headerlink" title="二、核心实现步骤"></a>二、核心实现步骤</h3><h4 id="2-1、EVP-MD-CTX-new"><a href="#2-1、EVP-MD-CTX-new" class="headerlink" title="2.1、EVP_MD_CTX_new"></a>2.1、<strong>EVP_MD_CTX_new</strong></h4><p>创建并初始化一个哈希函数上下文 <code>EVP_MD_CTX</code> 对象</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">EVP_MD_CTX *<span class="title">EVP_MD_CTX_new</span><span class="params">(<span class="type">void</span>)</span></span>;</span><br></pre></td></tr></table></figure>
-
-<p>返回值：一个指向 <code>EVP_MD_CTX</code> 结构体对象的指针</p>
-<p><code>EVP_MD_CTX</code> 是 OpenSSL 中用于保存哈希函数上下文信息的结构体。它包含了执行哈希计算所需的各种状态、缓冲区和上下文信息。</p>
-<p>调用 <code>EVP_MD_CTX_new</code> 函数会分配内存，并对 <code>EVP_MD_CTX</code> 结构体对象进行初始化。之后，可以将该对象传递给其他 OpenSSL 哈希函数相关的函数，以在其中进行进一步的处理和计算。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">m_ctx = <span class="built_in">EVP_MD_CTX_new</span>();</span><br><span class="line"><span class="built_in">assert</span>(m_ctx);</span><br></pre></td></tr></table></figure>
-
-<h4 id="2-2、EVP-DigestInit-ex"><a href="#2-2、EVP-DigestInit-ex" class="headerlink" title="2.2、EVP_DigestInit_ex"></a>2.2、EVP_DigestInit_ex</h4><p>用于初始化哈希（散列）函数的上下文</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">EVP_DigestInit_ex</span><span class="params">(EVP_MD_CTX *ctx, <span class="type">const</span> EVP_MD *type, ENGINE *impl)</span></span>;</span><br></pre></td></tr></table></figure>
-
-<p>参数解释：</p>
-<ul>
-<li><code>ctx</code>：指向要初始化的 <code>EVP_MD_CTX</code> 结构体指针，该结构体用于保存哈希函数的上下文信息。</li>
-<li><code>type</code>：指向 <code>EVP_MD</code> 函数指针，表示要使用的哈希函数的类型。可以使用 OpenSSL 提供的各种哈希函数类型，如 SHA256、SHA512、MD5 等。</li>
-<li><code>impl</code>：可选参数，指定在初始化哈希函数上下文时要使用的加密引擎（如果有）。</li>
-</ul>
-<p>返回值：</p>
-<ul>
-<li>1：成功</li>
-<li>0：失败</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> ret = <span class="built_in">EVP_DigestInit_ex</span>(m_ctx, HashMethods.<span class="built_in">at</span>(hashType)(),<span class="literal">NULL</span>);</span><br><span class="line"><span class="built_in">assert</span>(ret == <span class="number">1</span>);</span><br></pre></td></tr></table></figure>
-
-<h4 id="2-3、EVP-DigestUpdate"><a href="#2-3、EVP-DigestUpdate" class="headerlink" title="2.3、EVP_DigestUpdate"></a>2.3、EVP_DigestUpdate</h4><p>用于更新哈希函数的上下文，<code>EVP_DigestUpdate</code> 函数将 <code>data</code> 指向的数据添加到哈希函数的上下文中，并在计算摘要时使用这些数据。可以多次调用此函数以处理连续的数据块。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">EVP_DigestUpdate</span><span class="params">(EVP_MD_CTX *ctx, <span class="type">const</span> <span class="type">void</span> *data, <span class="type">size_t</span> count)</span></span>;</span><br></pre></td></tr></table></figure>
-
-<p>参数解释：</p>
-<ul>
-<li><code>ctx</code>：指向哈希函数的上下文对象的指针。</li>
-<li><code>data</code>：指向要计算摘要的数据的指针。</li>
-<li><code>count</code>：要处理的数据的字节数。</li>
-</ul>
-<p>返回值：</p>
-<ul>
-<li>1：成功。</li>
-<li>0：失败。</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">const</span> <span class="type">int</span> ret = <span class="built_in">EVP_DigestUpdate</span>(m_ctx, data, length);</span><br></pre></td></tr></table></figure>
-
-<h4 id="2-4、EVP-DigestFinal-ex"><a href="#2-4、EVP-DigestFinal-ex" class="headerlink" title="2.4、EVP_DigestFinal_ex"></a>2.4、EVP_DigestFinal_ex</h4><p>用于计算哈希函数的最终摘要，并将结果存储在指定的md缓冲区中，s记录数据长度，md和s都是传入传出参数</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">EVP_DigestFinal_ex</span><span class="params">(EVP_MD_CTX *ctx, <span class="type">unsigned</span> <span class="type">char</span> *md, <span class="type">unsigned</span> <span class="type">int</span> *s)</span></span>;</span><br></pre></td></tr></table></figure>
-
-<p>参数解释：</p>
-<ul>
-<li><code>ctx</code>：指向哈希函数的上下文对象的指针。</li>
-<li><code>md</code>：指向存储摘要结果的缓冲区的指针。</li>
-<li><code>s</code>：指向用于存储摘要结果长度的变量的指针。</li>
-</ul>
-<p>返回值：</p>
-<ul>
-<li>1：成功</li>
-<li>0：失败</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">unsigned</span> <span class="type">int</span> len = <span class="number">0</span>;</span><br><span class="line"><span class="type">unsigned</span> <span class="type">char</span> md[HashLength.<span class="built_in">at</span>(m_hashType)];</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> ret = <span class="built_in">EVP_DigestFinal_ex</span>(m_ctx, md, &amp;len);</span><br></pre></td></tr></table></figure>
-
-<p>在调用 <code>EVP_DigestFinal_ex</code> 函数之前，必须先调用 <code>EVP_DigestInit_ex</code> 和 <code>EVP_DigestUpdate</code> 函数，以便初始化哈希函数上下文并处理要计算摘要的数据。</p>
-<h4 id="2-5、EVP-MD-CTX-free"><a href="#2-5、EVP-MD-CTX-free" class="headerlink" title="2.5、EVP_MD_CTX_free"></a>2.5、EVP_MD_CTX_free</h4><p>用于释放哈希函数的上下文对象所占用的内存空间</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">EVP_MD_CTX_free</span><span class="params">(EVP_MD_CTX *ctx)</span></span>;</span><br></pre></td></tr></table></figure>
-
-<p>参数解释：</p>
-<ul>
-<li><code>ctx</code>：指向哈希函数的上下文对象的指针。</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">CryptographicHash::~<span class="built_in">CryptographicHash</span>() &#123;</span><br><span class="line">    <span class="keyword">if</span> (m_ctx) &#123;</span><br><span class="line">        <span class="built_in">EVP_MD_CTX_free</span>(m_ctx);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="完整示例："><a href="#完整示例：" class="headerlink" title="完整示例："></a>完整示例：</h4><ul>
-<li>CryptographicHash.h</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span> CRYPTOGRAPHICHASH_H</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> CRYPTOGRAPHICHASH_H</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;map&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;openssl/evp.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;openssl/sha.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;openssl/md5.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">enum class</span> <span class="title class_">HashType</span> : <span class="type">char</span> &#123;</span><br><span class="line">    Md5,</span><br><span class="line">    Sha1,</span><br><span class="line">    Sha224,</span><br><span class="line">    Sha256,</span><br><span class="line">    Sha384,</span><br><span class="line">    Sha512,</span><br><span class="line">    Sha3_224,</span><br><span class="line">    Sha3_256,</span><br><span class="line">    Sha3_384,</span><br><span class="line">    Sha3_512,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> hashFunc = <span class="type">const</span> EVP_MD* (*)();</span><br><span class="line"><span class="type">const</span> std::map&lt;HashType, hashFunc&gt; HashMethods = &#123;</span><br><span class="line">    &#123;HashType::Md5, EVP_md5&#125;,</span><br><span class="line">    &#123;HashType::Sha1, EVP_sha1&#125;,</span><br><span class="line">    &#123;HashType::Sha224, EVP_sha224&#125;,</span><br><span class="line">    &#123;HashType::Sha256, EVP_sha256&#125;,</span><br><span class="line">    &#123;HashType::Sha384, EVP_sha384&#125;,</span><br><span class="line">    &#123;HashType::Sha512, EVP_sha512&#125;,</span><br><span class="line">    &#123;HashType::Sha3_224, EVP_sha3_224&#125;,</span><br><span class="line">    &#123;HashType::Sha3_256, EVP_sha3_256&#125;,</span><br><span class="line">    &#123;HashType::Sha3_384, EVP_sha3_384&#125;,</span><br><span class="line">    &#123;HashType::Sha3_512, EVP_sha3_512&#125;,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="type">const</span> std::map&lt;HashType, <span class="type">int</span>&gt; HashLength</span><br><span class="line">&#123;</span><br><span class="line">    &#123;HashType::Md5,MD5_DIGEST_LENGTH&#125;,</span><br><span class="line">    &#123;HashType::Sha1,SHA_DIGEST_LENGTH&#125;,</span><br><span class="line">    &#123;HashType::Sha224,SHA224_DIGEST_LENGTH&#125;,</span><br><span class="line">    &#123;HashType::Sha256,SHA256_DIGEST_LENGTH&#125;,</span><br><span class="line">    &#123;HashType::Sha384,SHA384_DIGEST_LENGTH&#125;,</span><br><span class="line">    &#123;HashType::Sha512,SHA512_DIGEST_LENGTH&#125;,</span><br><span class="line">    &#123;HashType::Sha3_224,SHA224_DIGEST_LENGTH&#125;,</span><br><span class="line">    &#123;HashType::Sha3_256,SHA256_DIGEST_LENGTH&#125;,</span><br><span class="line">    &#123;HashType::Sha3_384,SHA384_DIGEST_LENGTH&#125;,</span><br><span class="line">    &#123;HashType::Sha3_512,SHA512_DIGEST_LENGTH&#125;,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">CryptographicHash</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">enum class</span> <span class="title class_">Type</span> : <span class="type">char</span> &#123; Binary, Hex &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">CryptographicHash</span><span class="params">(HashType hashType)</span></span>;</span><br><span class="line"></span><br><span class="line">    ~<span class="built_in">CryptographicHash</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">//添加数据</span></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">addData</span><span class="params">(<span class="type">const</span> std::string &amp;data)</span> <span class="type">const</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">addData</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *data, <span class="type">int</span> length)</span> <span class="type">const</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function">std::string <span class="title">result</span><span class="params">(Type type = Type::Hex)</span> <span class="type">const</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    EVP_MD_CTX *m_ctx;</span><br><span class="line">    HashType m_hashType;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span> <span class="comment">//CRYPTOGRAPHICHASH_H</span></span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>CryptographicHash.cpp</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;CryptographicHash.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cassert&gt;</span></span></span><br><span class="line"></span><br><span class="line">CryptographicHash::<span class="built_in">CryptographicHash</span>(<span class="type">const</span> HashType hashType) &#123;</span><br><span class="line">    m_hashType = hashType;</span><br><span class="line">    m_ctx = <span class="built_in">EVP_MD_CTX_new</span>();</span><br><span class="line">    <span class="built_in">assert</span>(m_ctx);</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> ret = <span class="built_in">EVP_DigestInit_ex</span>(m_ctx, HashMethods.<span class="built_in">at</span>(hashType)(),<span class="literal">NULL</span>);</span><br><span class="line">    <span class="built_in">assert</span>(ret == <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">CryptographicHash::~<span class="built_in">CryptographicHash</span>() &#123;</span><br><span class="line">    <span class="keyword">if</span> (m_ctx) &#123;</span><br><span class="line">        <span class="built_in">EVP_MD_CTX_free</span>(m_ctx);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">CryptographicHash::addData</span><span class="params">(<span class="type">const</span> std::string &amp;data)</span> <span class="type">const</span> </span>&#123;</span><br><span class="line">    <span class="built_in">addData</span>(data.<span class="built_in">data</span>(), data.<span class="built_in">size</span>());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">CryptographicHash::addData</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *data, <span class="type">const</span> <span class="type">int</span> length)</span> <span class="type">const</span> </span>&#123;</span><br><span class="line">    <span class="type">const</span> <span class="type">int</span> ret = <span class="built_in">EVP_DigestUpdate</span>(m_ctx, data, length);</span><br><span class="line">    <span class="built_in">assert</span>(ret == <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">std::string <span class="title">CryptographicHash::result</span><span class="params">(<span class="type">const</span> Type type)</span> <span class="type">const</span> </span>&#123;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">int</span> len = <span class="number">0</span>;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">char</span> md[HashLength.<span class="built_in">at</span>(m_hashType)];</span><br><span class="line">    <span class="type">const</span> <span class="type">int</span> ret = <span class="built_in">EVP_DigestFinal_ex</span>(m_ctx, md, &amp;len);</span><br><span class="line">    <span class="built_in">assert</span>(ret == <span class="number">1</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//在将二进制哈希值转换为十六进制字符串时，二进制数据的每个字节（8 位）都会扩展为 2 个十六进制字符（每个字符 4 位）。</span></span><br><span class="line">    <span class="comment">//md 是包含原始二进制摘要数据的数组，长度为 len 字节。将其转换为十六进制字符串时：</span></span><br><span class="line">    <span class="comment">//md 中每个字节的范围是 0 到 255（0x00 到 0xFF），用十六进制表示时，每个字节正好需要2个字符：</span></span><br><span class="line">    <span class="comment">//因此: 一个字节的最大值是 255，即十六进制的 FF，占两个字符。因此，它是 res[len*2]</span></span><br><span class="line">    <span class="keyword">if</span> (type == Type::Hex) &#123;</span><br><span class="line">        <span class="type">char</span> res[len * <span class="number">2</span>];</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; len; ++i) &#123;</span><br><span class="line">            <span class="built_in">sprintf</span>(&amp;res[i * <span class="number">2</span>], <span class="string">&quot;%02x&quot;</span>, md[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> std::<span class="built_in">string</span>(res, len * <span class="number">2</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> std::<span class="built_in">string</span>(<span class="built_in">reinterpret_cast</span>&lt;<span class="type">char</span> *&gt;(md), len);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/13/C++%E5%B0%81%E8%A3%85OpenSSL%E5%93%88%E5%B8%8C%E7%B1%BB/" data-id="cuid1cMoi3VXTZBacaIGEOzyD" data-title="C++封装OpenSSL哈希类" class="article-share-link"><span class="fa fa-share">Share</span></a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/openssl/" rel="tag">openssl</a></li></ul>
 
     </footer>
   </div>
@@ -830,7 +786,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/02/">February 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/12/">December 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/11/">November 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/10/">October 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/09/">September 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/08/">August 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/07/">July 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/05/">May 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/04/">April 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/03/">March 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/02/">February 2025</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/03/">March 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/02/">February 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/12/">December 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/11/">November 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/10/">October 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/09/">September 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/08/">August 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/07/">July 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/05/">May 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/04/">April 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/03/">March 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/02/">February 2025</a></li></ul>
     </div>
   </div>
 
@@ -843,7 +799,15 @@
       <ul>
         
           <li>
-            <a href="/2026/02/22/hello-world/">Hello World</a>
+            <a href="/2026/03/04/Ubuntu%20Linux%20%E7%AC%94%E8%AE%B0%E6%9C%AC%20120Hz%20%E5%88%B7/">Ubuntu Linux 笔记本 120Hz 刷</a>
+          </li>
+        
+          <li>
+            <a href="/2026/03/04/GNOME%20%E9%A1%B6%E9%83%A8%E6%A0%8F%E4%BC%98%E5%8C%96%20-%20%E8%A7%A3%E5%86%B3%E5%86%85%E5%AE%B9%E9%87%8D%E5%8F%A0%E9%97%AE%E9%A2%98/">GNOME 顶部栏优化 - 解决内容重叠问题</a>
+          </li>
+        
+          <li>
+            <a href="/2026/03/04/hello-world/">Hello World</a>
           </li>
         
           <li>
@@ -852,14 +816,6 @@
         
           <li>
             <a href="/2026/02/08/Ubuntu%2025%20%E4%B8%8B%20Flameshot%20%E5%BF%AB%E6%8D%B7%E9%94%AE%E6%88%AA%E5%9B%BE%E5%A4%B1%E8%B4%A5%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/">Ubuntu 25 下 Flameshot 快捷键截图失败解决方案</a>
-          </li>
-        
-          <li>
-            <a href="/2026/02/05/%E9%80%9A%E8%BF%87%E7%BD%91%E7%BA%BF%E4%BC%A0%E8%BE%93%E6%95%B0%E6%8D%AE/">通过网线传输数据</a>
-          </li>
-        
-          <li>
-            <a href="/2026/02/04/ctypes%E5%B0%81%E8%A3%85C++%E6%8E%A5%E5%8F%A3%E7%BB%99Python%E4%BD%BF%E7%94%A8/">ctypes封装C++接口给Python使用</a>
           </li>
         
       </ul>

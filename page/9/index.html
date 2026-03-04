@@ -71,6 +71,121 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-vscode settings.json备份" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/03/09/vscode%20settings.json%E5%A4%87%E4%BB%BD/" class="article-date">
+  <time class="dt-published" datetime="2025-03-09T02:12:00.000Z" itemprop="datePublished">2025-03-09</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%90%9E%E4%B8%83%E6%8D%BB%E4%B8%89/">搞七捻三</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2025/03/09/vscode%20settings.json%E5%A4%87%E4%BB%BD/">vscode settings.json备份</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>{<br>    “editor.fontFamily”: “‘JetBrains Mono’, Consolas, ‘Courier New’, monospace”,<br>    “editor.fontSize”: 16,<br>    “workbench.colorTheme”: “JetBrains Darcula Theme”,<br>    “workbench.iconTheme”: “vscode-jetbrains-icon-theme”,<br>    “remote.SSH.remotePlatform”: {<br>        “13.250.32.58”: “linux”,<br>        “43.163.110.165”: “linux”<br>    },<br>    “cmake.showOptionsMovedNotification”: false,<br>    “cmake.pinnedCommands”: [<br>        “workbench.action.tasks.configureTaskRunner”,<br>        “workbench.action.tasks.runTask”<br>    ],<br>    “files.autoSave”: “afterDelay”,<br>    “github.copilot.enable”: {<br>        “<em>“: false,<br>        “plaintext”: false,<br>        “markdown”: false,<br>        “scminput”: false<br>    },<br>    “update.mode”: “start”,<br>    “redhat.telemetry.enabled”: false,<br>    “cmake.showConfigureWithDebuggerNotification”: false,<br>    &#x2F;&#x2F; 解决cmake输出中文乱码问题<br>    “files.encoding”: “utf8”,<br>    “cmake.outputLogEncoding”: “UTF-8”,<br>    &#x2F;&#x2F;解决终端乱码问题<br>    &#x2F;&#x2F; “terminal.integrated.profiles.windows”: {<br>    &#x2F;&#x2F;     “PowerShell”: {<br>    &#x2F;&#x2F;         “source”: “PowerShell”,<br>    &#x2F;&#x2F;         “args”: [<br>    &#x2F;&#x2F;             “-NoExit”,<br>    &#x2F;&#x2F;             “-Command”,<br>    &#x2F;&#x2F;             “chcp 65001”<br>    &#x2F;&#x2F;         ]<br>    &#x2F;&#x2F;     },<br>    &#x2F;&#x2F;     “Command Prompt”: {<br>    &#x2F;&#x2F;         “path”: “C:\Windows\System32\cmd.exe”,<br>    &#x2F;&#x2F;         “args”: [<br>    &#x2F;&#x2F;             “&#x2F;K”,<br>    &#x2F;&#x2F;             “chcp 65001”<br>    &#x2F;&#x2F;         ]<br>    &#x2F;&#x2F;     }<br>    &#x2F;&#x2F; },<br>    “terminal.integrated.defaultProfile.windows”: “PowerShell”, &#x2F;&#x2F;默认打开终端为PowerShell<br>    “clangd.detectExtensionConflicts”: false,<br>    “git.openRepositoryInParentFolders”: “always”,<br>    “security.workspace.trust.enabled”: false,<br>    “security.workspace.trust.emptyWindow”: false,<br>    “[cpp]”: {<br>        “editor.defaultFormatter”: “xaver.clang-format”<br>    },<br>    “clang-format.executable”: “D:&#x2F;clang-format&#x2F;clang-format.exe”,<br>    “clang-format.fallbackStyle”: “None”,<br>    “clang-format.language.apex.fallbackStyle”: “None”,<br>    “clang-format.language.apex.style”: “None”,<br>    “clangd.path”: “D:&#x2F;clangd_18.1.3&#x2F;bin&#x2F;clangd.exe”,<br>    “editor.quickSuggestionsDelay”: 0,<br>    “workbench.startupEditor”: “none”,<br>    “explorer.autoReveal”: false,<br>    “editor.cursorStyle”: “block”,<br>    “C_Cpp.intelliSenseEngine”: “disabled”,<br>    “C_Cpp.codeAnalysis.runAutomatically”: true,<br>    “C_Cpp.configurationWarnings”: “disabled”,<br>    “C_Cpp.codeFolding”: “disabled”,<br>    “C_Cpp.formatting”: “clangFormat”,<br>    “C_Cpp.codeAnalysis.clangTidy.enabled”: true,<br>    “C_Cpp.autocomplete”: “default”,<br>    “C_Cpp.default.cppStandard”: “c++17”,<br>    “C_Cpp.default.cStandard”: “c17”,<br>    “C_Cpp.enhancedColorization”: “enabled”,<br>    “C_Cpp.codeAnalysis.clangTidy.useBuildPath”: true,<br>    “C_Cpp.default.compileCommands”: “${workspaceFolder}&#x2F;build&#x2F;compile_commands.json”,<br>    “C_Cpp.codeAnalysis.clangTidy.config”: “${workspaceFolder}&#x2F;.clang-tidy”,<br>    &#x2F;&#x2F;todo-tree<br>    “todo-tree.highlights.defaultHighlight”: {<br>        “icon”: “alert”,<br>        “type”: “tag”,<br>        “background”: “#e8cd37”, &#x2F;&#x2F; 高亮背景颜色<br>        “color”: “#000000”, &#x2F;&#x2F; 字体颜色<br>        “fontWeight”: “bold”<br>    },<br>    “todo-tree.regex.regex”: “(TODO|FIXME|NOTE)”, &#x2F;&#x2F; 正则表达式，用于匹配关键字<br>    “todo-tree.general.tags”: [<br>        “TODO”,<br>        “FIXME”,<br>        “NOTE”<br>    ], &#x2F;&#x2F; 自定义标签<br>    “todo-tree.highlights.customHighlight”: {<br>        “TODO”: {<br>            “icon”: “check”,<br>            “background”: “#e65a30”,<br>            “color”: “#FFFFFF”,<br>            “fontWeight”: “bold”<br>        },<br>        “FIXME”: {<br>            “icon”: “bug”,<br>            “background”: “#ed2e6e”,<br>            “color”: “#FFFFFF”,<br>            “fontWeight”: “bold”<br>        },<br>        “NOTE”: {<br>            “icon”: “info”,<br>            “background”: “#2596f2”,<br>            “color”: “#FFFFFF”,<br>            “fontWeight”: “bold”<br>        }<br>    },<br>    “todo-tree.tree.autoRefresh”: true, &#x2F;&#x2F; 自动刷新<br>    “todo-tree.general.rootFolder”: “${workspaceFolder}”,<br>    “todo-tree.filtering.includeGlobs”: [<br>        “**&#x2F;</em>“ &#x2F;&#x2F; Include only files in the current workspace<br>    ],<br>    “todo-tree.filtering.excludeGlobs”: [<br>        “<strong>&#x2F;build&#x2F;</strong>“,<br>        “<strong>&#x2F;bin&#x2F;</strong>“,<br>        “<strong>&#x2F;.cache&#x2F;</strong>“,<br>        “<strong>&#x2F;.vscode&#x2F;</strong>“,<br>        “<strong>&#x2F;.git&#x2F;</strong>“,<br>    ],<br>    “todo-tree.tree.scanMode”: “workspace”,<br>    “git.enableSmartCommit”: true,<br>    “editor.unicodeHighlight.invisibleCharacters”: false,<br>    “editor.unicodeHighlight.ambiguousCharacters”: false,<br>    “makefile.configureOnOpen”: false,<br>    “[c]”: {<br>        “editor.defaultFormatter”: “llvm-vs-code-extensions.vscode-clangd”<br>    },<br>    “[javascript]”: {<br>        “editor.defaultFormatter”: “vscode.typescript-language-features”<br>    },<br>    “[proto3]”: {<br>        “editor.defaultFormatter”: “zxh404.vscode-proto3”<br>    },<br>    “workbench.editor.limit.enabled”: true,<br>    “workbench.editor.limit.value”: 8,<br>    “workbench.tree.renderIndentGuides”: “always”,<br>    “workbench.tree.expandMode”: “doubleClick”,<br>    “window.commandCenter”: false,<br>    “java.configuration.maven.userSettings”: “D:&#x2F;apache-maven-3.9.9&#x2F;conf&#x2F;settings.xml”,<br>    “maven.executable.path”: “D:&#x2F;apache-maven-3.9.9&#x2F;bin&#x2F;mvn”,&#x2F;&#x2F; Maven可执行文件的完整路径<br>    “maven.terminal.useJavaHome”: true, &#x2F;&#x2F; 使用JAVA_HOME环境变量中的JDK<br>    “maven.view”: “flat”, &#x2F;&#x2F; 可选，设置Maven依赖视图样式<br>    “java.maven.downloadSources”: true,&#x2F;&#x2F; 自动下载源代码<br>    “[java]”: {<br>        “editor.defaultFormatter”: “redhat.java”<br>    },<br>    “github.copilot.selectedCompletionModel”: “gpt-4o-copilot”,<br>    “cmake.automaticReconfigure”: false,<br>    “cmake.configureOnEdit”: false<br>}</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://www.228610.xyz/2025/03/09/vscode%20settings.json%E5%A4%87%E4%BB%BD/" data-id="cuidMlP3O66zgAHlBOY_jjvmC" data-title="vscode settings.json备份" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/vscode/" rel="tag">vscode</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-openssl安装和基本使用" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/03/08/openssl%E5%AE%89%E8%A3%85%E5%92%8C%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/" class="article-date">
+  <time class="dt-published" datetime="2025-03-08T16:40:00.000Z" itemprop="datePublished">2025-03-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/OpenSSL/">OpenSSL</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2025/03/08/openssl%E5%AE%89%E8%A3%85%E5%92%8C%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/">openssl安装和基本使用</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="一、windows安装"><a href="#一、windows安装" class="headerlink" title="一、windows安装"></a>一、windows安装</h3><ul>
+<li><p>Windows 可以直接下载已经编译好的库：<a target="_blank" rel="noopener" href="https://slproweb.com/products/Win32OpenSSL.html">https://slproweb.com/products/Win32OpenSSL.html</a></p>
+<p>  安装后将bin和lib添加到环境变量</p>
+<p>  <img src="https://images.228610.xyz/2025/03/353441199ff5da2d4bff65cd69227af1.webp" alt="image-20250314170922728"></p>
+</li>
+</ul>
+<h3 id="二、linux安装"><a href="#二、linux安装" class="headerlink" title="二、linux安装"></a>二、linux安装</h3><p>源码地址：<a target="_blank" rel="noopener" href="https://github.com/openssl/openssl">https://github.com/openssl/openssl</a></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">从 github 仓库下载</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git <span class="built_in">clone</span> https://github.com/openssl/openssl.git</span></span><br></pre></td></tr></table></figure>
+
+<p>安装 （安装过程可参考官方提供的文档 <a target="_blank" rel="noopener" href="https://github.com/openssl/openssl/blob/master/NOTES-UNIX.md%EF%BC%89">https://github.com/openssl/openssl/blob/master/NOTES-UNIX.md）</a></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">解压缩 (非git下载)</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">unzip openssl-master.zip</span> </span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">进入解压目录</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">cd</span> openssl-master</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">构建并安装</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">检查安装环境, 生成 makefile</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">./Configure --prefix=/usr/local/ssl     \</span></span><br><span class="line"><span class="language-bash">              --openssldir=/usr/local/ssl \</span></span><br><span class="line"><span class="language-bash">              <span class="string">&#x27;-Wl,-rpath,$(LIBRPATH)&#x27;</span></span>              </span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">make -j$(<span class="built_in">nproc</span>)</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">sudo</span> make install</span></span><br></pre></td></tr></table></figure>
+
+<p>安装完成之后，可执行程序被安装到了<code>/usr/local/ssl/bin</code>目录中:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">ls</span> /usr/local/ssl/bin/</span></span><br><span class="line">c_rehash  openssl</span><br></pre></td></tr></table></figure>
+
+<p>为了能够全局访问<code>openssl</code>，可以创建一个软连接（快捷方式）：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">sudo</span> <span class="built_in">ln</span> -s /usr/local/ssl/bin/openssl /usr/bin/openssl</span></span><br></pre></td></tr></table></figure>
+
+<p>测试</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">openssl version</span></span><br><span class="line">OpenSSL 3.2.0-dev  (Library: OpenSSL 3.2.0-dev )</span><br></pre></td></tr></table></figure>
+
+<p>如果<code>openssl</code>能够正常工作，我们就可以看到它的版本号了。</p>
+<h3 id="三、配置CMake"><a href="#三、配置CMake" class="headerlink" title="三、配置CMake"></a>三、配置CMake</h3><h4 id="1、windows"><a href="#1、windows" class="headerlink" title="1、windows"></a>1、windows</h4><figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span>(OPENSSL_PATH <span class="string">&quot;D:/OpenSSL-Win64&quot;</span>)</span><br><span class="line"><span class="keyword">include_directories</span>(<span class="variable">$&#123;OPENSSL_PATH&#125;</span>/<span class="keyword">include</span>)</span><br><span class="line"><span class="keyword">link_directories</span>(<span class="variable">$&#123;OPENSSL_PATH&#125;</span>/lib/VC/x64/MD)</span><br><span class="line"><span class="keyword">target_link_libraries</span>(<span class="variable">$&#123;PROJECT_NAME&#125;</span> libcrypto)</span><br></pre></td></tr></table></figure>
+
+<h4 id="2、linux"><a href="#2、linux" class="headerlink" title="2、linux"></a>2、linux</h4><figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span>(OPENSSL_PATH /usr/local/ssl)</span><br><span class="line"><span class="keyword">include_directories</span>(<span class="variable">$&#123;OPENSSL_PATH&#125;</span>/<span class="keyword">include</span>)</span><br><span class="line"><span class="keyword">link_directories</span>(<span class="variable">$&#123;OPENSSL_PATH&#125;</span>/lib64)</span><br><span class="line"><span class="keyword">target_link_libraries</span>(<span class="variable">$&#123;PROJECT_NAME&#125;</span> crypto)</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://www.228610.xyz/2025/03/08/openssl%E5%AE%89%E8%A3%85%E5%92%8C%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/" data-id="cuid_bTENqfngWiLMcv5CG3Rq" data-title="openssl安装和基本使用" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/openssl/" rel="tag">openssl</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-protobuf的安装和基本使用" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2025/03/08/protobuf%E7%9A%84%E5%AE%89%E8%A3%85%E5%92%8C%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/" class="article-date">
@@ -179,7 +294,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/08/protobuf%E7%9A%84%E5%AE%89%E8%A3%85%E5%92%8C%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/" data-id="cuidO0WqpbHwG-Hdxph9SG2Ie" data-title="protobuf的安装和基本使用" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/08/protobuf%E7%9A%84%E5%AE%89%E8%A3%85%E5%92%8C%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/" data-id="cuidnypiuobXN3xj4Av5JZOkO" data-title="protobuf的安装和基本使用" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -265,7 +380,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/07/%E7%BD%91%E7%BB%9C%E9%80%9A%E4%BF%A1%E4%B8%AD%E7%9A%84%E5%A4%84%E7%90%86%E7%B2%98%E5%8C%85%E9%97%AE%E9%A2%98/" data-id="cuidDUPdsZyqPRmSdFSWUHSmk" data-title="网络通信中的处理粘包问题" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/07/%E7%BD%91%E7%BB%9C%E9%80%9A%E4%BF%A1%E4%B8%AD%E7%9A%84%E5%A4%84%E7%90%86%E7%B2%98%E5%8C%85%E9%97%AE%E9%A2%98/" data-id="cuid1pmFXanuJjCX83KyrBQX1" data-title="网络通信中的处理粘包问题" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -329,7 +444,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/06/chsrc%20%E5%85%A8%E5%B9%B3%E5%8F%B0%E9%80%9A%E7%94%A8%E6%8D%A2%E6%BA%90%E5%B7%A5%E5%85%B7/" data-id="cuidXCqaThkzrE9BBaJ4byhPS" data-title="chsrc 全平台通用换源工具" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/06/chsrc%20%E5%85%A8%E5%B9%B3%E5%8F%B0%E9%80%9A%E7%94%A8%E6%8D%A2%E6%BA%90%E5%B7%A5%E5%85%B7/" data-id="cuidJXj8HNCqzk1ho7GEtkUSE" data-title="chsrc 全平台通用换源工具" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -446,7 +561,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/06/FRP%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F%E6%95%99%E7%A8%8B/" data-id="cuidd-5AOnXF8jUIldNZiNgE4" data-title="FRP内网穿透教程" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/06/FRP%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F%E6%95%99%E7%A8%8B/" data-id="cuidKoDUgGGAFJmVSqga3mYwi" data-title="FRP内网穿透教程" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -511,7 +626,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/06/%E6%9B%B4%E6%8D%A2%20Typecho%20%E7%AB%99%E7%82%B9%E5%9F%9F%E5%90%8D/" data-id="cuidlkB0CMf6cGwmIGPffmXiV" data-title="更换 Typecho 站点域名" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/06/%E6%9B%B4%E6%8D%A2%20Typecho%20%E7%AB%99%E7%82%B9%E5%9F%9F%E5%90%8D/" data-id="cuidVlppcaH2BaJycHDefh3KY" data-title="更换 Typecho 站点域名" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -624,7 +739,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/06/%5B%E8%BD%AC%E8%BD%BD%5D%20Typecho%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB%E5%AE%8C%E6%95%B4%E6%8C%87%E5%8D%97/" data-id="cuidP7WtBqKlr-9Sf56C1q0fQ" data-title="[转载] Typecho博客迁移完整指南" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/06/%5B%E8%BD%AC%E8%BD%BD%5D%20Typecho%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB%E5%AE%8C%E6%95%B4%E6%8C%87%E5%8D%97/" data-id="cuidcBMHqG5BgwPCgeGlXbpR2" data-title="[转载] Typecho博客迁移完整指南" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -693,7 +808,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/06/%E9%85%8D%E7%BD%AEMySQL%E6%88%96MariaDB%E8%BF%9C%E7%A8%8B%E7%99%BB%E5%BD%95/" data-id="cuidP3x3KAEUa5diCBtEkeyk4" data-title="配置MySQL或MariaDB远程登录" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/06/%E9%85%8D%E7%BD%AEMySQL%E6%88%96MariaDB%E8%BF%9C%E7%A8%8B%E7%99%BB%E5%BD%95/" data-id="cuidKUtasNvhI2JOfQIirIynS" data-title="配置MySQL或MariaDB远程登录" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -854,211 +969,11 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/02/26/ubuntu%E9%83%A8%E7%BD%B2typecho%E5%8D%9A%E5%AE%A2%E7%B3%BB%E7%BB%9F/" data-id="cuidCp9wqqdzysQuEvjYXaFK3" data-title="ubuntu部署typecho博客系统" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/02/26/ubuntu%E9%83%A8%E7%BD%B2typecho%E5%8D%9A%E5%AE%A2%E7%B3%BB%E7%BB%9F/" data-id="cuidf38WAAWeEWE-08ozalC4t" data-title="ubuntu部署typecho博客系统" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/nginx/" rel="tag">nginx</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/typecho/" rel="tag">typecho</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/" rel="tag">反向代理</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-windows使用VSCode搭建Spring Boot开发环境" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2025/02/26/windows%E4%BD%BF%E7%94%A8VSCode%E6%90%AD%E5%BB%BASpring%20Boot%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/" class="article-date">
-  <time class="dt-published" datetime="2025-02-26T12:30:00.000Z" itemprop="datePublished">2025-02-26</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E5%BC%80%E5%8F%91%E8%B0%83%E4%BC%98/">开发调优</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2025/02/26/windows%E4%BD%BF%E7%94%A8VSCode%E6%90%AD%E5%BB%BASpring%20Boot%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/">windows使用VSCode搭建Spring Boot开发环境</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h3 id="一、相关工具"><a href="#一、相关工具" class="headerlink" title="一、相关工具"></a>一、相关工具</h3><ol>
-<li>maven:<a target="_blank" rel="noopener" href="https://maven.apache.org/download.cgi">https://maven.apache.org/download.cgi</a></li>
-<li>JDK:<a target="_blank" rel="noopener" href="https://www.oracle.com/java/technologies/downloads/?er=221886">https://www.oracle.com/java/technologies/downloads/?er=221886</a></li>
-<li>vscode:<a target="_blank" rel="noopener" href="https://code.visualstudio.com/">https://code.visualstudio.com/</a></li>
-</ol>
-<p>将maven添加到环境变量中</p>
-<p><img src="https://images.228610.xyz/2025/02/d39b0c0a116089064e44c87fdcdb1e1f.webp" alt="PixPin_2025-02-26_20-26-02"></p>
-<p>在环境变量中设置<code>JAVA_HOME</code>,值就是<code>JDK的安装路径</code></p>
-<p><img src="https://images.228610.xyz/2025/02/5e33cef804aa35904fb517a022b5e08d.webp" alt="PixPin_2025-02-26_20-24-17"></p>
-<h3 id="二、vscode插件"><a href="#二、vscode插件" class="headerlink" title="二、vscode插件"></a>二、vscode插件</h3><ol>
-<li>Spring Boot Extension Pack</li>
-<li>Maven for Java</li>
-<li>Java Extension Pack</li>
-</ol>
-<h3 id="三、配置maven"><a href="#三、配置maven" class="headerlink" title="三、配置maven"></a>三、配置maven</h3><p>打开maven安装目录，进入conf文件目录，例如：<code>D:\apache-maven-3.9.9\conf</code>，修改<code>settings.xml</code>文件，配置<code>镜像源</code>和<code>依赖安装目录</code></p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">Licensed to the Apache Software Foundation (ASF) under one</span></span><br><span class="line"><span class="comment">or more contributor license agreements.  See the NOTICE file</span></span><br><span class="line"><span class="comment">distributed with this work for additional information</span></span><br><span class="line"><span class="comment">regarding copyright ownership.  The ASF licenses this file</span></span><br><span class="line"><span class="comment">to you under the Apache License, Version 2.0 (the</span></span><br><span class="line"><span class="comment">&quot;License&quot;); you may not use this file except in compliance</span></span><br><span class="line"><span class="comment">with the License.  You may obtain a copy of the License at</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">    http://www.apache.org/licenses/LICENSE-2.0</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">Unless required by applicable law or agreed to in writing,</span></span><br><span class="line"><span class="comment">software distributed under the License is distributed on an</span></span><br><span class="line"><span class="comment">&quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span></span><br><span class="line"><span class="comment">KIND, either express or implied.  See the License for the</span></span><br><span class="line"><span class="comment">specific language governing permissions and limitations</span></span><br><span class="line"><span class="comment">under the License.</span></span><br><span class="line"><span class="comment">--&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment"> | This is the configuration file for Maven. It can be specified at two levels:</span></span><br><span class="line"><span class="comment"> |</span></span><br><span class="line"><span class="comment"> |  1. User Level. This settings.xml file provides configuration for a single user,</span></span><br><span class="line"><span class="comment"> |                 and is normally provided in $&#123;user.home&#125;/.m2/settings.xml.</span></span><br><span class="line"><span class="comment"> |</span></span><br><span class="line"><span class="comment"> |                 <span class="doctag">NOTE:</span> This location can be overridden with the CLI option:</span></span><br><span class="line"><span class="comment"> |</span></span><br><span class="line"><span class="comment"> |                 -s /path/to/user/settings.xml</span></span><br><span class="line"><span class="comment"> |</span></span><br><span class="line"><span class="comment"> |  2. Global Level. This settings.xml file provides configuration for all Maven</span></span><br><span class="line"><span class="comment"> |                 users on a machine (assuming they&#x27;re all using the same Maven</span></span><br><span class="line"><span class="comment"> |                 installation). It&#x27;s normally provided in</span></span><br><span class="line"><span class="comment"> |                 $&#123;maven.conf&#125;/settings.xml.</span></span><br><span class="line"><span class="comment"> |</span></span><br><span class="line"><span class="comment"> |                 <span class="doctag">NOTE:</span> This location can be overridden with the CLI option:</span></span><br><span class="line"><span class="comment"> |</span></span><br><span class="line"><span class="comment"> |                 -gs /path/to/global/settings.xml</span></span><br><span class="line"><span class="comment"> |</span></span><br><span class="line"><span class="comment"> | The sections in this sample file are intended to give you a running start at</span></span><br><span class="line"><span class="comment"> | getting the most out of your Maven installation. Where appropriate, the default</span></span><br><span class="line"><span class="comment"> | values (values used when the setting is not specified) are provided.</span></span><br><span class="line"><span class="comment"> |</span></span><br><span class="line"><span class="comment"> |--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">settings</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://maven.apache.org/SETTINGS/1.2.0&quot;</span></span></span><br><span class="line"><span class="tag">  <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">  <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://maven.apache.org/SETTINGS/1.2.0 https://maven.apache.org/xsd/settings-1.2.0.xsd&quot;</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- localRepository</span></span><br><span class="line"><span class="comment">   | The path to the local repository maven will use to store artifacts.</span></span><br><span class="line"><span class="comment">   |</span></span><br><span class="line"><span class="comment">   | Default: $&#123;user.home&#125;/.m2/repository</span></span><br><span class="line"><span class="comment">  &lt;localRepository&gt;/path/to/local/repo&lt;/localRepository&gt;</span></span><br><span class="line"><span class="comment">  --&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">&lt;!-- 指定依赖安装目录 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">localRepository</span>&gt;</span>D:/apache-maven-3.9.9/repository<span class="tag">&lt;/<span class="name">localRepository</span>&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="comment">&lt;!-- interactiveMode</span></span><br><span class="line"><span class="comment">   | This will determine whether maven prompts you when it needs input. If set to false,</span></span><br><span class="line"><span class="comment">   | maven will use a sensible default value, perhaps based on some other setting, for</span></span><br><span class="line"><span class="comment">   | the parameter in question.</span></span><br><span class="line"><span class="comment">   |</span></span><br><span class="line"><span class="comment">   | Default: true</span></span><br><span class="line"><span class="comment">  &lt;interactiveMode&gt;true&lt;/interactiveMode&gt;</span></span><br><span class="line"><span class="comment">  --&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">&lt;!-- offline</span></span><br><span class="line"><span class="comment">   | Determines whether maven should attempt to connect to the network when executing a build.</span></span><br><span class="line"><span class="comment">   | This will have an effect on artifact downloads, artifact deployment, and others.</span></span><br><span class="line"><span class="comment">   |</span></span><br><span class="line"><span class="comment">   | Default: false</span></span><br><span class="line"><span class="comment">  &lt;offline&gt;false&lt;/offline&gt;</span></span><br><span class="line"><span class="comment">  --&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">&lt;!-- pluginGroups</span></span><br><span class="line"><span class="comment">   | This is a list of additional group identifiers that will be searched when resolving plugins by</span></span><br><span class="line"><span class="comment">  their prefix, i.e.</span></span><br><span class="line"><span class="comment">   | when invoking a command line like &quot;mvn prefix:goal&quot;. Maven will automatically add the group</span></span><br><span class="line"><span class="comment">  identifiers</span></span><br><span class="line"><span class="comment">   | &quot;org.apache.maven.plugins&quot; and &quot;org.codehaus.mojo&quot; if these are not already contained in the</span></span><br><span class="line"><span class="comment">  list.</span></span><br><span class="line"><span class="comment">   |--&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">pluginGroups</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- pluginGroup</span></span><br><span class="line"><span class="comment">     | Specifies a further group identifier to use for plugin lookup.</span></span><br><span class="line"><span class="comment">    &lt;pluginGroup&gt;com.your.plugins&lt;/pluginGroup&gt;</span></span><br><span class="line"><span class="comment">    --&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">pluginGroups</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">&lt;!-- TODO Since when can proxies be selected as depicted? --&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- proxies</span></span><br><span class="line"><span class="comment">   | This is a list of proxies which can be used on this machine to connect to the network.</span></span><br><span class="line"><span class="comment">   | Unless otherwise specified (by system property or command-line switch), the first proxy</span></span><br><span class="line"><span class="comment">   | specification in this list marked as active will be used.</span></span><br><span class="line"><span class="comment">   |--&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">proxies</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- proxy</span></span><br><span class="line"><span class="comment">     | Specification for one proxy, to be used in connecting to the network.</span></span><br><span class="line"><span class="comment">     |</span></span><br><span class="line"><span class="comment">    &lt;proxy&gt;</span></span><br><span class="line"><span class="comment">      &lt;id&gt;optional&lt;/id&gt;</span></span><br><span class="line"><span class="comment">      &lt;active&gt;true&lt;/active&gt;</span></span><br><span class="line"><span class="comment">      &lt;protocol&gt;http&lt;/protocol&gt;</span></span><br><span class="line"><span class="comment">      &lt;username&gt;proxyuser&lt;/username&gt;</span></span><br><span class="line"><span class="comment">      &lt;password&gt;proxypass&lt;/password&gt;</span></span><br><span class="line"><span class="comment">      &lt;host&gt;proxy.host.net&lt;/host&gt;</span></span><br><span class="line"><span class="comment">      &lt;port&gt;80&lt;/port&gt;</span></span><br><span class="line"><span class="comment">      &lt;nonProxyHosts&gt;local.net|some.host.com&lt;/nonProxyHosts&gt;</span></span><br><span class="line"><span class="comment">    &lt;/proxy&gt;</span></span><br><span class="line"><span class="comment">    --&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">proxies</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">&lt;!-- servers</span></span><br><span class="line"><span class="comment">   | This is a list of authentication profiles, keyed by the server-id used within the system.</span></span><br><span class="line"><span class="comment">   | Authentication profiles can be used whenever maven must make a connection to a remote server.</span></span><br><span class="line"><span class="comment">   |--&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">servers</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- server</span></span><br><span class="line"><span class="comment">     | Specifies the authentication information to use when connecting to a particular server,</span></span><br><span class="line"><span class="comment">    identified by</span></span><br><span class="line"><span class="comment">     | a unique name within the system (referred to by the &#x27;id&#x27; attribute below).</span></span><br><span class="line"><span class="comment">     |</span></span><br><span class="line"><span class="comment">     | <span class="doctag">NOTE:</span> You should either specify username/password OR privateKey/passphrase, since these pairings</span></span><br><span class="line"><span class="comment">    are</span></span><br><span class="line"><span class="comment">     |       used together.</span></span><br><span class="line"><span class="comment">     |</span></span><br><span class="line"><span class="comment">    &lt;server&gt;</span></span><br><span class="line"><span class="comment">      &lt;id&gt;deploymentRepo&lt;/id&gt;</span></span><br><span class="line"><span class="comment">      &lt;username&gt;repouser&lt;/username&gt;</span></span><br><span class="line"><span class="comment">      &lt;password&gt;repopwd&lt;/password&gt;</span></span><br><span class="line"><span class="comment">    &lt;/server&gt;</span></span><br><span class="line"><span class="comment">    --&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- Another sample, using keys to authenticate.</span></span><br><span class="line"><span class="comment">    &lt;server&gt;</span></span><br><span class="line"><span class="comment">      &lt;id&gt;siteServer&lt;/id&gt;</span></span><br><span class="line"><span class="comment">      &lt;privateKey&gt;/path/to/private/key&lt;/privateKey&gt;</span></span><br><span class="line"><span class="comment">      &lt;passphrase&gt;optional; leave empty if not used.&lt;/passphrase&gt;</span></span><br><span class="line"><span class="comment">    &lt;/server&gt;</span></span><br><span class="line"><span class="comment">    --&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">servers</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">&lt;!-- mirrors</span></span><br><span class="line"><span class="comment">   | This is a list of mirrors to be used in downloading artifacts from remote repositories.</span></span><br><span class="line"><span class="comment">   |</span></span><br><span class="line"><span class="comment">   | It works like this: a POM may declare a repository to use in resolving certain artifacts.</span></span><br><span class="line"><span class="comment">   | However, this repository may have problems with heavy traffic at times, so people have mirrored</span></span><br><span class="line"><span class="comment">   | it to several places.</span></span><br><span class="line"><span class="comment">   |</span></span><br><span class="line"><span class="comment">   | That repository definition will have a unique id, so we can create a mirror reference for that</span></span><br><span class="line"><span class="comment">   | repository, to be used as an alternate download site. The mirror site will be the preferred</span></span><br><span class="line"><span class="comment">   | server for that repository.</span></span><br><span class="line"><span class="comment">   |--&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">mirrors</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- mirror</span></span><br><span class="line"><span class="comment">     | Specifies a repository mirror site to use instead of a given repository. The repository that</span></span><br><span class="line"><span class="comment">     | this mirror serves has an ID that matches the mirrorOf element of this mirror. IDs are used</span></span><br><span class="line"><span class="comment">     | for inheritance and direct lookup purposes, and must be unique across the set of mirrors.</span></span><br><span class="line"><span class="comment">     |</span></span><br><span class="line"><span class="comment">    &lt;mirror&gt;</span></span><br><span class="line"><span class="comment">      &lt;id&gt;mirrorId&lt;/id&gt;</span></span><br><span class="line"><span class="comment">      &lt;mirrorOf&gt;repositoryId&lt;/mirrorOf&gt;</span></span><br><span class="line"><span class="comment">      &lt;name&gt;Human Readable Name for this Mirror.&lt;/name&gt;</span></span><br><span class="line"><span class="comment">      &lt;url&gt;http://my.repository.com/repo/path&lt;/url&gt;</span></span><br><span class="line"><span class="comment">    &lt;/mirror&gt;</span></span><br><span class="line"><span class="comment">     --&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- 配置镜像源 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">mirror</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">id</span>&gt;</span>huawei<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">mirrorOf</span>&gt;</span>*<span class="tag">&lt;/<span class="name">mirrorOf</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">name</span>&gt;</span>华为开源镜像站<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">url</span>&gt;</span>https://mirrors.huaweicloud.com/repository/maven/<span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">mirror</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">mirror</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">id</span>&gt;</span>maven-default-http-blocker<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">mirrorOf</span>&gt;</span>external:http:*<span class="tag">&lt;/<span class="name">mirrorOf</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">name</span>&gt;</span>Pseudo repository to mirror external repositories initially using HTTP.<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">url</span>&gt;</span>http://0.0.0.0/<span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">blocked</span>&gt;</span>true<span class="tag">&lt;/<span class="name">blocked</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">mirror</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">mirrors</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">&lt;!-- profiles</span></span><br><span class="line"><span class="comment">   | This is a list of profiles which can be activated in a variety of ways, and which can modify</span></span><br><span class="line"><span class="comment">   | the build process. Profiles provided in the settings.xml are intended to provide local machine-</span></span><br><span class="line"><span class="comment">   | specific paths and repository locations which allow the build to work in the local environment.</span></span><br><span class="line"><span class="comment">   |</span></span><br><span class="line"><span class="comment">   | For example, if you have an integration testing plugin - like cactus - that needs to know where</span></span><br><span class="line"><span class="comment">   | your Tomcat instance is installed, you can provide a variable here such that the variable is</span></span><br><span class="line"><span class="comment">   | dereferenced during the build process to configure the cactus plugin.</span></span><br><span class="line"><span class="comment">   |</span></span><br><span class="line"><span class="comment">   | As noted above, profiles can be activated in a variety of ways. One way - the activeProfiles</span></span><br><span class="line"><span class="comment">   | section of this document (settings.xml) - will be discussed later. Another way essentially</span></span><br><span class="line"><span class="comment">   | relies on the detection of a property, either matching a particular value for the property,</span></span><br><span class="line"><span class="comment">   | or merely testing its existence. Profiles can also be activated by JDK version prefix, where a</span></span><br><span class="line"><span class="comment">   | value of &#x27;1.4&#x27; might activate a profile when the build is executed on a JDK version of</span></span><br><span class="line"><span class="comment">  &#x27;1.4.2_07&#x27;.</span></span><br><span class="line"><span class="comment">   | Finally, the list of active profiles can be specified directly from the command line.</span></span><br><span class="line"><span class="comment">   |</span></span><br><span class="line"><span class="comment">   | <span class="doctag">NOTE:</span> For profiles defined in the settings.xml, you are restricted to specifying only artifact</span></span><br><span class="line"><span class="comment">   |       repositories, plugin repositories, and free-form properties to be used as configuration</span></span><br><span class="line"><span class="comment">   |       variables for plugins in the POM.</span></span><br><span class="line"><span class="comment">   |</span></span><br><span class="line"><span class="comment">   |--&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">profiles</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- profile</span></span><br><span class="line"><span class="comment">     | Specifies a set of introductions to the build process, to be activated using one or more of the</span></span><br><span class="line"><span class="comment">     | mechanisms described above. For inheritance purposes, and to activate profiles via</span></span><br><span class="line"><span class="comment">    &lt;activatedProfiles/&gt;</span></span><br><span class="line"><span class="comment">     | or the command line, profiles have to have an ID that is unique.</span></span><br><span class="line"><span class="comment">     |</span></span><br><span class="line"><span class="comment">     | An encouraged best practice for profile identification is to use a consistent naming convention</span></span><br><span class="line"><span class="comment">     | for profiles, such as &#x27;env-dev&#x27;, &#x27;env-test&#x27;, &#x27;env-production&#x27;, &#x27;user-jdcasey&#x27;, &#x27;user-brett&#x27;, etc.</span></span><br><span class="line"><span class="comment">     | This will make it more intuitive to understand what the set of introduced profiles is attempting</span></span><br><span class="line"><span class="comment">     | to accomplish, particularly when you only have a list of profile id&#x27;s for debug.</span></span><br><span class="line"><span class="comment">     |</span></span><br><span class="line"><span class="comment">     | This profile example uses the JDK version to trigger activation, and provides a JDK-specific</span></span><br><span class="line"><span class="comment">    repo.</span></span><br><span class="line"><span class="comment">    &lt;profile&gt;</span></span><br><span class="line"><span class="comment">      &lt;id&gt;jdk-1.4&lt;/id&gt;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">      &lt;activation&gt;</span></span><br><span class="line"><span class="comment">        &lt;jdk&gt;1.4&lt;/jdk&gt;</span></span><br><span class="line"><span class="comment">      &lt;/activation&gt;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">      &lt;repositories&gt;</span></span><br><span class="line"><span class="comment">        &lt;repository&gt;</span></span><br><span class="line"><span class="comment">          &lt;id&gt;jdk14&lt;/id&gt;</span></span><br><span class="line"><span class="comment">          &lt;name&gt;Repository for JDK 1.4 builds&lt;/name&gt;</span></span><br><span class="line"><span class="comment">          &lt;url&gt;http://www.myhost.com/maven/jdk14&lt;/url&gt;</span></span><br><span class="line"><span class="comment">          &lt;layout&gt;default&lt;/layout&gt;</span></span><br><span class="line"><span class="comment">          &lt;snapshotPolicy&gt;always&lt;/snapshotPolicy&gt;</span></span><br><span class="line"><span class="comment">        &lt;/repository&gt;</span></span><br><span class="line"><span class="comment">      &lt;/repositories&gt;</span></span><br><span class="line"><span class="comment">    &lt;/profile&gt;</span></span><br><span class="line"><span class="comment">    --&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">     | Here is another profile, activated by the property &#x27;target-env&#x27; with a value of &#x27;dev&#x27;, which</span></span><br><span class="line"><span class="comment">     | provides a specific path to the Tomcat instance. To use this, your plugin configuration might</span></span><br><span class="line"><span class="comment">     | hypothetically look like:</span></span><br><span class="line"><span class="comment">     |</span></span><br><span class="line"><span class="comment">     | ...</span></span><br><span class="line"><span class="comment">     | &lt;plugin&gt;</span></span><br><span class="line"><span class="comment">     |   &lt;groupId&gt;org.myco.myplugins&lt;/groupId&gt;</span></span><br><span class="line"><span class="comment">     |   &lt;artifactId&gt;myplugin&lt;/artifactId&gt;</span></span><br><span class="line"><span class="comment">     |</span></span><br><span class="line"><span class="comment">     |   &lt;configuration&gt;</span></span><br><span class="line"><span class="comment">     |     &lt;tomcatLocation&gt;$&#123;tomcatPath&#125;&lt;/tomcatLocation&gt;</span></span><br><span class="line"><span class="comment">     |   &lt;/configuration&gt;</span></span><br><span class="line"><span class="comment">     | &lt;/plugin&gt;</span></span><br><span class="line"><span class="comment">     | ...</span></span><br><span class="line"><span class="comment">     |</span></span><br><span class="line"><span class="comment">     | <span class="doctag">NOTE:</span> If you just wanted to inject this configuration whenever someone set &#x27;target-env&#x27; to</span></span><br><span class="line"><span class="comment">     |       anything, you could just leave off the &lt;value/&gt; inside the activation-property.</span></span><br><span class="line"><span class="comment">     |</span></span><br><span class="line"><span class="comment">    &lt;profile&gt;</span></span><br><span class="line"><span class="comment">      &lt;id&gt;env-dev&lt;/id&gt;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">      &lt;activation&gt;</span></span><br><span class="line"><span class="comment">        &lt;property&gt;</span></span><br><span class="line"><span class="comment">          &lt;name&gt;target-env&lt;/name&gt;</span></span><br><span class="line"><span class="comment">          &lt;value&gt;dev&lt;/value&gt;</span></span><br><span class="line"><span class="comment">        &lt;/property&gt;</span></span><br><span class="line"><span class="comment">      &lt;/activation&gt;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">      &lt;properties&gt;</span></span><br><span class="line"><span class="comment">        &lt;tomcatPath&gt;/path/to/tomcat/instance&lt;/tomcatPath&gt;</span></span><br><span class="line"><span class="comment">      &lt;/properties&gt;</span></span><br><span class="line"><span class="comment">    &lt;/profile&gt;</span></span><br><span class="line"><span class="comment">    --&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">profiles</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">&lt;!-- activeProfiles</span></span><br><span class="line"><span class="comment">   | List of profiles that are active for all builds.</span></span><br><span class="line"><span class="comment">   |</span></span><br><span class="line"><span class="comment">  &lt;activeProfiles&gt;</span></span><br><span class="line"><span class="comment">    &lt;activeProfile&gt;alwaysActiveProfile&lt;/activeProfile&gt;</span></span><br><span class="line"><span class="comment">    &lt;activeProfile&gt;anotherAlwaysActiveProfile&lt;/activeProfile&gt;</span></span><br><span class="line"><span class="comment">  &lt;/activeProfiles&gt;</span></span><br><span class="line"><span class="comment">  --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">settings</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="四、setting-json配置"><a href="#四、setting-json配置" class="headerlink" title="四、setting.json配置"></a>四、setting.json配置</h3><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&quot;java.configuration.maven.userSettings&quot;</span><span class="punctuation">:</span> <span class="string">&quot;D:/apache-maven-3.9.9/conf/settings.xml&quot;</span><span class="punctuation">,</span> </span><br><span class="line"><span class="attr">&quot;maven.executable.path&quot;</span><span class="punctuation">:</span> <span class="string">&quot;D:/apache-maven-3.9.9/bin/mvn&quot;</span><span class="punctuation">,</span><span class="comment">// Maven可执行文件的完整路径</span></span><br><span class="line"><span class="attr">&quot;maven.terminal.useJavaHome&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span> <span class="comment">// 使用JAVA_HOME环境变量中的JDK</span></span><br><span class="line"><span class="attr">&quot;maven.view&quot;</span><span class="punctuation">:</span> <span class="string">&quot;flat&quot;</span><span class="punctuation">,</span> <span class="comment">// 可选，设置Maven依赖视图样式</span></span><br><span class="line"><span class="attr">&quot;java.maven.downloadSources&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span><span class="comment">// 自动下载源代码</span></span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="五、创建Spring-Boot项目"><a href="#五、创建Spring-Boot项目" class="headerlink" title="五、创建Spring Boot项目"></a>五、创建Spring Boot项目</h3><p>快捷键打开命令窗口输入：<code>Spring Initializr: Create a Maven Project</code>,根据提示配置项目</p>
-<p><img src="https://images.228610.xyz/2025/02/bc18d78678d2c84a9471070a10dd3ac6.webp" alt="PixPin_2025-02-26_20-09-19"></p>
-<h3 id="六、启动项目"><a href="#六、启动项目" class="headerlink" title="六、启动项目"></a>六、启动项目</h3><p>进入<code>spring boot dashboard</code></p>
-<p><img src="https://images.228610.xyz/2025/02/1a663cf0ed87e537aaa6be26f8ba7eeb.webp" alt="PixPin_2025-02-26_20-11-43"></p>
-<p>点击启动按钮</p>
-<p><img src="https://images.228610.xyz/2025/02/551f33aa24c9686ab00d0fa30ae7918f.webp" alt="PixPin_2025-02-26_20-12-49"></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/02/26/windows%E4%BD%BF%E7%94%A8VSCode%E6%90%AD%E5%BB%BASpring%20Boot%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/" data-id="cuida15GxOPmx66n43PH0xwoE" data-title="windows使用VSCode搭建Spring Boot开发环境" class="article-share-link"><span class="fa fa-share">Share</span></a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Boot/" rel="tag">Spring Boot</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/vscode/" rel="tag">vscode</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-使用 Cloudflare 为网站或应用套上 CDN 的完整指南" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2025/02/23/%E4%BD%BF%E7%94%A8%20Cloudflare%20%E4%B8%BA%E7%BD%91%E7%AB%99%E6%88%96%E5%BA%94%E7%94%A8%E5%A5%97%E4%B8%8A%20CDN%20%E7%9A%84%E5%AE%8C%E6%95%B4%E6%8C%87%E5%8D%97/" class="article-date">
-  <time class="dt-published" datetime="2025-02-23T16:45:00.000Z" itemprop="datePublished">2025-02-23</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E6%90%9E%E4%B8%83%E6%8D%BB%E4%B8%89/">搞七捻三</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2025/02/23/%E4%BD%BF%E7%94%A8%20Cloudflare%20%E4%B8%BA%E7%BD%91%E7%AB%99%E6%88%96%E5%BA%94%E7%94%A8%E5%A5%97%E4%B8%8A%20CDN%20%E7%9A%84%E5%AE%8C%E6%95%B4%E6%8C%87%E5%8D%97/">使用 Cloudflare 为网站或应用套上 CDN 的完整指南</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h3 id="一、准备工作"><a href="#一、准备工作" class="headerlink" title="一、准备工作"></a><strong>一、准备工作</strong></h3><ol>
-<li><strong>拥有域名</strong><br>确保你拥有一个已注册的域名（例如 <code>example.com</code>）。</li>
-<li><strong>网站&#x2F;服务器在线</strong><br>源站（你的服务器）需能通过公网 IP 或域名访问，且运行正常。</li>
-</ol>
-<hr>
-<h3 id="二、配置-Cloudflare-CDN-步骤"><a href="#二、配置-Cloudflare-CDN-步骤" class="headerlink" title="二、配置 Cloudflare CDN 步骤"></a><strong>二、配置 Cloudflare CDN 步骤</strong></h3><h4 id="1-注册-Cloudflare-账号"><a href="#1-注册-Cloudflare-账号" class="headerlink" title="1. 注册 Cloudflare 账号"></a><strong>1. 注册 Cloudflare 账号</strong></h4><ul>
-<li>访问 <a target="_blank" rel="noopener" href="https://www.cloudflare.com/">Cloudflare 官网</a>，注册并登录。</li>
-</ul>
-<h4 id="2-添加网站到-Cloudflare"><a href="#2-添加网站到-Cloudflare" class="headerlink" title="2. 添加网站到 Cloudflare"></a><strong>2. 添加网站到 Cloudflare</strong></h4><ul>
-<li>在控制台点击 <strong>“Add a Site”</strong>，输入你的域名（如 <code>example.com</code>），选择免费计划（Free Plan）。</li>
-</ul>
-<h4 id="3-修改域名-DNS-服务器"><a href="#3-修改域名-DNS-服务器" class="headerlink" title="3. 修改域名 DNS 服务器"></a><strong>3. 修改域名 DNS 服务器</strong></h4><ul>
-<li>Cloudflare 会要求你将域名的 <strong>DNS 服务器（Name Server）</strong> 替换为 Cloudflare 提供的地址（例如 <code>alice.ns.cloudflare.com</code> 和 <code>bob.ns.cloudflare.com</code>）。<ul>
-<li><strong>操作位置</strong>：在你的域名注册商（如 GoDaddy、阿里云）后台，找到域名管理 → 修改 DNS 服务器。</li>
-</ul>
-</li>
-</ul>
-<h4 id="4-配置-DNS-解析记录"><a href="#4-配置-DNS-解析记录" class="headerlink" title="4. 配置 DNS 解析记录"></a><strong>4. 配置 DNS 解析记录</strong></h4><ul>
-<li><p>在 Cloudflare 控制台的 <strong>DNS 设置页</strong>，添加一条A类记录：</p>
-<ul>
-<li><strong>A 记录</strong>：指向你的服务器 IP（源站 IP）。</li>
-<li><strong>开启代理（Proxy Status）</strong>：点击橙色云图标（启用 CDN 和防护）。</li>
-</ul>
-<blockquote>
-<p>例如：域名是<a target="_blank" rel="noopener" href="http://www.example.com时,只需要在名称那里填写www,内容填写服务器的ipv4地址,然后选择代理模式/">www.example.com时，只需要在名称那里填写www,内容填写服务器的IPv4地址，然后选择代理模式</a></p>
-</blockquote>
-</li>
-</ul>
-<h4 id="5-设置源站信息"><a href="#5-设置源站信息" class="headerlink" title="5. 设置源站信息"></a><strong>5. 设置源站信息</strong></h4><ul>
-<li><p>在 <strong>Cloudflare → SSL&#x2F;TLS → Overview</strong> 中，点击<strong>配置</strong>：</p>
-<ul>
-<li><p>选择 <strong>Full (strict)</strong> 模式（需源站配置有效 SSL 证书）。</p>
-<blockquote>
-<p>如果选择了 <strong>Full (strict)<strong>模式，可以在</strong>Origin Server</strong>中生成证书，点击Create Certificate,选择RSA(2048),选择有效期，点击生成即可</p>
-</blockquote>
-</li>
-<li><p>或选择 <strong>Flexible</strong> 模式（源站无需 SSL 证书，由 Cloudflare 提供加密）。</p>
-</li>
-</ul>
-</li>
-</ul>
-<h4 id="6-启用安全防护"><a href="#6-启用安全防护" class="headerlink" title="6. 启用安全防护"></a><strong>6. 启用安全防护</strong></h4><ul>
-<li>在 <strong>Security → Settings</strong> 中：<ul>
-<li>开启 <strong>DDoS 防护</strong> 和 <strong>Web Application Firewall (WAF)</strong>。</li>
-<li>调整安全级别（如“Medium”或“High”）。</li>
-</ul>
-</li>
-</ul>
-<hr>
-<h3 id="三、验证-CDN-是否生效"><a href="#三、验证-CDN-是否生效" class="headerlink" title="三、验证 CDN 是否生效"></a><strong>三、验证 CDN 是否生效</strong></h3><ol>
-<li><strong>检查 DNS 解析</strong><br>使用 <code>ping example.com</code>，若返回的 IP 是 Cloudflare 的 IP（如 <code>104.21.xx.xx</code>），说明 DNS 生效。<a target="_blank" rel="noopener" href="https://www.cloudflare.com/ips/">Cloudflare IP 列表</a></li>
-<li><strong>访问网站</strong><br>通过浏览器访问网站，检查加载速度是否提升。</li>
-</ol>
-<hr>
-<h3 id="四、注意事项"><a href="#四、注意事项" class="headerlink" title="四、注意事项"></a>四、注意事项</h3><ol>
-<li>如果直接使用IP访问服务器，是没有CDN加速效果的</li>
-<li>cloudflare家的优选IP或域名都是使用80或443端口的</li>
-<li>如果ssl开启的是完全严格模式，记得在源服务器上面配置证书，否则无法访问</li>
-</ol>
-<h3 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、<strong>总结</strong></h3><table>
-<thead>
-<tr>
-<th align="left">步骤</th>
-<th align="left">关键点</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">1. 修改 DNS 服务器</td>
-<td align="left">将域名的 Name Server 改为 Cloudflare 提供的地址</td>
-</tr>
-<tr>
-<td align="left">2. 添加 DNS 记录</td>
-<td align="left">开启代理（橙色云图标），指向源站 IP 或域名</td>
-</tr>
-<tr>
-<td align="left">3. 配置 SSL&#x2F;TLS</td>
-<td align="left">根据源站证书情况选择加密模式</td>
-</tr>
-<tr>
-<td align="left">4. 启用安全防护</td>
-<td align="left">开启 WAF、DDoS 防护，限制恶意流量</td>
-</tr>
-</tbody></table>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/02/23/%E4%BD%BF%E7%94%A8%20Cloudflare%20%E4%B8%BA%E7%BD%91%E7%AB%99%E6%88%96%E5%BA%94%E7%94%A8%E5%A5%97%E4%B8%8A%20CDN%20%E7%9A%84%E5%AE%8C%E6%95%B4%E6%8C%87%E5%8D%97/" data-id="cuid4mqHOIDguX7QaWHZfme2S" data-title="使用 Cloudflare 为网站或应用套上 CDN 的完整指南" class="article-share-link"><span class="fa fa-share">Share</span></a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cdn/" rel="tag">cdn</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cloudflare/" rel="tag">cloudflare</a></li></ul>
 
     </footer>
   </div>
@@ -1112,7 +1027,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/02/">February 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/12/">December 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/11/">November 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/10/">October 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/09/">September 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/08/">August 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/07/">July 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/05/">May 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/04/">April 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/03/">March 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/02/">February 2025</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/03/">March 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/02/">February 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/12/">December 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/11/">November 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/10/">October 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/09/">September 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/08/">August 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/07/">July 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/05/">May 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/04/">April 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/03/">March 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/02/">February 2025</a></li></ul>
     </div>
   </div>
 
@@ -1125,7 +1040,15 @@
       <ul>
         
           <li>
-            <a href="/2026/02/22/hello-world/">Hello World</a>
+            <a href="/2026/03/04/Ubuntu%20Linux%20%E7%AC%94%E8%AE%B0%E6%9C%AC%20120Hz%20%E5%88%B7/">Ubuntu Linux 笔记本 120Hz 刷</a>
+          </li>
+        
+          <li>
+            <a href="/2026/03/04/GNOME%20%E9%A1%B6%E9%83%A8%E6%A0%8F%E4%BC%98%E5%8C%96%20-%20%E8%A7%A3%E5%86%B3%E5%86%85%E5%AE%B9%E9%87%8D%E5%8F%A0%E9%97%AE%E9%A2%98/">GNOME 顶部栏优化 - 解决内容重叠问题</a>
+          </li>
+        
+          <li>
+            <a href="/2026/03/04/hello-world/">Hello World</a>
           </li>
         
           <li>
@@ -1134,14 +1057,6 @@
         
           <li>
             <a href="/2026/02/08/Ubuntu%2025%20%E4%B8%8B%20Flameshot%20%E5%BF%AB%E6%8D%B7%E9%94%AE%E6%88%AA%E5%9B%BE%E5%A4%B1%E8%B4%A5%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/">Ubuntu 25 下 Flameshot 快捷键截图失败解决方案</a>
-          </li>
-        
-          <li>
-            <a href="/2026/02/05/%E9%80%9A%E8%BF%87%E7%BD%91%E7%BA%BF%E4%BC%A0%E8%BE%93%E6%95%B0%E6%8D%AE/">通过网线传输数据</a>
-          </li>
-        
-          <li>
-            <a href="/2026/02/04/ctypes%E5%B0%81%E8%A3%85C++%E6%8E%A5%E5%8F%A3%E7%BB%99Python%E4%BD%BF%E7%94%A8/">ctypes封装C++接口给Python使用</a>
           </li>
         
       </ul>

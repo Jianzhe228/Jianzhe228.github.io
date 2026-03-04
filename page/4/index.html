@@ -71,6 +71,221 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-muduo(2)-Acceptor" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/07/29/muduo(2)-Acceptor/" class="article-date">
+  <time class="dt-published" datetime="2025-07-29T07:35:00.000Z" itemprop="datePublished">2025-07-29</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/muduo/">muduo</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2025/07/29/muduo(2)-Acceptor/">muduo(2)-Acceptor</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>Acceptor类是用于接受新连接的类，它负责监听一个端口，当有新的连接到来时，它负责接受这个连接，并调用回调函数处理这个连接。包含一个Socket对象，一个Channel对象，一个NewConnectionCallback对象。<strong>Socket</strong> 对底层的socket文件描述符（sockfd）进行了面向对象的封装，提供了 bind, listen, accept等接口。</p>
+<h3 id="一、类的初始化"><a href="#一、类的初始化" class="headerlink" title="一、类的初始化"></a>一、类的初始化</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line">Acceptor::<span class="built_in">Acceptor</span>(EventLoop* loop, <span class="type">const</span> InetAddress&amp; listenAddr, <span class="type">bool</span> reuseport)</span><br><span class="line">    : <span class="built_in">loop_</span>(loop),</span><br><span class="line">      <span class="built_in">acceptSocket_</span>(sockets::<span class="built_in">createNonblockingOrDie</span>(listenAddr.<span class="built_in">family</span>())), <span class="comment">// 1. 创建Socket</span></span><br><span class="line">      <span class="built_in">acceptChannel_</span>(loop, acceptSocket_.<span class="built_in">fd</span>()),                            <span class="comment">// 创建Channel</span></span><br><span class="line">      <span class="built_in">listening_</span>(<span class="literal">false</span>),</span><br><span class="line">      <span class="built_in">idleFd_</span>(::<span class="built_in">open</span>(<span class="string">&quot;/dev/null&quot;</span>,</span><br><span class="line">                     O_RDONLY |</span><br><span class="line">                         O_CLOEXEC)) <span class="comment">// 预留一个fd，当accept失败时，释放预留的fd，并重新接受新连接</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">assert</span>(idleFd_ &gt;= <span class="number">0</span>);</span><br><span class="line">    acceptSocket_.<span class="built_in">setReuseAddr</span>(<span class="literal">true</span>);</span><br><span class="line">    acceptSocket_.<span class="built_in">setReusePort</span>(reuseport); <span class="comment">// 设置端口复用</span></span><br><span class="line">    acceptSocket_.<span class="built_in">bindAddress</span>(listenAddr); <span class="comment">// 绑定地址</span></span><br><span class="line">    <span class="comment">// 为 acceptChannel_ 设置一个读回调函数 Acceptor::handleRead。当有新连接到达时，EventLoop</span></span><br><span class="line">    <span class="comment">// 会调用这个函数，handleRead 内部会调用 accept() 来接受连接。</span></span><br><span class="line">    acceptChannel_.<span class="built_in">setReadCallback</span>(std::<span class="built_in">bind</span>(&amp;Acceptor::handleRead, <span class="keyword">this</span>));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 当有新连接到来时，epoll会返回监听描述符，然后EventLoop会通过之前设置好的Channel来处理这个监听描述符，会调用channel的回调函数，也就是这里的handleRead进行处理，执行accept，并调用TcpServer中的newConnetion函数。</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Acceptor::handleRead</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    loop_-&gt;<span class="built_in">assertInLoopThread</span>();</span><br><span class="line">    InetAddress peerAddr;</span><br><span class="line">    <span class="type">int</span> connfd = acceptSocket_.<span class="built_in">accept</span>(&amp;peerAddr);</span><br><span class="line">    <span class="keyword">if</span> (connfd &gt;= <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 在TcpServer的构造函数中设置好了newConnectionCallback_，当有新连接到来时，会调用TcpServer的newConnection函数</span></span><br><span class="line">        <span class="keyword">if</span> (newConnectionCallback_)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">newConnectionCallback_</span>(connfd, peerAddr);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            sockets::<span class="built_in">close</span>(connfd);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (errno == EMFILE)</span><br><span class="line">        &#123;</span><br><span class="line">            ::<span class="built_in">close</span>(idleFd_);                                    <span class="comment">// 1. 释放预留的fd</span></span><br><span class="line">            idleFd_ = ::<span class="built_in">accept</span>(acceptSocket_.<span class="built_in">fd</span>(), <span class="literal">NULL</span>, <span class="literal">NULL</span>);  <span class="comment">// 2. 接受新连接</span></span><br><span class="line">            ::<span class="built_in">close</span>(idleFd_);                                    <span class="comment">// 3. 立即关闭它</span></span><br><span class="line">            idleFd_ = ::<span class="built_in">open</span>(<span class="string">&quot;/dev/null&quot;</span>, O_RDONLY | O_CLOEXEC); <span class="comment">// 4. 重新打开一个fd</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Acceptor建立新连接时，调用TcpServer的newConnection函数，将新连接封装成一个TcpConnectionPtr</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">TcpServer::newConnection</span><span class="params">(<span class="type">int</span> sockfd, <span class="type">const</span> InetAddress&amp; peerAddr)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    loop_-&gt;<span class="built_in">assertInLoopThread</span>();</span><br><span class="line">    EventLoop* ioLoop = threadPool_-&gt;<span class="built_in">getNextLoop</span>();<span class="comment">//获取一个EventLoop线程,将TcpConnection对象放入该线程中</span></span><br><span class="line">    <span class="type">char</span> buf[<span class="number">64</span>];</span><br><span class="line">    <span class="built_in">snprintf</span>(buf, <span class="keyword">sizeof</span> buf, <span class="string">&quot;-%s#%d&quot;</span>, ipPort_.<span class="built_in">c_str</span>(), nextConnId_);</span><br><span class="line">    ++nextConnId_;</span><br><span class="line">    string connName = name_ + buf;</span><br><span class="line"></span><br><span class="line">    <span class="function">InetAddress <span class="title">localAddr</span><span class="params">(sockets::getLocalAddr(sockfd))</span></span>;</span><br><span class="line">    <span class="function">TcpConnectionPtr <span class="title">conn</span><span class="params">(<span class="keyword">new</span> TcpConnection(ioLoop, connName, sockfd, localAddr, peerAddr))</span></span>;</span><br><span class="line">    connections_[connName] = conn;</span><br><span class="line">    <span class="comment">//设置TcpConnection的回调函数</span></span><br><span class="line">    conn-&gt;<span class="built_in">setConnectionCallback</span>(connectionCallback_);<span class="comment">// 连接回调</span></span><br><span class="line">    conn-&gt;<span class="built_in">setMessageCallback</span>(messageCallback_);<span class="comment">// 消息回调</span></span><br><span class="line">    conn-&gt;<span class="built_in">setWriteCompleteCallback</span>(writeCompleteCallback_);<span class="comment">// 写完成回调</span></span><br><span class="line">    conn-&gt;<span class="built_in">setCloseCallback</span>(std::<span class="built_in">bind</span>(&amp;TcpServer::removeConnection, <span class="keyword">this</span>, _1)); <span class="comment">// 关闭回调</span></span><br><span class="line">    ioLoop-&gt;<span class="built_in">runInLoop</span>(std::<span class="built_in">bind</span>(&amp;TcpConnection::connectEstablished, conn));<span class="comment">//将TcpConnection对象的连接建立事件放入EventLoop线程中执行</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>宏观上看，Acceptor这个类并不复杂，主要的任务就是负责初始化监听描述符，并设置监听描述符的回调函数handleRead，在新连接到来时，Acceptor会调用Acceptor会调用headleRead建立连接，并调用newConnection回调函数。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (errno == EMFILE)</span><br><span class="line">&#123;</span><br><span class="line">    ::<span class="built_in">close</span>(idleFd_);                                    <span class="comment">// 1. 释放预留的fd</span></span><br><span class="line">    idleFd_ = ::<span class="built_in">accept</span>(acceptSocket_.<span class="built_in">fd</span>(), <span class="literal">NULL</span>, <span class="literal">NULL</span>);  <span class="comment">// 2. 接受新连接</span></span><br><span class="line">    ::<span class="built_in">close</span>(idleFd_);                                    <span class="comment">// 3. 立即关闭它</span></span><br><span class="line">    idleFd_ = ::<span class="built_in">open</span>(<span class="string">&quot;/dev/null&quot;</span>, O_RDONLY | O_CLOEXEC); <span class="comment">// 4. 重新打开一个fd</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当服务器并发连接数非常高时，可能会耗尽进程可用的文件描述符（fd）。这时，<code>accept()</code> 会失败并返回 <code>EMFILE</code> 错误。如果不处理，服务器将无法接受任何新连接，相当于“假死”。</p>
+<p><strong>muduo 的解决方案：</strong></p>
+<ol>
+<li><code>Acceptor</code> 在构造时，就预先打开一个指向 <code>/dev/null</code> 的文件描述符 <code>idleFd_</code>。它就像一个“备用座位”。</li>
+<li>当 <code>accept</code> 因 <code>EMFILE</code> 失败时，<code>Acceptor</code> 会<strong>立即关闭这个备用的 <code>idleFd_</code></strong>，从而释放出一个文件描述符名额。</li>
+<li>有了这个名额，<code>Acceptor</code> 就能成功 <code>accept()</code> 那个等待中的新连接。</li>
+<li>为了避免新连接因为没有被处理而丢失，<code>Acceptor</code> <strong>会立即 <code>close()</code> 这个刚刚接受的连接</strong>。这虽然拒绝了客户端，但保证了服务器自身不会卡死，并且向客户端发出了一个明确的拒绝信号（<code>RST</code>），客户端可以稍后重试。</li>
+<li>最后，<code>Acceptor</code> 会再次打开 <code>/dev/null</code> 来重新占用 <code>idleFd_</code>，为下一次 <code>EMFILE</code> 危机做好准备。</li>
+</ol>
+<p>这个技巧确保了即使在 fd 耗尽的极端情况下，<code>Acceptor</code> 所在的 <code>EventLoop</code> 也能正常运转，不会因为 <code>accept</code> 不断失败而陷入死循环</p>
+<p><strong>SO_RESUCEADDR和SO_RESUCEPORT的区别</strong></p>
+<table>
+<thead>
+<tr>
+<th>特性</th>
+<th><code>SO_REUSEADDR</code> (地址复用)</th>
+<th><code>SO_REUSEPORT</code> (端口复用)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>核心目的</strong></td>
+<td><strong>服务器快速重启</strong></td>
+<td><strong>性能扩展 (负载均衡)</strong></td>
+</tr>
+<tr>
+<td><strong>解决问题</strong></td>
+<td>允许新启动的服务器立即绑定一个处于 <code>TIME_WAIT</code> 状态的端口</td>
+<td>允许多个独立的监听套接字绑定到完全相同的 IP 和端口。</td>
+</tr>
+<tr>
+<td><strong>工作模式</strong></td>
+<td>一个端口在同一时间<strong>仍然只能被一个</strong>监听套接字绑定。</td>
+<td>一个端口可以被<strong>多个</strong>监听套接字同时绑定。</td>
+</tr>
+<tr>
+<td><strong>适用场景</strong></td>
+<td>几乎所有服务器程序都应该开启，用于开发和运维中的快速迭代和重启。</td>
+<td>面向高性能、高并发连接的服务器，用于在多核 CPU 上扩展 <code>accept</code> 的处理能力。</td>
+</tr>
+<tr>
+<td><strong>在 muduo 中</strong></td>
+<td><strong>默认开启</strong></td>
+<td><strong>默认关闭</strong>，需要显式开启。</td>
+</tr>
+</tbody></table>
+<p>在标准的 <code>TcpServer</code> 模型中，只有一个主线程负责 <code>accept</code> 所有新连接，但当服务器面临<strong>极高的连接建立速率</strong>时就会成为整个系统的<strong>性能瓶颈</strong>。<code>acceptSocket_.setReusePort(reuseport);</code> ,也就是<strong>SO_RESUCEPORT</strong> ，这个选项允许多个线程或进程创建各自的监听套接字，并<strong>全部绑定到同一个 IP 和端口上</strong>。当新连接到来时，<strong>内核</strong>会负责进行负载均衡，将这个连接请求“派发”给其中一个监听套接字。这样一来，<code>accept</code> 的工作就被均匀地分摊到了多个 CPU 核心上。</p>
+<p>更多细节，见：<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/14388706/how-do-so-reuseaddr-and-so-reuseport-differ">https://stackoverflow.com/questions/14388706/how-do-so-reuseaddr-and-so-reuseport-differ</a></p>
+<p>仔细看的话，还能发现建立连接的是一个acceptSocket_，而不是系统的accept函数，这是muduo对系统调用的封装，提高扩展性</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">Socket acceptSocket_;</span><br><span class="line"><span class="comment">/// 对底层的socket文件描述符（sockfd）进行了面向对象的封装，提供了 bind, listen, accept 等接口。</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Socket</span> : noncopyable</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">Socket</span><span class="params">(<span class="type">int</span> sockfd)</span> : sockfd_(sockfd)</span></span><br><span class="line"><span class="function">    &#123;</span></span><br><span class="line">    &#125;</span><br><span class="line">    ~<span class="built_in">Socket</span>();</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">fd</span><span class="params">()</span> <span class="type">const</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> sockfd_;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">getTcpInfo</span><span class="params">(<span class="keyword">struct</span> tcp_info*)</span> <span class="type">const</span></span>;</span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">getTcpInfoString</span><span class="params">(<span class="type">char</span>* buf, <span class="type">int</span> len)</span> <span class="type">const</span></span>;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">bindAddress</span><span class="params">(<span class="type">const</span> InetAddress&amp; localaddr)</span></span>;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">listen</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">accept</span><span class="params">(InetAddress* peeraddr)</span></span>;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">shutdownWrite</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">setTcpNoDelay</span><span class="params">(<span class="type">bool</span> on)</span></span>;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">setReuseAddr</span><span class="params">(<span class="type">bool</span> on)</span></span>;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">setReusePort</span><span class="params">(<span class="type">bool</span> on)</span></span>;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">setKeepAlive</span><span class="params">(<span class="type">bool</span> on)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="type">const</span> <span class="type">int</span> sockfd_;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">//Socket封装socket,利用RAII思想关闭文件描述符，避免忘记关闭</span></span><br><span class="line">Socket::~<span class="built_in">Socket</span>()</span><br><span class="line">&#123;</span><br><span class="line">  sockets::<span class="built_in">close</span>(sockfd_);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//Socket</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Socket::listen</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  sockets::<span class="built_in">listenOrDie</span>(sockfd_);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//sockets</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">sockets::listenOrDie</span><span class="params">(<span class="type">int</span> sockfd)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="comment">//设置等待连接队列的最大长度(SOMAXCONN)。</span></span><br><span class="line">  <span class="type">int</span> ret = ::<span class="built_in">listen</span>(sockfd, SOMAXCONN);</span><br><span class="line">  <span class="keyword">if</span> (ret &lt; <span class="number">0</span>)</span><br><span class="line">  &#123;</span><br><span class="line">    LOG_SYSFATAL &lt;&lt; <span class="string">&quot;sockets::listenOrDie&quot;</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>可以看见，Socket内部的实现都放在一个名为sockets的作用域中，设计思想：<strong>Socket作为一个抽象层，我们在使用的时候不需要考虑不同平台的调用方式，底层的sockets负责实现阔平台逻辑</strong></p>
+<h3 id="二、挂载EventLoop"><a href="#二、挂载EventLoop" class="headerlink" title="二、挂载EventLoop"></a>二、挂载EventLoop</h3><p>我们发现，Acceptor没有调用listen函数进行监听，实际上开始监听的操作是在TcpServer的start函数实现的</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">TcpServer::start</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (started_.<span class="built_in">getAndSet</span>(<span class="number">1</span>) == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//启动EventLoop线程池</span></span><br><span class="line">        threadPool_-&gt;<span class="built_in">start</span>(threadInitCallback_);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">assert</span>(!acceptor_-&gt;<span class="built_in">listening</span>());</span><br><span class="line">        <span class="comment">//将 Acceptor::listen() 的调用任务放入EventLoop 的待执行队列中,这确保了所有和 EventLoop 相关的操作都在同一个I/O线程中执行，避免了锁竞争</span></span><br><span class="line">        loop_-&gt;<span class="built_in">runInLoop</span>(std::<span class="built_in">bind</span>(&amp;Acceptor::listen, <span class="built_in">get_pointer</span>(acceptor_)));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">EventLoop::runInLoop</span><span class="params">(Functor cb)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">isInLoopThread</span>())</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">cb</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">queueInLoop</span>(std::<span class="built_in">move</span>(cb));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Acceptor::listen</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    loop_-&gt;<span class="built_in">assertInLoopThread</span>();</span><br><span class="line">    listening_ = <span class="literal">true</span>;</span><br><span class="line">    <span class="comment">// 将socket设置为监听状态，并设置等待连接队列的最大长度(SOMAXCONN)。</span></span><br><span class="line">    acceptSocket_.<span class="built_in">listen</span>();</span><br><span class="line">    <span class="comment">// 放到epoll树上，注册可读事件</span></span><br><span class="line">    acceptChannel_.<span class="built_in">enableReading</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>在TcpServer::start函数启动后，loop_-&gt;runInLoop(std::bind(&amp;Acceptor::listen, get_pointer(acceptor_)));会将Acceptor::listen函数启动开始监听，并将文件描述符放到主线程的epoll树上监听读实现，当事件触发时，会调用文件描述符的读回调，也就是headleRead函数处理连接。。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://www.228610.xyz/2025/07/29/muduo(2)-Acceptor/" data-id="cuide2G2C6Es31s0Vb46LHX2z" data-title="muduo(2)-Acceptor" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/muduo/" rel="tag">muduo</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-muduo(1)-TcpServer" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/07/29/muduo(1)-TcpServer/" class="article-date">
+  <time class="dt-published" datetime="2025-07-29T07:32:00.000Z" itemprop="datePublished">2025-07-29</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/muduo/">muduo</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2025/07/29/muduo(1)-TcpServer/">muduo(1)-TcpServer</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>TcpServer类是用于管理TCP连接的类，它负责管理多个TcpConnection对象，并提供接口来设置连接回调、消息回调、写完成回调等。包含一个Acceptor对象，一个EventLoopThreadPool对象，一个ConnectionMap对象，Acceptor 负责监听新连接，EventLoopThreadPool 负责管理多个EventLoop线程，ConnectionMap 负责管理多个TcpConnection对象。</p>
+<h3 id="一、类的前置声明"><a href="#一、类的前置声明" class="headerlink" title="一、类的前置声明"></a>一、类的前置声明</h3><p>不要直接将一个类作为另一个类的类成员，尽量使用指针，然后通过前置声明减少头文件依赖，加快编译速度</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Acceptor</span>;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">EventLoop</span>;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">EventLoopThreadPool</span>;</span><br></pre></td></tr></table></figure>
+
+<p>作用：</p>
+<ol>
+<li><strong>减少头文件依赖</strong>：如果在头文件里只用到了指针或引用（比如 EventLoop* loop_;），只需要告诉编译器“有这么个类”，不需要知道它的具体实现。这样可以<strong>减少头文件之间的耦合，避免不必要的编译依赖</strong>。</li>
+<li><strong>加快编译速度:</strong> 在C++中，<code>#include</code> 是一个简单粗暴的文本替换操作。如果在一个头文件 <code>A.h</code> 中 <code>#include &quot;B.h&quot;</code>，那么任何 <code>#include &quot;A.h&quot;</code> 的源文件 (<code>.cc</code>) 都会被迫把 <code>B.h</code> 的全部内容也包含进来。如果 <code>B.h</code> 文件有任何一丁点改动，所有包含了 <code>A.h</code> 的源文件，以及包含了那些源文件所生成头文件的其他源文件……全都需要<strong>重新编译</strong>。在一个大型项目中，这可能意味着一次小修改导致数十分钟甚至数小时的编译等待。</li>
+<li><strong>防止循环依赖</strong>：如果两个类互相包含对方的头文件，就会导致循环依赖，编译器会报错。前向声明可以避免这种情况。</li>
+</ol>
+<p>这种设计是如何工作的：</p>
+<p>​	以std::unique_ptr<Acceptor> acceptor_;为例，<code>class Acceptor;</code> 这行代码告诉编译器“有一个类叫Acceptor,你不需要管他怎么实现的”，编译器<strong>不需要</strong>知道 <code>Acceptor</code> 的完整定义就可以处理 <code>std::unique_ptr&lt;Acceptor&gt;</code>。为什么？因为无论 <code>Acceptor</code> 本身多复杂，一个指针（或智能指针）的大小是固定的（在64位系统上是8字节）。编译器知道如何为一个指针分配空间。</p>
+<p>​	<code>TcpServer</code> 只有在它的实现文件 <code>TcpServer.cc</code> 中才需要真正地创建 <code>Acceptor</code> 对象 (<code>new Acceptor(...)</code>) 或者调用它的方法 (<code>acceptor_-&gt;listen()</code>)。因此，<code>#include &quot;muduo/net/Acceptor.h&quot;</code> 这行代码被放在了 <code>TcpServer.cc</code> 的开头，而不是头文件中。</p>
+<p>​	现在，如果 <code>Acceptor.h</code> 或 <code>EventLoopThreadPool.h</code> 的内部实现发生了任何改变，只要 <code>TcpServer.h</code> 的接口不变，<strong>就只有 <code>TcpServer.cc</code> 这一个文件需要重新编译</strong>。所有其他只包含了 <code>TcpServer.h</code> 的文件都安然无恙。编译时间从 O(N) 变成了 O(1)。同时，<code>TcpServer</code> 的使用者完全不知道 <code>Acceptor</code> 的存在，实现细节被完美地隐藏了起来。</p>
+<p>什么时候使用头文件？</p>
+<p>在头文件里用到了类的完整定义（比如<strong>作为成员变量直接存储对象，而不是指针&#x2F;引用，或者需要调用成员函数</strong>），就必须 include 头文件。<strong>如果只是用指针、引用、声明参数类型、返回值类型，只需要前向声明。</strong></p>
+<h3 id="二、禁用拷贝赋值"><a href="#二、禁用拷贝赋值" class="headerlink" title="二、禁用拷贝赋值"></a>二、禁用拷贝赋值</h3><p>通过继承一个禁用掉拷贝和赋值运算符的类实现，避免重复代码，同时，在继承这个类时，可以充当文档告诉其他开发者，这个类时禁止拷贝或者赋值的</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">noncopyable</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">noncopyable</span>(<span class="type">const</span> noncopyable&amp;) = <span class="keyword">delete</span>;</span><br><span class="line">    <span class="type">void</span> <span class="keyword">operator</span>=(<span class="type">const</span> noncopyable&amp;) = <span class="keyword">delete</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    <span class="built_in">noncopyable</span>() = <span class="keyword">default</span>;</span><br><span class="line">    ~<span class="built_in">noncopyable</span>() = <span class="keyword">default</span>;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">TcpServer</span> : noncopyable <span class="comment">//继承noncopyable，class继承默认为private</span></span><br></pre></td></tr></table></figure>
+
+<p>原理：<strong>利用 C++ 的继承和访问控制机制，让编译器在你尝试拷贝或赋值时直接报错。流程：通过private继承noncopyable，意味着 noncopyable 的 public 和 protected 成员在 TcpServer 里是 private 的，外部无法访问。</strong></p>
+<p>1、构造和析构是 protected，这样只能被子类构造和析构，不能在外部直接创建 noncopyable 对象。</p>
+<p>2、拷贝构造函数和赋值运算符被 &#x3D; delete，外部和子类都不能访问。</p>
+<p>编译器行为：</p>
+<ul>
+<li><p>当你写 <strong>TcpServer a; TcpServer b &#x3D; a; 或 b &#x3D; a;</strong> 时，编译器会去找 TcpServer 的拷贝构造和赋值运算符。</p>
+</li>
+<li><p>由于 TcpServer 没有自己实现这两个函数，编译器会去基类 noncopyable 里找。</p>
+</li>
+<li><p>发现基类的这两个函数被 &#x3D; delete，所以编译器直接报错，禁止拷贝和赋值。</p>
+</li>
+</ul>
+<h3 id="三、回调函数声明"><a href="#三、回调函数声明" class="headerlink" title="三、回调函数声明"></a>三、回调函数声明</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Callback.h</span></span><br><span class="line"><span class="keyword">typedef</span> std::function&lt;<span class="type">void</span> (<span class="type">const</span> TcpConnectionPtr&amp;)&gt; ConnectionCallback;</span><br><span class="line"><span class="keyword">typedef</span> std::function&lt;<span class="type">void</span> (<span class="type">const</span> TcpConnectionPtr&amp;)&gt; CloseCallback;</span><br><span class="line"><span class="keyword">typedef</span> std::function&lt;<span class="type">void</span> (<span class="type">const</span> TcpConnectionPtr&amp;)&gt; WriteCompleteCallback;</span><br><span class="line"><span class="comment">//TcpServer.h</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">TcpServer</span> : noncopyable</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">typedef</span> std::function&lt;<span class="type">void</span>(EventLoop*)&gt; ThreadInitCallback;</span><br></pre></td></tr></table></figure>
+
+<p>刚开始很奇怪，为什么ThreadInitCallback生命在TcpServer.h，而其他回调放在统一放在Callback.h文件中，以为是作者忘记了，后来询问ai，发现是有意为之</p>
+<p>原因：</p>
+<ol>
+<li>ThreadInitCallback 这个类型只和 TcpServer 的线程池初始化有关，它的语义非常专用，只在 TcpServer 相关代码中用到。</li>
+<li>Callback.h 里一般放的是通用的回调类型，比如 ConnectionCallback、MessageCallback 这种会被很多类用到的回调。</li>
+<li>如果把所有只在某个类用到的 typedef 都放到 Callback.h，会让 Callback.h 变得很臃肿、不清晰，反而降低了可维护性。</li>
+<li>ThreadInitCallback 依赖于 EventLoop 类型，如果放到 Callback.h，就会让 Callback.h 依赖 EventLoop.h，这样会让头文件之间的依赖变复杂，甚至可能引入循环依赖。</li>
+<li>一般来说，只在某个类&#x2F;模块内部用到的类型定义，直接放在对应的头文件里，而不是放到全局的 callback 头文件中。只有那种全局通用的回调类型，才会放到 Callback.h 这种公共头文件。</li>
+</ol>
+<h3 id="四、变量命名方式"><a href="#四、变量命名方式" class="headerlink" title="四、变量命名方式"></a>四、变量命名方式</h3><p>封装，在muduo库中你几乎看不见直接使用底层API，至少都会都会经过一次封装，封装成一个类，同时，使用typedef重命名，明确每一个类的作用</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> std::map&lt;string, TcpConnectionPtr&gt; ConnectionMap;</span><br><span class="line"><span class="keyword">typedef</span> std::function&lt;<span class="type">void</span>(EventLoop*)&gt; ThreadInitCallback;</span><br><span class="line">AtomicInt32 started_;</span><br><span class="line"><span class="built_in">TcpServer</span>(EventLoop* loop,</span><br><span class="line">          <span class="type">const</span> InetAddress&amp; listenAddr,</span><br><span class="line">          <span class="type">const</span> string&amp; nameArg,</span><br><span class="line">          Option option = kNoReusePort);</span><br></pre></td></tr></table></figure>
+
+<p>目的：</p>
+<p>​	这不仅仅是为了隐藏底层细节，更是为了<strong>创造一个比底层API更强大、更安全、更易用的抽象层</strong>。如后面会看见的，<strong>poller</strong>将IO复用模型封装，随时能改变底层的IO复用模型，还有<strong>Socket</strong>同理，不直接使用linux底层的socket函数，这样在移植系统时，无论底层接口是什么，都能直接使用Socket而不需要关心底层，和poller一样，都能随时改变，这种设计的可扩展性就很高。后面还会继续展开muduo库在使用上的各种封装。</p>
+<p>​	还有typedef的使用，<code>std::map&lt;std::string, std::shared_ptr&lt;muduo::net::TcpConnection&gt;&gt;</code> 这样的类型声明又长又复杂。当您读到 <code>ConnectionMap</code> 时，您立刻就能明白它的<strong>意图</strong>——这是一个“存储连接的容器”，而不需要去想着这个复杂map到底是干什么的。</p>
+<h3 id="五、智能指针使用"><a href="#五、智能指针使用" class="headerlink" title="五、智能指针使用"></a>五、智能指针使用</h3><p>在muduo库中，很少能看见裸指针的直接使用，智能指针管理“所有权”，裸指针表示“使用权”</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">EventLoop* loop_; </span><br><span class="line">std::unique_ptr&lt;Acceptor&gt; acceptor_; </span><br><span class="line">std::shared_ptr&lt;EventLoopThreadPool&gt; threadPool_;</span><br></pre></td></tr></table></figure>
+
+<p>muduo中大量使用智能指针，其根本是RAII的编程思想，作者通过大量封装，充分的利用了RAII思想，如后面会介绍的<strong>Socket</strong>，在析构的时候关闭文件描述符，避免忘记关闭文件描述符，如<strong>MutexLockGuard</strong>，<code>MutexLockGuard</code> 类在<strong>构造函数中调用 <code>mutex_.lock()</code></strong>，在**析构函数中调用 <code>mutex_.unlock()</code>**等等。</p>
+<p>虽然裸指针很少使用，但是可以看到，EventLoop就是一个裸指针</p>
+<p><strong>智能指针 (std::unique_ptr, std::shared_ptr)</strong>：当你使用智能指针时，你是在声明：“<strong>我这个对象，对另一个对象的生命周期负有责任</strong>”。</p>
+<ul>
+<li><code>std::unique_ptr&lt;Acceptor&gt; acceptor_</code> 意味着 <code>TcpServer</code> <strong>独占</strong> <code>Acceptor</code>，当 <code>TcpServer</code> 析构时，<code>Acceptor</code> <strong>必须</strong>被销毁。</li>
+<li><code>std::shared_ptr&lt;TcpConnection&gt;</code> 意味着 <code>TcpServer</code> 和其他协作者（如回调函数）<strong>共同拥有</strong> <code>TcpConnection</code> 的生命周期。</li>
+</ul>
+<p><strong>裸指针 (EventLoop*)</strong>：当你使用裸指针时，你是在声明：“<strong>我需要使用那个对象，但我不管它的死活，它的生命周期由别人负责</strong>”。这是一种**非拥有（non-owning）**的、观察性的关系。</p>
+<p>因为在 muduo 的设计中，<strong><code>EventLoop</code> 的生命周期总是长于使用它的 <code>TcpConnection</code> 或 <code>TcpServer</code></strong>。<code>EventLoop</code> 对象是在一个线程的栈上创建的，它的生命周期与整个线程的事件循环 <code>loop.loop()</code> 绑定。只要这个线程在运行，<code>EventLoop</code> 对象就一直存活。<strong>用智能指针明确所有权和生命周期管理，用裸指针表示无所有权的、有生命周期保障的引用。</strong></p>
+<p>RAII思想：</p>
+<p><strong>将任何一种“资源”（文件描述符、内存、锁、线程、甚至是更复杂的对象）的生命周期，与一个栈上对象的生命周期绑定。通过 “对象离开作用域时析构函数必被调用”的特性，来实现资源的自动、安全、无遗漏的释放。</strong></p>
+<h3 id="六、类初始化处理"><a href="#六、类初始化处理" class="headerlink" title="六、类初始化处理"></a>六、类初始化处理</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">TcpServer::<span class="built_in">TcpServer</span>(EventLoop* loop,</span><br><span class="line">                     <span class="type">const</span> InetAddress&amp; listenAddr,</span><br><span class="line">                     <span class="type">const</span> string&amp; nameArg,</span><br><span class="line">                     Option option)</span><br><span class="line">    : <span class="built_in">loop_</span>(<span class="built_in">CHECK_NOTNULL</span>(loop)),<span class="comment">//主EventLoop</span></span><br><span class="line">      <span class="built_in">ipPort_</span>(listenAddr.<span class="built_in">toIpPort</span>()),<span class="comment">//监听地址</span></span><br><span class="line">      <span class="built_in">name_</span>(nameArg),<span class="comment">//服务器名称</span></span><br><span class="line">      <span class="built_in">acceptor_</span>(<span class="keyword">new</span> <span class="built_in">Acceptor</span>(loop, listenAddr, option == kReusePort)),<span class="comment">//Acceptor 负责监听新连接</span></span><br><span class="line">      <span class="built_in">threadPool_</span>(<span class="keyword">new</span> <span class="built_in">EventLoopThreadPool</span>(loop, name_)),<span class="comment">//EventLoopThreadPool 负责管理多个EventLoop线程</span></span><br><span class="line">      <span class="built_in">connectionCallback_</span>(defaultConnectionCallback),<span class="comment">//默认连接回调</span></span><br><span class="line">      <span class="built_in">messageCallback_</span>(defaultMessageCallback),<span class="comment">//默认消息回调</span></span><br><span class="line">      <span class="built_in">nextConnId_</span>(<span class="number">1</span>)<span class="comment">//连接计数器，为每一个新到来的 TcpConnection 生成一个独一无二的、递增的ID号。</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 设置Acceptor的回调函数，当有新连接到来时，Acceptor会调用TcpServer的newConnection函数,将新连接封装成一个TcpConnectionPtr</span></span><br><span class="line">    acceptor_-&gt;<span class="built_in">setNewConnectionCallback</span>(std::<span class="built_in">bind</span>(&amp;TcpServer::newConnection, <span class="keyword">this</span>, _1, _2));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Acceptor建立新连接时，调用TcpServer的newConnection函数，将新连接封装成一个TcpConnectionPtr</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">TcpServer::newConnection</span><span class="params">(<span class="type">int</span> sockfd, <span class="type">const</span> InetAddress&amp; peerAddr)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    loop_-&gt;<span class="built_in">assertInLoopThread</span>();</span><br><span class="line">    EventLoop* ioLoop = threadPool_-&gt;<span class="built_in">getNextLoop</span>();<span class="comment">//获取一个EventLoop线程,将TcpConnection对象放入该线程中</span></span><br><span class="line">    <span class="type">char</span> buf[<span class="number">64</span>];</span><br><span class="line">    <span class="built_in">snprintf</span>(buf, <span class="keyword">sizeof</span> buf, <span class="string">&quot;-%s#%d&quot;</span>, ipPort_.<span class="built_in">c_str</span>(), nextConnId_);</span><br><span class="line">    ++nextConnId_;<span class="comment">//连接计数器，为每一个新到来的 TcpConnection 生成一个独一无二的、递增的ID号。</span></span><br><span class="line">    string connName = name_ + buf;</span><br><span class="line"></span><br><span class="line">    <span class="function">InetAddress <span class="title">localAddr</span><span class="params">(sockets::getLocalAddr(sockfd))</span></span>;</span><br><span class="line">    <span class="function">TcpConnectionPtr <span class="title">conn</span><span class="params">(<span class="keyword">new</span> TcpConnection(ioLoop, connName, sockfd, localAddr, peerAddr))</span></span>;</span><br><span class="line">    connections_[connName] = conn;</span><br><span class="line">    <span class="comment">//设置TcpConnection的回调函数</span></span><br><span class="line">    conn-&gt;<span class="built_in">setConnectionCallback</span>(connectionCallback_);<span class="comment">// 连接回调</span></span><br><span class="line">    conn-&gt;<span class="built_in">setMessageCallback</span>(messageCallback_);<span class="comment">// 消息回调</span></span><br><span class="line">    conn-&gt;<span class="built_in">setWriteCompleteCallback</span>(writeCompleteCallback_);<span class="comment">// 写完成回调</span></span><br><span class="line">    conn-&gt;<span class="built_in">setCloseCallback</span>(std::<span class="built_in">bind</span>(&amp;TcpServer::removeConnection, <span class="keyword">this</span>, _1)); <span class="comment">// 关闭回调</span></span><br><span class="line">    ioLoop-&gt;<span class="built_in">runInLoop</span>(std::<span class="built_in">bind</span>(&amp;TcpConnection::connectEstablished, conn)); <span class="comment">////将TcpConnection对象的连接建立事件放入EventLoop线程中执行</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>TcpServer在建立连接阶段的作用：</p>
+<p>开始的时候，TcpServer在构造函数那里初始化Acceptor,并设置Acceptor建立连接后的回调，这个回调用于将fd封装成一个TcpConnnection并放入到一个EventLoop中，由该EventLoop负责后续的监听。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://www.228610.xyz/2025/07/29/muduo(1)-TcpServer/" data-id="cuidMsJZKxB2DLDC4oW0OTBFy" data-title="muduo(1)-TcpServer" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/muduo/" rel="tag">muduo</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-斗地主演示视频" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2025/05/08/%E6%96%97%E5%9C%B0%E4%B8%BB%E6%BC%94%E7%A4%BA%E8%A7%86%E9%A2%91/" class="article-date">
@@ -102,7 +317,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/05/08/%E6%96%97%E5%9C%B0%E4%B8%BB%E6%BC%94%E7%A4%BA%E8%A7%86%E9%A2%91/" data-id="cuidERBb3kI_rnl-iXCg_X14a" data-title="斗地主演示视频" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/05/08/%E6%96%97%E5%9C%B0%E4%B8%BB%E6%BC%94%E7%A4%BA%E8%A7%86%E9%A2%91/" data-id="cuid-4DDCD5UZnjypN0zJktr4" data-title="斗地主演示视频" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -235,7 +450,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/04/21/OpenGL%20%E7%9D%80%E8%89%B2%E5%99%A8%E7%BC%96%E8%AF%91/" data-id="cuide6cYqjB9p0x7VVdCgUZyN" data-title="OpenGL 着色器编译" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/04/21/OpenGL%20%E7%9D%80%E8%89%B2%E5%99%A8%E7%BC%96%E8%AF%91/" data-id="cuidCe_QxrP074-pEJ0sEbN1B" data-title="OpenGL 着色器编译" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -301,7 +516,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/04/21/QOpenGLShaderProgram/" data-id="cuidnblu0VJpymdA4RdAZA-0_" data-title="QOpenGLShaderProgram" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/04/21/QOpenGLShaderProgram/" data-id="cuidC8ysAflhbgmfp9YxTDwDR" data-title="QOpenGLShaderProgram" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -563,7 +778,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/04/20/opengl%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E4%B8%8E%E4%BD%BF%E7%94%A8/" data-id="cuidsSiXPp3SHAqV-IU1rYmLS" data-title="opengl基本概念与使用" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/04/20/opengl%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E4%B8%8E%E4%BD%BF%E7%94%A8/" data-id="cuidoIhW6W2wnZg7Ac4ilaiEf" data-title="opengl基本概念与使用" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -622,7 +837,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/04/19/vs2022%E7%BC%96%E7%A0%81%E9%97%AE%E9%A2%98/" data-id="cuid3YUQseCWDSjLGfNVsL3bJ" data-title="vs2022编码问题" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/04/19/vs2022%E7%BC%96%E7%A0%81%E9%97%AE%E9%A2%98/" data-id="cuidvw859FDU6H2u7M1Hi6Yd1" data-title="vs2022编码问题" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -710,7 +925,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/04/03/%E4%BD%BF%E7%94%A8gprof%E5%92%8Cperf%E4%BC%98%E5%8C%96%E7%A8%8B%E5%BA%8F/" data-id="cuidZmQOnlrg0INQr3w2mAtWQ" data-title="使用gprof和perf优化程序" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/04/03/%E4%BD%BF%E7%94%A8gprof%E5%92%8Cperf%E4%BC%98%E5%8C%96%E7%A8%8B%E5%BA%8F/" data-id="cuidKJE1rgZ97ovL3MGtNG9A_" data-title="使用gprof和perf优化程序" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -1299,7 +1514,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/04/01/redis%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" data-id="cuidCGec1TnHxsGIr1VDb8LyF" data-title="redis常用命令" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/04/01/redis%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" data-id="cuiddaHsdhpSz5ZZpghQP0pK-" data-title="redis常用命令" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -1433,471 +1648,11 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/31/%E5%9F%BA%E4%BA%8Eprotobuf%E5%BC%80%E5%8F%91%E7%9A%84rpc%E6%A1%86%E6%9E%B6/" data-id="cuidEQb4AdYJa01X_Fq49j_51" data-title="基于protobuf开发的rpc框架" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/03/31/%E5%9F%BA%E4%BA%8Eprotobuf%E5%BC%80%E5%8F%91%E7%9A%84rpc%E6%A1%86%E6%9E%B6/" data-id="cuidI3sg2vuI_x42N_ITwQkIP" data-title="基于protobuf开发的rpc框架" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/" rel="tag">C++</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-MySQL-主从复制" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2025/03/30/MySQL-%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6/" class="article-date">
-  <time class="dt-published" datetime="2025-03-30T09:18:00.000Z" itemprop="datePublished">2025-03-30</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2025/03/30/MySQL-%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6/">MySQL-主从复制</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p><img src="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-12-04_21-02-44.png" alt="PixPin_2024-12-04_21-02-44">主从复制：两个日志（<code>binlog</code>二进制日志，relay log日志）和三个线程（<code>master</code>一个线程和<code>slave</code>两个线程)主库对外提高增删改查服务，从库根据二进制日志将数据同步到从库.</p>
-<h3 id="一、主从复制流程：两个日志（binlog-relay-log）和三个线程（主库的转储线程和从库的IO线程与sql线程）"><a href="#一、主从复制流程：两个日志（binlog-relay-log）和三个线程（主库的转储线程和从库的IO线程与sql线程）" class="headerlink" title="一、主从复制流程：两个日志（binlog&#x2F;relay log）和三个线程（主库的转储线程和从库的IO线程与sql线程）"></a>一、主从复制流程：两个日志（binlog&#x2F;relay log）和三个线程（主库的转储线程和从库的IO线程与sql线程）</h3><ol>
-<li><p>主库的更新操作写入binlog二进制日志中</p>
-</li>
-<li><p>master服务器创建一个binlog转储线程（<code>binlog dump process</code>），将二进制日志内容发送到从服务器。可以通过<code>show processlist;</code>查看线程信息</p>
-</li>
-<li><p>slave机器执行START SLAVE命令会在从服务器创建一个IO线程，接收master的<code>binary log</code>并复制到其<code>relay log</code>中继日志。</p>
-</li>
-<li><p><code>sql slave thread</code>（sql从线程）处理该过程的最后一步，sql线程从中继日志中读取事件，并重放其中的事件而更新slave机器的数据，使其与master主库的数据一致。只要该线程与I&#x2F;O线程保持一致，中继日志通常会位于os缓存中，所以中继日志的开销很小。</p>
-</li>
-</ol>
-<blockquote>
-<p>从数据库生成两个线程，一个是IO线程，用于将binlog日志写到relay log中，同时还会创建一个sql线程，用于读取relay log中的命令并重放到从数据库中，执行写操作，insert,update，delete等操作</p>
-</blockquote>
-<h3 id="二、主从复制作用："><a href="#二、主从复制作用：" class="headerlink" title="二、主从复制作用："></a>二、<strong>主从复制作用</strong>：</h3><ol>
-<li><strong>数据备份</strong>：即使主库挂了，也可以通过mycat将请求映射到从库，继续对外服务<ul>
-<li><strong>热备份</strong>：<ul>
-<li>通过主从复制，主库的数据会实时同步到从库，从库作为实时的备份库（热备份）可以随时切换。</li>
-<li>如果主库发生故障，可以快速将从库提升为主库，继续提供服务，最大程度减少数据丢失和服务中断。</li>
-</ul>
-</li>
-<li><strong>容灾</strong>：<ul>
-<li>在数据中心宕机或硬件故障的情况下，从库位于不同物理位置（例如异地机房），可用作容灾库，保证业务连续性。</li>
-</ul>
-</li>
-<li><strong>高可用</strong>：<ul>
-<li>配合负载均衡工具（如 MyCat、HAProxy、Keepalived），当主库不可用时，可以自动切换到从库，提高系统的可用性。</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><strong>读写分离</strong><ul>
-<li><strong>操作由主库处理</strong>：<ul>
-<li>主库负责处理事务性较强、需要严格一致性的写操作（如 <code>INSERT</code>、<code>UPDATE</code>、<code>DELETE</code> 等）。</li>
-<li>写操作完成后，主库通过二进制日志（binlog）将更改同步到从库。</li>
-</ul>
-</li>
-<li><strong>读操作由从库处理</strong>：<ul>
-<li>从库负责处理只读操作（如 <code>SELECT</code> 查询）。</li>
-<li>一个主库可以有多个从库（常见为 1 主多从架构），将大量的读请求分摊到多个从库中，减少主库的负载，提高整体读写效率。</li>
-</ul>
-</li>
-<li><strong>优点</strong>：<ul>
-<li><strong>提高性能</strong>：减少主库压力，通过多个从库分担读取任务，支持更多并发读请求。</li>
-<li><strong>优化资源</strong>：主库的写性能和从库的读性能可以分别优化，避免资源浪费。</li>
-</ul>
-</li>
-</ul>
-</li>
-</ol>
-<h3 id="三、主从复制的局限性与优化"><a href="#三、主从复制的局限性与优化" class="headerlink" title="三、主从复制的局限性与优化"></a>三、主从复制的局限性与优化</h3><ol>
-<li><p><strong>限制</strong></p>
-<ol>
-<li><strong>数据延迟</strong>：<ul>
-<li>主库的写操作通过 binlog 异步传输到从库，可能会有微小的同步延迟（尤其在网络较差或从库负载较高时）。</li>
-<li>对于强一致性要求高的业务，需要额外设计机制。</li>
-</ul>
-</li>
-<li><strong>从库只读</strong>：<ul>
-<li>在默认配置下，从库是只读的。如果在从库上进行写操作，可能导致数据不一致。</li>
-</ul>
-</li>
-<li><strong>主库压力过大</strong>：<ul>
-<li>在写操作较多的情况下，主库压力仍然较大，可能需要结合分库分表进一步优化。</li>
-</ul>
-</li>
-</ol>
-</li>
-<li><p><strong>优化</strong></p>
-<ul>
-<li><p><strong>半同步复制</strong>：</p>
-<ul>
-<li><p>从库在接收到 binlog 并写入中继日志后，才向主库确认，减少数据延迟和丢失的风险。</p>
-</li>
-<li><p><strong>双主模式（主主复制）</strong>：</p>
-<ul>
-<li>两个主库相互同步，一方故障时另一方可以无缝接管，增强容灾能力。</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p><strong>分布式数据库</strong>：</p>
-<ul>
-<li>配合分库分表和分布式数据库中间件（如 ShardingSphere、MyCat），实现更高效的负载均衡和扩展性。</li>
-</ul>
-</li>
-</ul>
-</li>
-</ol>
-<p><strong>总结</strong></p>
-<ol>
-<li><strong>数据备份</strong>：<ul>
-<li>主从复制实现了实时的数据同步，提供热备份、容灾和高可用能力。</li>
-<li>在主库故障时，从库可以接管服务，保证系统的持续运行。</li>
-</ul>
-</li>
-<li><strong>读写分离</strong>：<ul>
-<li>主库负责写操作，从库负责读操作，合理分摊压力。</li>
-<li>通过增加从库数量，可以线性扩展读性能，支持高并发场景。</li>
-</ul>
-</li>
-</ol>
-<h3 id="四、配置主从复制"><a href="#四、配置主从复制" class="headerlink" title="四、配置主从复制"></a>四、配置主从复制</h3><p>linux为主库，windows为从库</p>
-<p>条件：</p>
-<p>master和slave机器的信息</p>
-<ul>
-<li>master（Ubuntu 24）：192.168.135.129</li>
-<li>slave : 10.157.219.148</li>
-</ul>
-<p>需要保证master和slave之间的网络互通，并且保证3306端口是开放的</p>
-<ol>
-<li><p><strong>主库配置：</strong></p>
-<ul>
-<li>Ubuntu 24 打开3306端口</li>
-</ul>
- <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#允许所有请求</span></span><br><span class="line"><span class="built_in">sudo</span> ufw allow 3306</span><br><span class="line"><span class="comment">#只允许指定IP的请求</span></span><br><span class="line"><span class="built_in">sudo</span> ufw allow from &lt;IP地址&gt; to any port 3306</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>Ubuntu24 打开二进制日志,修改&#x2F;etc&#x2F;mysql&#x2F;my.cnf文件</li>
-</ul>
- <figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[mysqld]</span></span><br><span class="line"><span class="attr">server-id</span>=<span class="number">1</span><span class="comment">#用于区分从库</span></span><br><span class="line"><span class="attr">expire_logs_days</span>=<span class="number">7</span><span class="comment">#二进制日志保存时间</span></span><br><span class="line"><span class="attr">log-bin</span>=mysql-bin <span class="comment">#开启二进制日志</span></span><br><span class="line"><span class="attr">binlog-do-db</span>=mytest <span class="comment">#指定同步的库名，如果不填写，默认是全局</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>创建用于主从库通信的账号,只允许从库服务器登录</li>
-</ul>
- <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">USER</span> <span class="string">&#x27;mslave&#x27;</span>@<span class="string">&#x27;192.168.135.1&#x27;</span> IDENTIFIED <span class="keyword">BY</span> <span class="string">&#x27;123456&#x27;</span>;</span><br><span class="line"><span class="keyword">GRANT</span> REPLICATION SLAVE <span class="keyword">ON</span> <span class="operator">*</span>.<span class="operator">*</span> <span class="keyword">TO</span> <span class="string">&#x27;mslave&#x27;</span>@<span class="string">&#x27;192.168.135.1&#x27;</span>;</span><br><span class="line">FLUSH PRIVILEGES;</span><br></pre></td></tr></table></figure>
-
-<p>  这里没有填写windows的地址是因为Ubuntu24是运行在windows的虚拟机上面，使用的是NAT网络模式（如果使用桥接模式就没什么问题，直接写windows的地址），NAT模式会创建一个虚拟网卡，windows在与虚拟机中的linux服务器进行通信时，首先会将数据发送到192.168.135.1这个网关上，然后再转发到虚拟机中的linux服务器,所以虚拟机中的linux服务器接收来自windows的消息实际上全部都是从192.168.135.1这个网关转发过来的。所以这里填写192.168.135.1才能通过。</p>
-<p>  <img src="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-12-04_22-11-49.png" alt="PixPin_2024-12-04_22-11-49"> </p>
-<ul>
-<li>获取主库binlog的日志文件名和position位置</li>
-</ul>
- <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">show</span> master status;</span><br><span class="line"><span class="operator">+</span><span class="comment">------------------+----------+--------------+------------------+-------------------+</span></span><br><span class="line"><span class="operator">|</span> File             <span class="operator">|</span> Position <span class="operator">|</span> Binlog_Do_DB <span class="operator">|</span> Binlog_Ignore_DB <span class="operator">|</span> Executed_Gtid_Set <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">------------------+----------+--------------+------------------+-------------------+</span></span><br><span class="line"><span class="operator">|</span> mysql<span class="operator">-</span>bin<span class="number">.000001</span> <span class="operator">|</span>      <span class="number">1533</span><span class="operator">|</span>              <span class="operator">|</span>                  <span class="operator">|</span>                   <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">------------------+----------+--------------+------------------+-------------------+</span></span><br><span class="line"><span class="number">1</span> <span class="type">row</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line">mysql<span class="operator">&gt;</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>从库配置</p>
-<ul>
-<li><p>修改配置文件，”C:\ProgramData\MySQL\MySQL Server 8.0\my.ini”</p>
-  <figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[mysqld]</span></span><br><span class="line"><span class="attr">server-id</span>=<span class="number">2</span></span><br><span class="line"><span class="attr">relay-log</span>=relay-bin</span><br><span class="line"><span class="attr">log_bin</span>=slave-bin</span><br></pre></td></tr></table></figure>
-
-<p>  然后在任务管理器中的服务中重启MySQL服务<br>  <img src="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-12-04_22-34-06.png" alt="PixPin_2024-12-04_22-34-06"></p>
-</li>
-</ul>
-</li>
-</ol>
-<ul>
-<li><p>登录mysql创建账户读取binlog同步数据，执行如下语句</p>
-  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">CHANGE MASTER TO MASTER_HOST=<span class="string">&#x27;192.168.135.129&#x27;</span>,</span><br><span class="line">MASTER_PORT=<span class="number">3306</span>,</span><br><span class="line">MASTER_USER=<span class="string">&#x27;mslave&#x27;</span>,</span><br><span class="line">MASTER_PASSWORD=<span class="string">&#x27;123456&#x27;</span>,</span><br><span class="line">MASTER_LOG_FILE=<span class="string">&#x27;mysql-bin.000001&#x27;</span>,</span><br><span class="line">MASTER_LOG_POS=<span class="number">1533</span>;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>开启从库服务</p>
-  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">start slave;</span><br></pre></td></tr></table></figure>
-
-<p>  查看服务状态</p>
-  <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">show</span> slave status\G</span><br><span class="line"><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span> <span class="number">1.</span> <span class="type">row</span> <span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span></span><br><span class="line">               Slave_IO_State: Connecting <span class="keyword">to</span> source</span><br><span class="line">                  Master_Host: <span class="number">192.168</span><span class="number">.135</span><span class="number">.129</span></span><br><span class="line">                  Master_User: mslave</span><br><span class="line">                  Master_Port: <span class="number">3306</span></span><br><span class="line">                Connect_Retry: <span class="number">60</span></span><br><span class="line">              Master_Log_File: mysql<span class="operator">-</span>bin<span class="number">.000001</span></span><br><span class="line">          Read_Master_Log_Pos: <span class="number">885</span></span><br><span class="line">               Relay_Log_File: zjz<span class="operator">-</span>relay<span class="operator">-</span>bin<span class="number">.000001</span></span><br><span class="line">                Relay_Log_Pos: <span class="number">4</span></span><br><span class="line">        Relay_Master_Log_File: mysql<span class="operator">-</span>bin<span class="number">.000001</span></span><br><span class="line">             Slave_IO_Running: Connecting</span><br><span class="line">            Slave_SQL_Running: Yes</span><br><span class="line">              Replicate_Do_DB:</span><br><span class="line">          Replicate_Ignore_DB:</span><br><span class="line">           Replicate_Do_Table:</span><br><span class="line">       Replicate_Ignore_Table:</span><br><span class="line">      Replicate_Wild_Do_Table:</span><br><span class="line">  Replicate_Wild_Ignore_Table:</span><br><span class="line">                   Last_Errno: <span class="number">0</span></span><br><span class="line">                   Last_Error:</span><br><span class="line">                 Skip_Counter: <span class="number">0</span></span><br><span class="line">          Exec_Master_Log_Pos: <span class="number">885</span></span><br><span class="line">              Relay_Log_Space: <span class="number">157</span></span><br><span class="line">              Until_Condition: <span class="keyword">None</span></span><br><span class="line">               Until_Log_File:</span><br><span class="line">                Until_Log_Pos: <span class="number">0</span></span><br><span class="line">           Master_SSL_Allowed: <span class="keyword">No</span></span><br><span class="line">           Master_SSL_CA_File:</span><br><span class="line">           Master_SSL_CA_Path:</span><br><span class="line">              Master_SSL_Cert:</span><br><span class="line">            Master_SSL_Cipher:</span><br><span class="line">               Master_SSL_Key:</span><br><span class="line">        Seconds_Behind_Master: <span class="keyword">NULL</span></span><br><span class="line">Master_SSL_Verify_Server_Cert: <span class="keyword">No</span></span><br><span class="line">                Last_IO_Errno: <span class="number">2061</span></span><br><span class="line">                Last_IO_Error: Error connecting <span class="keyword">to</span> source <span class="string">&#x27;mslave@192.168.135.129:3306&#x27;</span>. This was attempt <span class="number">1</span><span class="operator">/</span><span class="number">86400</span>, <span class="keyword">with</span> a delay <span class="keyword">of</span> <span class="number">60</span> seconds <span class="keyword">between</span> attempts. Message: Authentication plugin <span class="string">&#x27;caching_sha2_password&#x27;</span> reported error: Authentication requires secure connection.</span><br><span class="line">               Last_SQL_Errno: <span class="number">0</span></span><br><span class="line">               Last_SQL_Error:</span><br><span class="line">  Replicate_Ignore_Server_Ids:</span><br><span class="line">             Master_Server_Id: <span class="number">0</span></span><br><span class="line">                  Master_UUID:</span><br><span class="line">             Master_Info_File: mysql.slave_master_info</span><br><span class="line">                    SQL_Delay: <span class="number">0</span></span><br><span class="line">          SQL_Remaining_Delay: <span class="keyword">NULL</span></span><br><span class="line">      Slave_SQL_Running_State: Replica has read <span class="keyword">all</span> relay log; waiting <span class="keyword">for</span> more updates</span><br><span class="line">           Master_Retry_Count: <span class="number">86400</span></span><br><span class="line">                  Master_Bind:</span><br><span class="line">      Last_IO_Error_Timestamp: <span class="number">241204</span> <span class="number">22</span>:<span class="number">40</span>:<span class="number">21</span></span><br><span class="line">     Last_SQL_Error_Timestamp:</span><br><span class="line">               Master_SSL_Crl:</span><br><span class="line">           Master_SSL_Crlpath:</span><br><span class="line">           Retrieved_Gtid_Set:</span><br><span class="line">            Executed_Gtid_Set:</span><br><span class="line">                Auto_Position: <span class="number">0</span></span><br><span class="line">         Replicate_Rewrite_DB:</span><br><span class="line">                 Channel_Name:</span><br><span class="line">           Master_TLS_Version:</span><br><span class="line">       Master_public_key_path:</span><br><span class="line">        Get_master_public_key: <span class="number">0</span></span><br><span class="line">            Network_Namespace:</span><br><span class="line"><span class="number">1</span> <span class="type">row</span> <span class="keyword">in</span> <span class="keyword">set</span>, <span class="number">1</span> warning (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line">mysql<span class="operator">&gt;</span></span><br></pre></td></tr></table></figure>
-
-  <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">show</span> processlist;</span><br><span class="line"><span class="operator">+</span><span class="comment">----+-----------------+-----------------+------+---------+------+----------------------------------------------------------+------------------+</span></span><br><span class="line"><span class="operator">|</span> Id <span class="operator">|</span> <span class="keyword">User</span>            <span class="operator">|</span> Host            <span class="operator">|</span> db   <span class="operator">|</span> Command <span class="operator">|</span> <span class="type">Time</span> <span class="operator">|</span> State                                                    <span class="operator">|</span> Info             <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----+-----------------+-----------------+------+---------+------+----------------------------------------------------------+------------------+</span></span><br><span class="line"><span class="operator">|</span>  <span class="number">5</span> <span class="operator">|</span> event_scheduler <span class="operator">|</span> localhost       <span class="operator">|</span> <span class="keyword">NULL</span> <span class="operator">|</span> Daemon  <span class="operator">|</span>  <span class="number">510</span> <span class="operator">|</span> Waiting <span class="keyword">on</span> <span class="keyword">empty</span> queue                                   <span class="operator">|</span> <span class="keyword">NULL</span>             <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span>  <span class="number">8</span> <span class="operator">|</span> root            <span class="operator">|</span> localhost:<span class="number">8068</span>  <span class="operator">|</span> <span class="keyword">NULL</span> <span class="operator">|</span> Query   <span class="operator">|</span>    <span class="number">0</span> <span class="operator">|</span> init                                                     <span class="operator">|</span> <span class="keyword">show</span> processlist <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span>  <span class="number">9</span> <span class="operator">|</span> <span class="keyword">system</span> <span class="keyword">user</span>     <span class="operator">|</span> connecting host <span class="operator">|</span> <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">Connect</span> <span class="operator">|</span>  <span class="number">175</span> <span class="operator">|</span> Connecting <span class="keyword">to</span> source                                     <span class="operator">|</span> <span class="keyword">NULL</span>             <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> <span class="number">10</span> <span class="operator">|</span> <span class="keyword">system</span> <span class="keyword">user</span>     <span class="operator">|</span>                 <span class="operator">|</span> <span class="keyword">NULL</span> <span class="operator">|</span> Query   <span class="operator">|</span>  <span class="number">175</span> <span class="operator">|</span> Replica has read <span class="keyword">all</span> relay log; waiting <span class="keyword">for</span> more updates <span class="operator">|</span> <span class="keyword">NULL</span>             <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> <span class="number">11</span> <span class="operator">|</span> <span class="keyword">system</span> <span class="keyword">user</span>     <span class="operator">|</span>                 <span class="operator">|</span> <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">Connect</span> <span class="operator">|</span>  <span class="number">175</span> <span class="operator">|</span> Waiting <span class="keyword">for</span> an event <span class="keyword">from</span> Coordinator                    <span class="operator">|</span> <span class="keyword">NULL</span>             <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> <span class="number">12</span> <span class="operator">|</span> <span class="keyword">system</span> <span class="keyword">user</span>     <span class="operator">|</span>                 <span class="operator">|</span> <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">Connect</span> <span class="operator">|</span>  <span class="number">175</span> <span class="operator">|</span> Waiting <span class="keyword">for</span> an event <span class="keyword">from</span> Coordinator                    <span class="operator">|</span> <span class="keyword">NULL</span>             <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> <span class="number">13</span> <span class="operator">|</span> <span class="keyword">system</span> <span class="keyword">user</span>     <span class="operator">|</span>                 <span class="operator">|</span> <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">Connect</span> <span class="operator">|</span>  <span class="number">175</span> <span class="operator">|</span> Waiting <span class="keyword">for</span> an event <span class="keyword">from</span> Coordinator                    <span class="operator">|</span> <span class="keyword">NULL</span>             <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> <span class="number">14</span> <span class="operator">|</span> <span class="keyword">system</span> <span class="keyword">user</span>     <span class="operator">|</span>                 <span class="operator">|</span> <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">Connect</span> <span class="operator">|</span>  <span class="number">175</span> <span class="operator">|</span> Waiting <span class="keyword">for</span> an event <span class="keyword">from</span> Coordinator                    <span class="operator">|</span> <span class="keyword">NULL</span>             <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----+-----------------+-----------------+------+---------+------+----------------------------------------------------------+------------------+</span></span><br><span class="line"><span class="number">8</span> <span class="keyword">rows</span> <span class="keyword">in</span> <span class="keyword">set</span>, <span class="number">1</span> warning (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line">mysql<span class="operator">&gt;</span></span><br></pre></td></tr></table></figure></li>
-</ul>
-<p>错误排查：</p>
-<ol>
-<li><p>问题1：</p>
- <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Last_IO_Errno: <span class="number">2061</span></span><br><span class="line">Last_IO_Error: Error connecting <span class="keyword">to</span> source <span class="string">&#x27;mslave@192.168.135.129:3306&#x27;</span>. This was attempt <span class="number">1</span><span class="operator">/</span><span class="number">86400</span>, <span class="keyword">with</span> a delay <span class="keyword">of</span> <span class="number">60</span> seconds <span class="keyword">between</span> attempts. Message: Authentication plugin <span class="string">&#x27;caching_sha2_password&#x27;</span> reported error: Authentication requires secure connection.</span><br></pre></td></tr></table></figure>
-
-<p> 问题的原因是 MySQL 8.0 默认使用 <code>caching_sha2_password</code> 作为认证插件，而从库在连接主库时未启用 SSL 或使用了不支持 <code>caching_sha2_password</code> 的连接方式。</p>
-<p> 解决方案：</p>
-<ol>
-<li><p>方法 1：修改用户的认证插件为 <code>mysql_native_password</code></p>
-<ul>
-<li><p><strong>在主库修改用户认证插件</strong>： 登录主库，执行以下命令：</p>
- <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ALTER USER <span class="string">&#x27;mslave&#x27;</span>@<span class="string">&#x27;192.168.135.1&#x27;</span> IDENTIFIED WITH <span class="string">&#x27;mysql_native_password&#x27;</span> BY <span class="string">&#x27;123456&#x27;</span>;</span><br><span class="line">FLUSH PRIVILEGES;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><p>这会将用户 <code>mslave</code> 的密码认证插件从 <code>caching_sha2_password</code> 改为 <code>mysql_native_password</code>。</p>
-</li>
-<li><p><code>mysql_native_password</code> 不要求使用 SSL 连接，可以解决当前问题。</p>
-</li>
-</ul>
-</li>
-<li><p><strong>重启从库同步</strong>： 在从库执行以下命令：</p>
-  <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">STOP SLAVE;</span><br><span class="line"><span class="keyword">START</span> SLAVE;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p><strong>验证同步状态</strong>： 查看同步状态，确认是否正常：</p>
-  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SHOW SLAVE STATUS\G;</span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-<li><p>方法二：启用 SSL 连接（推荐），但没试过，使用方法一已经成功了</p>
-<p> 如果你希望继续使用 <code>caching_sha2_password</code>，则需要在主从之间启用 SSL 安全连接。</p>
-<ol>
-<li><p><strong>在主库启用 SSL 支持</strong>： 编辑主库的配置文件（<code>my.cnf</code>）：</p>
- <figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[mysqld]</span></span><br><span class="line"><span class="attr">ssl-ca</span>=/path/to/ca-cert.pem</span><br><span class="line"><span class="attr">ssl-cert</span>=/path/to/server-cert.pem</span><br><span class="line"><span class="attr">ssl-key</span>=/path/to/server-key.pem</span><br></pre></td></tr></table></figure>
-
-<p> 重启主库服务：</p>
- <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> systemctl restart mysql</span><br></pre></td></tr></table></figure>
-</li>
-<li><p><strong>在从库启用 SSL 支持</strong>： 确保从库也配置了 SSL 并指定主库的证书。可以在 <code>CHANGE MASTER TO</code> 命令中添加 SSL 参数：</p>
- <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">CHANGE MASTER <span class="keyword">TO</span></span><br><span class="line">    MASTER_HOST<span class="operator">=</span><span class="string">&#x27;192.168.135.129&#x27;</span>,</span><br><span class="line">    MASTER_USER<span class="operator">=</span><span class="string">&#x27;mslave&#x27;</span>,</span><br><span class="line">    MASTER_PASSWORD<span class="operator">=</span><span class="string">&#x27;123456&#x27;</span>,</span><br><span class="line">    MASTER_LOG_FILE<span class="operator">=</span><span class="string">&#x27;mysql-bin.000001&#x27;</span>,</span><br><span class="line">    MASTER_LOG_POS<span class="operator">=</span><span class="number">120</span>,</span><br><span class="line">    MASTER_SSL<span class="operator">=</span><span class="number">1</span>,</span><br><span class="line">    MASTER_SSL_CA<span class="operator">=</span><span class="string">&#x27;/path/to/ca-cert.pem&#x27;</span>,</span><br><span class="line">    MASTER_SSL_CERT<span class="operator">=</span><span class="string">&#x27;/path/to/client-cert.pem&#x27;</span>,</span><br><span class="line">    MASTER_SSL_KEY<span class="operator">=</span><span class="string">&#x27;/path/to/client-key.pem&#x27;</span>;</span><br></pre></td></tr></table></figure>
-
-<p> <strong>重启从库同步</strong>：</p>
- <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">START</span> SLAVE;</span><br></pre></td></tr></table></figure></li>
-</ol>
-</li>
-</ol>
-</li>
-</ol>
-<p>排查技巧：</p>
-<ol>
-<li><p>在进行主从复制前，确保要同步的数据库，表名，表结构，数据库等在从库一定要实现创建！且必须要一模一样！否则可能会如下报错</p>
- <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Coordinator stopped because there were <span class="title">error</span><span class="params">(s)</span> in the <span class="title">worker</span><span class="params">(s)</span>. The most recent failure being: Worker <span class="number">1</span> failed executing transaction <span class="string">&#x27;ANONYMOUS&#x27;</span> at source log mysql-bin<span class="number">.000003</span>, end_log_pos <span class="number">2682.</span> See error log and/or performance_schema.replication_applier_status_by_worker table for more details about this failure or others, if any.</span></span><br></pre></td></tr></table></figure>
-
-<p> 经过排查发现，错误可能是从库中的表没创建，字符集不一致，varchar大小不够，类型不一致等问题导致的！事务出现错误</p>
-<p> <code>查看错误日志!</code>这点很重要！在这里可以详细看见错误的信息</p>
- <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> performance_schema.replication_applier_status_by_worker\G</span><br></pre></td></tr></table></figure>
-
- <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Worker <span class="number">1</span> failed executing transaction <span class="string">&#x27;ANONYMOUS&#x27;</span> at source log mysql-bin<span class="number">.000003</span>, end_log_pos <span class="number">2974</span>; Column <span class="number">0</span> of table <span class="string">&#x27;mytest.test&#x27;</span> cannot be converted from type <span class="string">&#x27;varchar(400(bytes))&#x27;</span> to type <span class="string">&#x27;varchar(300(bytes) utf8mb3)&#x27;</span></span><br><span class="line"> </span><br><span class="line">Worker <span class="number">1</span> failed executing transaction <span class="string">&#x27;ANONYMOUS&#x27;</span> at source log mysql-bin<span class="number">.000003</span>, end_log_pos <span class="number">2682</span>; Error executing row event: <span class="string">&#x27;Table &#x27;</span>mytest.test<span class="string">&#x27; doesn&#x27;</span>t exist&#x27;</span><br></pre></td></tr></table></figure>
-
-<p> 例如上面第一个错误就是字符集和长度不一致导致的，从库使用了utf8mb3,主库使用了utf8mb4; 第二个错误就是从库的表没有创建！在开始主从复制前，我们需要配置与主库相同的库表环境！可以导出主库的二进制日志文件sql，确保环境一致！</p>
-</li>
-<li><p>网络相关</p>
-<p> <img src="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-12-04_23-40-19.png" alt="PixPin_2024-12-04_23-40-19"> </p>
-<ol>
-<li>网络能否ping通</li>
-<li>主库所在机器的3306端口是否正常 telnet xxxx 3306测试</li>
-<li>查看主库的错误日志</li>
-<li>查看地址等是否正确，是使用NAT网络还是桥接网络？NAT使用网关，桥接使用IP</li>
-</ol>
-</li>
-</ol>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/30/MySQL-%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6/" data-id="cuidnz4J8goTxRgD9UlVapW2R" data-title="MySQL-主从复制" class="article-share-link"><span class="fa fa-share">Share</span></a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-MySQL-读写分离配置" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2025/03/30/MySQL-%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB%E9%85%8D%E7%BD%AE/" class="article-date">
-  <time class="dt-published" datetime="2025-03-30T09:17:00.000Z" itemprop="datePublished">2025-03-30</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2025/03/30/MySQL-%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB%E9%85%8D%E7%BD%AE/">MySQL-读写分离配置</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>读写分离就是在主服务器上修改，数据会同步到从服务器，从服务器只能提供读取数据，不能写入，实现备份的同时也实现了数据库性能的优化，以及提升了服务器安全。 </p>
-<p><img src="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-12-05_10-41-32.png" alt="PixPin_2024-12-05_10-41-32"> </p>
-<p>使用读写分离，一般需要配合代理中间件MyCat，客户端将要执行的sql发送到MyCat，MyCat会根据sql的类型发送到不同的服务器上，如果是写操作，则发送到主服务器上，如果是读操作，则发送到从服务器上，已解决强耦合问题。</p>
-<p>读写分离需要配合主从复制，以同步主从服务器的数据。	</p>
-<p>MyCat服务器：</p>
-<ol>
-<li>一主一从</li>
-<li>一主多从</li>
-<li>多主多从<ul>
-<li>多主多从就是包含多个独立的主从环境，假如有A，B两套环境，A环境如上图所示,A 环境的一主多从结构独立于 B 环境，B环境也是如此，同时，A 环境的主服务器与 B 环境的主服务器之间配置为主从关系，假设A为主服务器，那么操作A时会将数据同步到B环境的主服务器，已达到数据同步的效果，当 A 环境出现故障时，B 环境可以迅速接替工作，提供高可用性和容灾能力。</li>
-</ul>
-</li>
-</ol>
-<h3 id="一、读写分离配置"><a href="#一、读写分离配置" class="headerlink" title="一、读写分离配置"></a>一、读写分离配置</h3><p>环境：</p>
-<ol>
-<li><p>JDK环境：MyCat由java开发，需要JDK环境</p>
- <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -version</span><br></pre></td></tr></table></figure>
-
-<p> 查看环境，一般按照linux时已经自带了</p>
-</li>
-<li><p>查看root用户能否远程连接</p>
- <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">use mysql;</span><br><span class="line"><span class="keyword">select</span> <span class="keyword">user</span>,host <span class="keyword">from</span> <span class="keyword">user</span>;</span><br></pre></td></tr></table></figure>
-
- <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> use mysql;</span><br><span class="line">Reading <span class="keyword">table</span> information <span class="keyword">for</span> completion <span class="keyword">of</span> <span class="keyword">table</span> <span class="keyword">and</span> <span class="keyword">column</span> names</span><br><span class="line">You can turn off this feature <span class="keyword">to</span> <span class="keyword">get</span> a quicker startup <span class="keyword">with</span> <span class="operator">-</span>A</span><br><span class="line"></span><br><span class="line">Database changed</span><br><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">select</span> <span class="keyword">user</span>,host <span class="keyword">from</span> <span class="keyword">user</span>;</span><br><span class="line"><span class="operator">+</span><span class="comment">------------------+---------------+</span></span><br><span class="line"><span class="operator">|</span> <span class="keyword">user</span>             <span class="operator">|</span> host          <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">------------------+---------------+</span></span><br><span class="line"><span class="operator">|</span> root             <span class="operator">|</span> <span class="operator">%</span>             <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> zhangsan         <span class="operator">|</span> <span class="operator">%</span>             <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> mslave           <span class="operator">|</span> <span class="number">192.168</span><span class="number">.135</span><span class="number">.1</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> debian<span class="operator">-</span>sys<span class="operator">-</span>maint <span class="operator">|</span> localhost     <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> mysql.infoschema <span class="operator">|</span> localhost     <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> mysql.session    <span class="operator">|</span> localhost     <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> mysql.sys        <span class="operator">|</span> localhost     <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> root             <span class="operator">|</span> localhost     <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">------------------+---------------+</span></span><br><span class="line"><span class="number">8</span> <span class="keyword">rows</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line">mysql<span class="operator">&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p> 添加root用户远程访问：</p>
- <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">USER</span> <span class="string">&#x27;root&#x27;</span>@<span class="string">&#x27;ip_address&#x27;</span> IDENTIFIED <span class="keyword">BY</span> <span class="string">&#x27;some_pass&#x27;</span>;</span><br><span class="line"><span class="keyword">GRANT</span> <span class="keyword">ALL</span> PRIVILEGES <span class="keyword">ON</span> <span class="operator">*</span>.<span class="operator">*</span> <span class="keyword">TO</span> <span class="string">&#x27;root&#x27;</span>@<span class="string">&#x27;ip_address&#x27;</span>;</span><br><span class="line">FLUSH PRIVILEGES;</span><br></pre></td></tr></table></figure>
-
-<p> ip_address可以填写MyCat地址，也可以时MyCat地址</p>
-</li>
-<li><p>安装<a target="_blank" rel="noopener" href="https://github.com/MyCATApache/Mycat-download/tree/master/1.6-RELEASE">mycat</a><br> 客户端默认端口：8066, 管理端端口：9066</p>
- <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -zxvf xxx.tar.gz</span><br></pre></td></tr></table></figure>
-
-<p> 添加一个软连接到&#x2F;usr&#x2F;bin目录下,需要root权限</p>
- <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">ln</span> -s /home/zjz/Downloads/mycat/bin/mycat /usr/bin/mycat</span><br></pre></td></tr></table></figure>
-
-<p> 配置：</p>
-<ol>
-<li><p><code>server.xml</code>配置MyCat账号信息，用于登录,</p>
- <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">user</span> <span class="attr">name</span>=<span class="string">&quot;root&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;password&quot;</span>&gt;</span>123456<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;schemas&quot;</span>&gt;</span>TESTDB<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- 表级 DML 权限设置 --&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 		</span></span><br><span class="line"><span class="comment">  &lt;privileges check=&quot;false&quot;&gt;</span></span><br><span class="line"><span class="comment">   &lt;schema name=&quot;TESTDB&quot; dml=&quot;0110&quot; &gt;</span></span><br><span class="line"><span class="comment">    &lt;table name=&quot;tb01&quot; dml=&quot;0000&quot;&gt;&lt;/table&gt;</span></span><br><span class="line"><span class="comment">    &lt;table name=&quot;tb02&quot; dml=&quot;1111&quot;&gt;&lt;/table&gt;</span></span><br><span class="line"><span class="comment">   &lt;/schema&gt;</span></span><br><span class="line"><span class="comment">  &lt;/privileges&gt;		</span></span><br><span class="line"><span class="comment">   --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">user</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>password:登录密码，可自定义</li>
-<li>scemas:逻辑库，指定一个用户只能访问某些逻辑库，而不是 MyCat 中的所有库。配合 MyCat 的权限控制机制，可以为不同用户分配不同的库访问权限。 逻辑库与物理数据库的库表通过 <code>schema.xml</code> 进行映射。用户通过 MyCat 访问逻辑库时，<code>MyCat 会根据配置将请求路由到相应的物理库和表。</code></li>
-</ul>
-</li>
-<li><p><code>schema.xml</code>配置逻辑库,这里配置的逻辑库名字要与在<code>server.xml</code>中配置的逻辑库名字一致,下面是一个<code>多主多从配置</code></p>
- <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span>?&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">mycat</span>:schema <span class="keyword">SYSTEM</span> <span class="string">&quot;schema.dtd&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">mycat:schema</span> <span class="attr">xmlns:mycat</span>=<span class="string">&quot;http://io.mycat/&quot;</span>&gt;</span></span><br><span class="line">	<span class="comment">&lt;!--配置逻辑数据库--&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">schema</span> <span class="attr">name</span>=<span class="string">&quot;TESTDB&quot;</span> <span class="attr">checkSQLschema</span>=<span class="string">&quot;false&quot;</span> <span class="attr">sqlMaxLimit</span>=<span class="string">&quot;100&quot;</span> <span class="attr">dataNode</span>=<span class="string">&quot;dn1&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">schema</span>&gt;</span></span><br><span class="line">	<span class="comment">&lt;!--存储节点--&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">dataNode</span> <span class="attr">name</span>=<span class="string">&quot;dn1&quot;</span> <span class="attr">dataHost</span>=<span class="string">&quot;node1&quot;</span> <span class="attr">database</span>=<span class="string">&quot;mytest&quot;</span>/&gt;</span></span><br><span class="line">	<span class="comment">&lt;!--数据库主机--&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">dataHost</span> <span class="attr">name</span>=<span class="string">&quot;node1&quot;</span> <span class="attr">maxCon</span>=<span class="string">&quot;1000&quot;</span> <span class="attr">minCon</span>=<span class="string">&quot;10&quot;</span> <span class="attr">balance</span>=<span class="string">&quot;3&quot;</span></span></span><br><span class="line"><span class="tag">				<span class="attr">writeType</span>=<span class="string">&quot;0&quot;</span> <span class="attr">dbType</span>=<span class="string">&quot;mysql&quot;</span> <span class="attr">dbDriver</span>=<span class="string">&quot;native&quot;</span> <span class="attr">switchType</span>=<span class="string">&quot;1&quot;</span> <span class="attr">slaveThreshold</span>=<span class="string">&quot;100&quot;</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">heartbeat</span>&gt;</span> select test()<span class="tag">&lt;/<span class="name">heartbeat</span>&gt;</span></span><br><span class="line">			<span class="comment">&lt;!--can have multi write hosts--&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">writeHost</span> <span class="attr">host</span>=<span class="string">&quot;192.168.135.129&quot;</span> <span class="attr">url</span>=<span class="string">&quot;192.168.135.129:3306&quot;</span> <span class="attr">user</span>=<span class="string">&quot;root&quot;</span> <span class="attr">password</span>=<span class="string">&quot;123456&quot;</span>&gt;</span></span><br><span class="line">						<span class="tag">&lt;<span class="name">readHost</span> <span class="attr">host</span>=<span class="string">&quot;10.157.219.148&quot;</span> <span class="attr">url</span>=<span class="string">&quot;10.157.219.148:3306&quot;</span> <span class="attr">user</span>=<span class="string">&quot;root&quot;</span> <span class="attr">password</span>=<span class="string">&quot;123456&quot;</span>/&gt;</span></span><br><span class="line">			<span class="tag">&lt;/<span class="name">writeHost</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">writeHost</span> <span class="attr">host</span>=<span class="string">&quot;10.157.219.148&quot;</span> <span class="attr">url</span>=<span class="string">&quot;10.157.219.148:3306&quot;</span> <span class="attr">user</span>=<span class="string">&quot;root&quot;</span> <span class="attr">password</span>=<span class="string">&quot;123456&quot;</span>/&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">dataHost</span>&gt;</span>			</span><br><span class="line"><span class="tag">&lt;/<span class="name">mycat:schema</span>&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
- <img src="https://hmleadnews-terminal.oss-cn-beijing.aliyuncs.com/images/PixPin_2024-12-05_15-21-31.png" alt="PixPin_2024-12-05_15-21-31" style="zoom:100%;" />
-
-<ol>
-<li><p><strong>逻辑数据库配置 (<code>&lt;schema&gt;</code>)</strong></p>
- <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">schema</span> <span class="attr">name</span>=<span class="string">&quot;TESTDB&quot;</span> <span class="attr">checkSQLschema</span>=<span class="string">&quot;false&quot;</span> <span class="attr">sqlMaxLimit</span>=<span class="string">&quot;100&quot;</span> <span class="attr">dataNode</span>=<span class="string">&quot;dn1&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">schema</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><strong><code>name=&quot;TESTDB&quot;</code></strong>: 定义了一个逻辑数据库，名称为 <code>TESTDB</code>，它代表一个逻辑上的数据库，可以有多个数据节点（物理数据库）参与其中。<strong>必须要与server中的名字对应</strong></li>
-<li><strong><code>checkSQLschema=&quot;false&quot;</code></strong>: 关闭了 SQL 校验功能，Mycat 不会对 SQL 语法进行验证。</li>
-<li><strong><code>sqlMaxLimit=&quot;100&quot;</code></strong>: 定义了 SQL 查询的最大限制，最大查询结果行数为 100。</li>
-<li><strong><code>dataNode=&quot;dn1&quot;</code></strong>: 指定了逻辑数据库 <code>TESTDB</code> 使用的数据节点 <code>dn1</code>，<code>dn1</code> 是一个物理数据节点的名称</li>
-</ul>
-</li>
-<li><h4 id="数据节点配置"><a href="#数据节点配置" class="headerlink" title="数据节点配置 (&lt;dataNode&gt;)"></a><strong>数据节点配置 (<code>&lt;dataNode&gt;</code>)</strong></h4> <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dataNode</span> <span class="attr">name</span>=<span class="string">&quot;dn1&quot;</span> <span class="attr">dataHost</span>=<span class="string">&quot;node1&quot;</span> <span class="attr">database</span>=<span class="string">&quot;mytest&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><strong><code>name=&quot;dn1&quot;</code></strong>: 定义了数据节点 <code>dn1</code> 的名称。数据节点是 Mycat 中物理数据库的映射。这里的名字，<strong>必须要与schema中的dataNode相同</strong></li>
-<li><strong><code>dataHost=&quot;node1&quot;</code></strong>: <code>dn1</code> 所关联的数据主机是 <code>node1</code>，数据主机是物理数据库的服务器。</li>
-<li><strong><code>database=&quot;mytest&quot;</code></strong>: 该数据节点所使用的数据库是 <code>mytest</code>，即 Mycat 会路由到名为 <code>mytest</code> 的数据库。</li>
-</ul>
-</li>
-<li><p><strong>数据库主机配置 (<code>&lt;dataHost&gt;</code>)</strong></p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dataHost</span> <span class="attr">name</span>=<span class="string">&quot;node1&quot;</span> <span class="attr">maxCon</span>=<span class="string">&quot;1000&quot;</span> <span class="attr">minCon</span>=<span class="string">&quot;10&quot;</span> <span class="attr">balance</span>=<span class="string">&quot;3&quot;</span> <span class="attr">writeType</span>=<span class="string">&quot;0&quot;</span> <span class="attr">dbType</span>=<span class="string">&quot;mysql&quot;</span> <span class="attr">dbDriver</span>=<span class="string">&quot;native&quot;</span> <span class="attr">switchType</span>=<span class="string">&quot;1&quot;</span> <span class="attr">slaveThreshold</span>=<span class="string">&quot;100&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">heartbeat</span>&gt;</span> select test()<span class="tag">&lt;/<span class="name">heartbeat</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><p><strong><code>name=&quot;node1&quot;</code></strong>: 数据主机名称是 <code>node1</code>，它代表一组物理主机，可以包含多个写主机和读主机。</p>
-</li>
-<li><p><strong><code>maxCon=&quot;1000&quot;</code></strong>: 数据库连接池的最大连接数为 1000。</p>
-</li>
-<li><p><strong><code>minCon=&quot;10&quot;</code></strong>: 数据库连接池的最小连接数为 10。</p>
-</li>
-<li><p><strong><code>balance：</code></strong></p>
-<ul>
-<li><p>“0”：不开启读写分离</p>
-</li>
-<li><p>“1”：全部的readHost和stand by writeHost参与select语句的负载</p>
-</li>
-<li><p>“2”：所有读操作随机在readHost和writeHost上分发</p>
-</li>
-<li><p>“3”：所有读请求随机分发到writeHost对应的readHost上执行</p>
-</li>
-</ul>
-</li>
-<li><p><strong><code>writeType=&quot;0&quot;</code></strong>: 所有写操作发送到配置的第一个writeHost，第一个挂掉切换到还生存的第二个writeHost</p>
-</li>
-<li><p><strong><code>dbType=&quot;mysql&quot;</code></strong>: 数据库类型是 MySQL。</p>
-</li>
-<li><p><strong><code>dbDriver=&quot;native&quot;</code></strong>: 数据库驱动类型为本地驱动（<code>native</code>）。</p>
-</li>
-<li><p><strong><code>switchType=&quot;1&quot;</code></strong>:</p>
-<ul>
-<li>“-1”：不自动切换</li>
-<li>“1”：自动切换，根据心跳select user()</li>
-<li>“2”：基于MySQL的主从同步状态决定是否进行切换 show slave status</li>
-</ul>
-</li>
-<li><p><strong><code>slaveThreshold=&quot;100&quot;</code></strong>: 当主节点的负载超过 100 时，Mycat 会切换到从节点。</p>
-</li>
-<li><p><strong>心跳配置</strong></p>
-  <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="operator">&lt;</span>heartbeat<span class="operator">&gt;</span> <span class="keyword">select</span> test()<span class="operator">&lt;</span><span class="operator">/</span>heartbeat<span class="operator">&gt;</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><strong><code>heartbeat</code></strong>: 定义一个 SQL 查询，用来检测数据库连接是否活跃。这里使用了 <code>select test()</code>，目的是保持连接的活跃性。</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><h4 id="写主机和读主机配置-和"><a href="#写主机和读主机配置-和" class="headerlink" title="写主机和读主机配置 (&lt;writeHost&gt; 和 &lt;readHost&gt;)"></a><strong>写主机和读主机配置 (<code>&lt;writeHost&gt;</code> 和 <code>&lt;readHost&gt;</code>)</strong></h4> <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">writeHost</span> <span class="attr">host</span>=<span class="string">&quot;192.168.135.129&quot;</span> <span class="attr">url</span>=<span class="string">&quot;192.168.135.129:3306&quot;</span> <span class="attr">user</span>=<span class="string">&quot;root&quot;</span> <span class="attr">password</span>=<span class="string">&quot;123456&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">readHost</span> <span class="attr">host</span>=<span class="string">&quot;10.157.219.148&quot;</span> <span class="attr">url</span>=<span class="string">&quot;10.157.219.148:3306&quot;</span> <span class="attr">user</span>=<span class="string">&quot;root&quot;</span> <span class="attr">password</span>=<span class="string">&quot;123456&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">writeHost</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">writeHost</span> <span class="attr">host</span>=<span class="string">&quot;10.157.219.148&quot;</span> <span class="attr">url</span>=<span class="string">&quot;10.157.219.148:3306&quot;</span> <span class="attr">user</span>=<span class="string">&quot;root&quot;</span> <span class="attr">password</span>=<span class="string">&quot;123456&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><strong><code>writeHost</code></strong>: 配置写主机，所有的写操作将会发送到该主机。在此例中，第一个写主机是 <code>192.168.135.129</code>，第二个写主机是 <code>10.157.219.148</code>。写主机是负责处理数据库写操作的节点。</li>
-<li><strong><code>readHost</code></strong>: 配置读主机，读操作将会发送到该节点。读主机的目的是分担读取操作的负载，通常用于主从复制架构。此例中，<code>192.168.135.129</code> 的主机有一个从主机 <code>10.157.219.148</code>，它用于处理读请求。</li>
-<li>当第一和writeHost出问题时，会切换到第二个writeHost</li>
-</ul>
-</li>
-</ol>
-</li>
-<li><p>启动mycat</p>
- <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mycat start</span><br></pre></td></tr></table></figure>
-
-<p> 报错：查看logs&#x2F;wrapper.log文件</p>
- <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">INFO   | jvm <span class="number">5</span>    | <span class="number">2024</span>/<span class="number">12</span>/<span class="number">05</span> <span class="number">15</span>:<span class="number">47</span>:<span class="number">40</span> | Unrecognized VM option <span class="string">&#x27;MaxPermSize=64M&#x27;</span></span><br><span class="line">INFO   | jvm <span class="number">5</span>    | <span class="number">2024</span>/<span class="number">12</span>/<span class="number">05</span> <span class="number">15</span>:<span class="number">47</span>:<span class="number">40</span> | Error: Could <span class="keyword">not</span> create the Java Virtual Machine.</span><br><span class="line">INFO   | jvm <span class="number">5</span>    | <span class="number">2024</span>/<span class="number">12</span>/<span class="number">05</span> <span class="number">15</span>:<span class="number">47</span>:<span class="number">40</span> | Error: A fatal exception has occurred. Program will exit.</span><br><span class="line">FATAL  | wrapper  | <span class="number">2024</span>/<span class="number">12</span>/<span class="number">05</span> <span class="number">15</span>:<span class="number">47</span>:<span class="number">40</span> | There were <span class="number">5</span> failed launches in a row, each lasting less than <span class="number">300</span> seconds.  Giving up.</span><br><span class="line">FATAL  | wrapper  | <span class="number">2024</span>/<span class="number">12</span>/<span class="number">05</span> <span class="number">15</span>:<span class="number">47</span>:<span class="number">40</span> |   There may be a configuration problem: please check the logs.</span><br><span class="line">STATUS | wrapper  | <span class="number">2024</span>/<span class="number">12</span>/<span class="number">05</span> <span class="number">15</span>:<span class="number">47</span>:<span class="number">40</span> | &lt;-- Wrapper Stopped</span><br></pre></td></tr></table></figure>
-
-<p> 原因时java8以后不再支持<code>MaxPermSize</code>配置，我们当前时JDK21,修改MyCat的启动配置文件wrapper.conf,注释调MaxPermSize</p>
- <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># wrapper.java.additional.3=-XX:MaxPermSize=64M</span></span><br></pre></td></tr></table></figure>
-
-<p> 然后就启动成功了</p>
-</li>
-<li><p>通过查询日志验证读写分离是否成功</p>
- <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">show</span> variables <span class="keyword">like</span> <span class="string">&#x27;general%&#x27;</span>;</span><br><span class="line"><span class="keyword">set</span> <span class="keyword">global</span> general_log<span class="operator">=</span><span class="keyword">on</span>;</span><br></pre></td></tr></table></figure>
-
-<p> 分别执行读写操作，对比查询日志</p>
-</li>
-</ol>
-<p>可以通过一下命令登录到MyCat管理端</p>
-</li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql -h xxx.xxx.xxx.xxx -p 9066 -u root -p</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/03/30/MySQL-%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB%E9%85%8D%E7%BD%AE/" data-id="cuidZGo78iFymNlxcSH_Bpy4n" data-title="MySQL-读写分离配置" class="article-share-link"><span class="fa fa-share">Share</span></a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li></ul>
 
     </footer>
   </div>
@@ -1951,7 +1706,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/02/">February 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/12/">December 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/11/">November 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/10/">October 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/09/">September 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/08/">August 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/07/">July 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/05/">May 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/04/">April 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/03/">March 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/02/">February 2025</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/03/">March 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/02/">February 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/12/">December 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/11/">November 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/10/">October 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/09/">September 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/08/">August 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/07/">July 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/05/">May 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/04/">April 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/03/">March 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/02/">February 2025</a></li></ul>
     </div>
   </div>
 
@@ -1964,7 +1719,15 @@
       <ul>
         
           <li>
-            <a href="/2026/02/22/hello-world/">Hello World</a>
+            <a href="/2026/03/04/Ubuntu%20Linux%20%E7%AC%94%E8%AE%B0%E6%9C%AC%20120Hz%20%E5%88%B7/">Ubuntu Linux 笔记本 120Hz 刷</a>
+          </li>
+        
+          <li>
+            <a href="/2026/03/04/GNOME%20%E9%A1%B6%E9%83%A8%E6%A0%8F%E4%BC%98%E5%8C%96%20-%20%E8%A7%A3%E5%86%B3%E5%86%85%E5%AE%B9%E9%87%8D%E5%8F%A0%E9%97%AE%E9%A2%98/">GNOME 顶部栏优化 - 解决内容重叠问题</a>
+          </li>
+        
+          <li>
+            <a href="/2026/03/04/hello-world/">Hello World</a>
           </li>
         
           <li>
@@ -1973,14 +1736,6 @@
         
           <li>
             <a href="/2026/02/08/Ubuntu%2025%20%E4%B8%8B%20Flameshot%20%E5%BF%AB%E6%8D%B7%E9%94%AE%E6%88%AA%E5%9B%BE%E5%A4%B1%E8%B4%A5%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/">Ubuntu 25 下 Flameshot 快捷键截图失败解决方案</a>
-          </li>
-        
-          <li>
-            <a href="/2026/02/05/%E9%80%9A%E8%BF%87%E7%BD%91%E7%BA%BF%E4%BC%A0%E8%BE%93%E6%95%B0%E6%8D%AE/">通过网线传输数据</a>
-          </li>
-        
-          <li>
-            <a href="/2026/02/04/ctypes%E5%B0%81%E8%A3%85C++%E6%8E%A5%E5%8F%A3%E7%BB%99Python%E4%BD%BF%E7%94%A8/">ctypes封装C++接口给Python使用</a>
           </li>
         
       </ul>

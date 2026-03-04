@@ -71,6 +71,263 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-muduo(9)-状态机" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/08/01/muduo(9)-%E7%8A%B6%E6%80%81%E6%9C%BA/" class="article-date">
+  <time class="dt-published" datetime="2025-08-01T02:01:08.000Z" itemprop="datePublished">2025-08-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/muduo/">muduo</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2025/08/01/muduo(9)-%E7%8A%B6%E6%80%81%E6%9C%BA/">muduo(9)-状态机</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>在muduo库中，使用了很多有限状态机来管理事件的处理流程，如</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//TcpConnection</span></span><br><span class="line"><span class="keyword">enum</span> <span class="title class_">StateE</span> &#123; kDisconnected, kConnecting, kConnected, kDisconnecting &#125;;</span><br><span class="line">StateE state_;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Connector</span></span><br><span class="line"><span class="keyword">enum</span> <span class="title class_">States</span> &#123; kDisconnected, kConnecting, kConnected &#125;;</span><br><span class="line">States state_;</span><br><span class="line"></span><br><span class="line"><span class="comment">//HttpContext</span></span><br><span class="line"><span class="keyword">enum</span> <span class="title class_">HttpRequestParseState</span></span><br><span class="line">&#123;</span><br><span class="line">  kExpectRequestLine, <span class="comment">// 解析请求行</span></span><br><span class="line">  kExpectHeaders,     <span class="comment">// 解析头部</span></span><br><span class="line">  kExpectBody,        <span class="comment">// 解析包体</span></span><br><span class="line">  kGotAll,            <span class="comment">// 完成</span></span><br><span class="line">&#125;;</span><br><span class="line">HttpRequestParseState state_;</span><br></pre></td></tr></table></figure>
+
+<p>通过状态机管理对象或流程的执行状态，流程清晰易于管理。</p>
+<p>分析管理的对象或流程，将整个生命周期中所有稳定且互斥的阶段识别出来，这些阶段就是一个一个状态。然后找到所有可能导致状态改变的外部输入或内部条件。</p>
+<p>下面几个示例，方便理解与使用</p>
+<p><strong><code>TcpConnection</code>：管理连接的完整生命周期</strong></p>
+<ol>
+<li><code>kConnecting</code>：连接已建立，正在进行初始化（如调用 <code>connectEstablished</code>）。</li>
+<li><code>kConnected</code>：连接完全就绪，可以进行数据收发。</li>
+<li><code>kDisconnecting</code>：已调用 <code>shutdown()</code>，正在等待数据发送完毕或对端关闭。</li>
+<li><code>kDisconnected</code>：连接已完全关闭。</li>
+</ol>
+<p><strong>事件与状态转移</strong>：</p>
+<ul>
+<li><strong>事件</strong>：<code>connectEstablished()</code> 被调用<ul>
+<li><strong>转移</strong>：<code>kConnecting</code> -&gt; <code>kConnected</code></li>
+<li><strong>动作</strong>：启用读事件，调用用户的 <code>ConnectionCallback</code>。</li>
+</ul>
+</li>
+<li><strong>事件</strong>：用户调用 <code>shutdown()</code><ul>
+<li><strong>转移</strong>：<code>kConnected</code> -&gt; <code>kDisconnecting</code></li>
+<li><strong>动作</strong>：关闭写端，但仍可接收数据。</li>
+</ul>
+</li>
+<li><strong>事件</strong>：<code>read()</code> 返回0 或发生错误，触发 <code>handleClose()</code><ul>
+<li><strong>转移</strong>：<code>kConnected</code> 或 <code>kDisconnecting</code> -&gt; <code>kDisconnected</code></li>
+<li><strong>动作</strong>：关闭 socket，调用用户的 <code>ConnectionCallback</code> 和内部的 <code>CloseCallback</code></li>
+</ul>
+</li>
+</ul>
+<p><strong><code>Connector</code>：连接管理</strong></p>
+<ol>
+<li><code>kDisconnected</code>：初始状态或连接失败后的状态。</li>
+<li><code>kConnecting</code>：已发起非阻塞 <code>connect</code>，正在等待结果。</li>
+<li><code>kConnected</code>：连接成功建立。</li>
+</ol>
+<p><strong>事件与状态转移</strong>：</p>
+<ul>
+<li><strong>事件</strong>：调用 <code>start()</code> 发起连接<ul>
+<li><strong>转移</strong>：<code>kDisconnected</code> -&gt; <code>kConnecting</code></li>
+</ul>
+</li>
+<li><strong>事件</strong>：socket 可写，<code>handleWrite()</code> 检查 <code>SO_ERROR</code> 成功<ul>
+<li><strong>转移</strong>：<code>kConnecting</code> -&gt; <code>kConnected</code></li>
+</ul>
+</li>
+<li><strong>事件</strong>：连接失败，<code>retry()</code> 被调用<ul>
+<li><strong>转移</strong>：<code>kConnecting</code> -&gt; <code>kDisconnected</code></li>
+</ul>
+</li>
+</ul>
+<p><strong><code>HttpContext</code>：TCP流式协议解析</strong></p>
+<ol>
+<li><code>kExpectRequestLine</code>：正在解析请求行</li>
+<li><code>kExpectHeaders</code>：正在解析请求头</li>
+<li><code>kExpectBody</code>：正在解析请求体</li>
+<li><code>kGotAll</code>：解析完成</li>
+</ol>
+<p><strong>事件与状态转移</strong>：</p>
+<ul>
+<li><strong>事件</strong>：在缓冲区中找到并成功解析了请求行<ul>
+<li><strong>转移</strong>：<code>kExpectRequestLine</code> -&gt; <code>kExpectHeaders</code></li>
+</ul>
+</li>
+<li><strong>事件</strong>：在缓冲区中解析完所有头部，并遇到了一个空行<ul>
+<li><strong>转移</strong>：<code>kExpectHeaders</code> -&gt; <code>kGotAll</code></li>
+</ul>
+</li>
+</ul>
+<p>文件下载器</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum</span> <span class="title class_">status</span>&#123;</span><br><span class="line">    kIdle,<span class="comment">//空闲</span></span><br><span class="line">    kConnecting,<span class="comment">//正在建立连接</span></span><br><span class="line">    kDownloading,<span class="comment">//正在下载</span></span><br><span class="line">    kPaused,<span class="comment">//正在暂停</span></span><br><span class="line">    kCompleted,<span class="comment">//下载完成</span></span><br><span class="line">    kError,<span class="comment">//异常发生</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>事件</strong>: <code>user_starts_download()</code> <ul>
+<li><strong>转移</strong>: <code>kIdle</code> -&gt; <code>kConnecting</code></li>
+</ul>
+</li>
+<li><strong>事件</strong>: <code>connection_succeeded()</code> <ul>
+<li><strong>转移</strong>: <code>kConnecting</code> -&gt; <code>kDownloading</code></li>
+</ul>
+</li>
+<li><strong>事件</strong>: <code>data_chunk_received()</code> <ul>
+<li><strong>转移</strong>: <code>kDownloading</code> -&gt; <code>kDownloading</code> (保持状态，但更新进度)</li>
+</ul>
+</li>
+<li><strong>事件</strong>: <code>user_pauses()</code> <ul>
+<li><strong>转移</strong>: <code>kDownloading</code> -&gt; <code>kPaused</code></li>
+</ul>
+</li>
+<li><strong>事件</strong>: <code>download_finished()</code> <ul>
+<li><strong>转移</strong>: <code>kDownloading</code> -&gt; <code>kCompleted</code></li>
+</ul>
+</li>
+<li><strong>事件</strong>: <code>network_error()</code> <ul>
+<li><strong>转移</strong>: <code>kDownloading</code> 或 <code>kConnecting</code> -&gt; <code>kError</code></li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://www.228610.xyz/2025/08/01/muduo(9)-%E7%8A%B6%E6%80%81%E6%9C%BA/" data-id="cuid_AmJUUZ9KH7XUy6MbltAH" data-title="muduo(9)-状态机" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/muduo/" rel="tag">muduo</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-muduo(8)-Connector" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/07/31/muduo(8)-Connector/" class="article-date">
+  <time class="dt-published" datetime="2025-07-31T08:03:00.000Z" itemprop="datePublished">2025-07-31</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/muduo/">muduo</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2025/07/31/muduo(8)-Connector/">muduo(8)-Connector</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>断开连接重试机制</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">Connector::retry</span><span class="params">(<span class="type">int</span> sockfd)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    sockets::<span class="built_in">close</span>(sockfd);</span><br><span class="line">    <span class="built_in">setState</span>(kDisconnected);</span><br><span class="line">    <span class="keyword">if</span> (connect_)</span><br><span class="line">    &#123;</span><br><span class="line">        loop_-&gt;<span class="built_in">runAfter</span>(retryDelayMs_ / <span class="number">1000.0</span>,std::<span class="built_in">bind</span>(&amp;Connector::startInLoop, <span class="built_in">shared_from_this</span>()));</span><br><span class="line">        retryDelayMs_ = std::<span class="built_in">min</span>(retryDelayMs_ * <span class="number">2</span>, kMaxRetryDelayMs);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        LOG_DEBUG &lt;&lt; <span class="string">&quot;do not connect&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>muduo在尝试重连时，并不是立刻进行连接，而是创建一个定时任务，并且，这个定时任务的间隔时间越来越长，通过翻倍的方式进行，知道最大间隔时长kMaxRetryDelayMs，避免频繁的尝试重连对服务器造成压力。</p>
+<p> muduo 中 <code>TcpClient</code> 从开始连接到关闭重试的完整生命周期</p>
+<p><strong>阶段一：客户端初始化</strong></p>
+<p>在创建一个 <code>TcpClient</code> 对象时，主要完成了以下工作：</p>
+<ol>
+<li>构造函数会保存 <code>EventLoop</code> 指针、服务器地址 InetAddress 和客户端名称。</li>
+<li>TcpClient 自身不处理连接的细节，而是将这个任务委托给一个内部的 Connector 对象。<strong>Connector 的核心职责就是与服务器建立连接</strong>。</li>
+<li>TcpClient 会向 Connector 注册一个回调函数 TcpClient::newConnection。这个<strong>回调函数会在 Connector 成功建立连接后被调用。</strong></li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">TcpClient::<span class="built_in">TcpClient</span>(EventLoop* loop, <span class="type">const</span> InetAddress&amp; serverAddr, <span class="type">const</span> string&amp; nameArg)</span><br><span class="line">    : <span class="built_in">loop_</span>(<span class="built_in">CHECK_NOTNULL</span>(loop)),</span><br><span class="line">      <span class="built_in">connector_</span>(<span class="keyword">new</span> <span class="built_in">Connector</span>(loop, serverAddr)),</span><br><span class="line">      <span class="built_in">name_</span>(nameArg),</span><br><span class="line">      <span class="built_in">connectionCallback_</span>(defaultConnectionCallback),</span><br><span class="line">      <span class="built_in">messageCallback_</span>(defaultMessageCallback),</span><br><span class="line">      <span class="built_in">retry_</span>(<span class="literal">false</span>),</span><br><span class="line">      <span class="built_in">connect_</span>(<span class="literal">true</span>),</span><br><span class="line">      <span class="built_in">nextConnId_</span>(<span class="number">1</span>)</span><br><span class="line">&#123;</span><br><span class="line">    connector_-&gt;<span class="built_in">setNewConnectionCallback</span>(std::<span class="built_in">bind</span>(&amp;TcpClient::newConnection, <span class="keyword">this</span>, _1));<span class="comment">//设置成功连接的回调函数</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>阶段二：发起连接</strong></p>
+<ol>
+<li><p>调用TcpClient::connect函数连接服务器</p>
+ <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">TcpClient::connect</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    connect_ = <span class="literal">true</span>;</span><br><span class="line">    connector_-&gt;<span class="built_in">start</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启动connector，调用connector::start()函数</p>
+ <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">Connector::start</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    connect_ = <span class="literal">true</span>;</span><br><span class="line">    loop_-&gt;<span class="built_in">runInLoop</span>(std::<span class="built_in">bind</span>(&amp;Connector::startInLoop, <span class="keyword">this</span>)); <span class="comment">// <span class="doctag">FIXME:</span> unsafe</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Connector::startInLoop</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    loop_-&gt;<span class="built_in">assertInLoopThread</span>();</span><br><span class="line">    <span class="built_in">assert</span>(state_ == kDisconnected);</span><br><span class="line">    <span class="keyword">if</span> (connect_)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">connect</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        LOG_DEBUG &lt;&lt; <span class="string">&quot;do not connect&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Connector::connect</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">int</span> sockfd = sockets::<span class="built_in">createNonblockingOrDie</span>(serverAddr_.<span class="built_in">family</span>());</span><br><span class="line">    <span class="type">int</span> ret = sockets::<span class="built_in">connect</span>(sockfd, serverAddr_.<span class="built_in">getSockAddr</span>());</span><br><span class="line">    <span class="type">int</span> savedErrno = (ret == <span class="number">0</span>) ? <span class="number">0</span> : errno;</span><br><span class="line">    <span class="keyword">switch</span> (savedErrno)</span><br><span class="line">    &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">0</span>:</span><br><span class="line">    <span class="keyword">case</span> EINPROGRESS:</span><br><span class="line">    <span class="keyword">case</span> EINTR:</span><br><span class="line">    <span class="keyword">case</span> EISCONN:</span><br><span class="line">        <span class="built_in">connecting</span>(sockfd);</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">case</span> EAGAIN:</span><br><span class="line">    <span class="keyword">case</span> EADDRINUSE:</span><br><span class="line">    <span class="keyword">case</span> EADDRNOTAVAIL:</span><br><span class="line">    <span class="keyword">case</span> ECONNREFUSED:</span><br><span class="line">    <span class="keyword">case</span> ENETUNREACH:</span><br><span class="line">        <span class="built_in">retry</span>(sockfd);</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">case</span> EACCES:</span><br><span class="line">    <span class="keyword">case</span> EPERM:</span><br><span class="line">    <span class="keyword">case</span> EAFNOSUPPORT:</span><br><span class="line">    <span class="keyword">case</span> EALREADY:</span><br><span class="line">    <span class="keyword">case</span> EBADF:</span><br><span class="line">    <span class="keyword">case</span> EFAULT:</span><br><span class="line">    <span class="keyword">case</span> ENOTSOCK:</span><br><span class="line">        LOG_SYSERR &lt;&lt; <span class="string">&quot;connect error in Connector::startInLoop &quot;</span> &lt;&lt; savedErrno;</span><br><span class="line">        sockets::<span class="built_in">close</span>(sockfd);</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">        LOG_SYSERR &lt;&lt; <span class="string">&quot;Unexpected error in Connector::startInLoop &quot;</span> &lt;&lt; savedErrno;</span><br><span class="line">        sockets::<span class="built_in">close</span>(sockfd);</span><br><span class="line">        <span class="comment">// connectErrorCallback_();</span></span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>start函数内部调用将Connector::startInLoop任务放到反应堆中执行，然后执行connect();函数，这个函数是非阻塞的，所以立即返回</p>
+<ul>
+<li>如果返回 <code>0</code>，表示连接立即成功（通常发生在连接本地地址时）。</li>
+<li>如果返回 <code>-1</code> 且 <code>errno</code> 为 <code>EINPROGRESS</code>，表示连接正在进行中。这是最常见的情况。</li>
+<li>其他错误则表示连接失败，可能会触发重试逻辑。</li>
+</ul>
+<p> 调用connecting函数，关注它的写事件</p>
+ <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">Connector::connecting</span><span class="params">(<span class="type">int</span> sockfd)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">setState</span>(kConnecting);</span><br><span class="line">    <span class="built_in">assert</span>(!channel_);</span><br><span class="line">    channel_.<span class="built_in">reset</span>(<span class="keyword">new</span> <span class="built_in">Channel</span>(loop_, sockfd));</span><br><span class="line">    channel_-&gt;<span class="built_in">setWriteCallback</span>(std::<span class="built_in">bind</span>(&amp;Connector::handleWrite, <span class="keyword">this</span>)); </span><br><span class="line">    channel_-&gt;<span class="built_in">setErrorCallback</span>(std::<span class="built_in">bind</span>(&amp;Connector::handleError, <span class="keyword">this</span>)); </span><br><span class="line"></span><br><span class="line">    channel_-&gt;<span class="built_in">enableWriting</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+</ol>
+<p><strong>阶段三：连接建立成功</strong></p>
+<ol>
+<li><p>当建立连接成功时，poller触发时间，调用Connector::handleWrite方法，在这个方法中，会检验是否真的连接成功了，如果连接成功，调用newConnectionCallback_方法，也就是TcpClient::newConnection方法</p>
+ <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">Connector::handleWrite</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    LOG_TRACE &lt;&lt; <span class="string">&quot;Connector::handleWrite &quot;</span> &lt;&lt; state_;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (state_ == kConnecting)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="type">int</span> sockfd = <span class="built_in">removeAndResetChannel</span>();</span><br><span class="line">        <span class="comment">// 获取socket的错误码，判断是否真的连接成功了，0表示连接成功，非0表示连接失败</span></span><br><span class="line">        <span class="type">int</span> err = sockets::<span class="built_in">getSocketError</span>(sockfd);</span><br><span class="line">        <span class="keyword">if</span> (err)</span><br><span class="line">        &#123;</span><br><span class="line">            LOG_WARN &lt;&lt; <span class="string">&quot;Connector::handleWrite - SO_ERROR = &quot;</span> &lt;&lt; err &lt;&lt; <span class="string">&quot; &quot;</span> &lt;&lt; <span class="built_in">strerror_tl</span>(err);</span><br><span class="line">            <span class="comment">// 尝试重连</span></span><br><span class="line">            <span class="built_in">retry</span>(sockfd);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 判断是否是自连接，如果是自连接，则尝试重连</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (sockets::<span class="built_in">isSelfConnect</span>(sockfd))</span><br><span class="line">        &#123;</span><br><span class="line">            LOG_WARN &lt;&lt; <span class="string">&quot;Connector::handleWrite - Self connect&quot;</span>;</span><br><span class="line">            <span class="built_in">retry</span>(sockfd);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 连接成功，设置状态为已连接，并调用回调函数</span></span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">setState</span>(kConnected);</span><br><span class="line">            <span class="keyword">if</span> (connect_)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="built_in">newConnectionCallback_</span>(sockfd);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">            &#123;</span><br><span class="line">                sockets::<span class="built_in">close</span>(sockfd);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// what happened?</span></span><br><span class="line">        <span class="built_in">assert</span>(state_ == kDisconnected);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">TcpClient::newConnection</span><span class="params">(<span class="type">int</span> sockfd)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    loop_-&gt;<span class="built_in">assertInLoopThread</span>();</span><br><span class="line">    <span class="comment">// 获取对端地址</span></span><br><span class="line">    <span class="function">InetAddress <span class="title">peerAddr</span><span class="params">(sockets::getPeerAddr(sockfd))</span></span>;</span><br><span class="line">    <span class="type">char</span> buf[<span class="number">32</span>];</span><br><span class="line">    <span class="comment">// 格式化连接名称</span></span><br><span class="line">    <span class="built_in">snprintf</span>(buf, <span class="keyword">sizeof</span> buf, <span class="string">&quot;:%s#%d&quot;</span>, peerAddr.<span class="built_in">toIpPort</span>().<span class="built_in">c_str</span>(), nextConnId_);</span><br><span class="line">    ++nextConnId_;</span><br><span class="line">    <span class="comment">// 连接名称</span></span><br><span class="line">    string connName = name_ + buf;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取本地地址</span></span><br><span class="line">    <span class="function">InetAddress <span class="title">localAddr</span><span class="params">(sockets::getLocalAddr(sockfd))</span></span>;</span><br><span class="line">    <span class="comment">// 创建TcpConnection对象</span></span><br><span class="line">    <span class="function">TcpConnectionPtr <span class="title">conn</span><span class="params">(<span class="keyword">new</span> TcpConnection(loop_, connName, sockfd, localAddr, peerAddr))</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 设置回调函数</span></span><br><span class="line">    conn-&gt;<span class="built_in">setConnectionCallback</span>(connectionCallback_);</span><br><span class="line">    conn-&gt;<span class="built_in">setMessageCallback</span>(messageCallback_);</span><br><span class="line">    <span class="comment">// 设置写完成回调函数</span></span><br><span class="line">    conn-&gt;<span class="built_in">setWriteCompleteCallback</span>(writeCompleteCallback_);</span><br><span class="line">    conn-&gt;<span class="built_in">setCloseCallback</span>(std::<span class="built_in">bind</span>(&amp;TcpClient::removeConnection, <span class="keyword">this</span>, _1));</span><br><span class="line">    <span class="comment">// 设置连接</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function">MutexLockGuard <span class="title">lock</span><span class="params">(mutex_)</span></span>;</span><br><span class="line">        connection_ = conn;</span><br><span class="line">    &#125;</span><br><span class="line">    conn-&gt;<span class="built_in">connectEstablished</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">TcpConnection::connectEstablished</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    loop_-&gt;<span class="built_in">assertInLoopThread</span>();</span><br><span class="line">    <span class="built_in">assert</span>(state_ == kConnecting);</span><br><span class="line">    <span class="built_in">setState</span>(kConnected);</span><br><span class="line">    channel_-&gt;<span class="built_in">tie</span>(<span class="built_in">shared_from_this</span>());</span><br><span class="line">    channel_-&gt;<span class="built_in">enableReading</span>();</span><br><span class="line"></span><br><span class="line">    <span class="built_in">connectionCallback_</span>(<span class="built_in">shared_from_this</span>());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p> TcpClient::newConnection会设置各种回调，然后调用TcpConnection::connectEstablished方法，开始监听读事件，然后调用connectionCallback_提示建立连接成功</p>
+</li>
+</ol>
+<p><strong>阶段四：连接断开与触发重试</strong></p>
+<p>连接可能因为多种原因断开：客户端主动断开、服务器断开、网络故障等。</p>
+<p><strong>检测到断开</strong>：</p>
+<ul>
+<li><strong>对端关闭</strong>：<code>TcpConnection::handleRead</code> 在 <code>read()</code> 时返回 <code>0</code>，表示对端关闭了连接。</li>
+<li><strong>发生错误</strong>：<code>handleRead</code> 读取时出错，或 <code>handleError</code> 被调用。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">TcpConnection::handleRead</span><span class="params">(Timestamp receiveTime)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    loop_-&gt;<span class="built_in">assertInLoopThread</span>();</span><br><span class="line">    <span class="type">int</span> savedErrno = <span class="number">0</span>;</span><br><span class="line">    <span class="type">ssize_t</span> n = inputBuffer_.<span class="built_in">readFd</span>(channel_-&gt;<span class="built_in">fd</span>(), &amp;savedErrno);</span><br><span class="line">    <span class="keyword">if</span> (n &gt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">messageCallback_</span>(<span class="built_in">shared_from_this</span>(), &amp;inputBuffer_, receiveTime);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (n == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">handleClose</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        errno = savedErrno;</span><br><span class="line">        LOG_SYSERR &lt;&lt; <span class="string">&quot;TcpConnection::handleRead&quot;</span>;</span><br><span class="line">        <span class="built_in">handleError</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">TcpConnection::handleClose</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    loop_-&gt;<span class="built_in">assertInLoopThread</span>();</span><br><span class="line">    LOG_TRACE &lt;&lt; <span class="string">&quot;fd = &quot;</span> &lt;&lt; channel_-&gt;<span class="built_in">fd</span>() &lt;&lt; <span class="string">&quot; state = &quot;</span> &lt;&lt; <span class="built_in">stateToString</span>();</span><br><span class="line">    <span class="built_in">assert</span>(state_ == kConnected || state_ == kDisconnecting);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">setState</span>(kDisconnected);</span><br><span class="line">    channel_-&gt;<span class="built_in">disableAll</span>();</span><br><span class="line"></span><br><span class="line">    <span class="function">TcpConnectionPtr <span class="title">guardThis</span><span class="params">(shared_from_this())</span></span>;</span><br><span class="line">    <span class="built_in">connectionCallback_</span>(guardThis);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">closeCallback_</span>(guardThis);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>将连接状态设置为 <code>kDisconnected</code>。</li>
+<li>从 <code>Poller</code> 中移除所有事件监听。</li>
+<li>调用用户的 <code>ConnectionCallback</code>，通知连接已断开。</li>
+<li>调用内部设置的 <code>closeCallback_</code>，也就是 <code>TcpClient::removeConnection</code>。</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">TcpClient::removeConnection</span><span class="params">(<span class="type">const</span> TcpConnectionPtr&amp; conn)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    loop_-&gt;<span class="built_in">assertInLoopThread</span>();</span><br><span class="line">    <span class="built_in">assert</span>(loop_ == conn-&gt;<span class="built_in">getLoop</span>());</span><br><span class="line"></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function">MutexLockGuard <span class="title">lock</span><span class="params">(mutex_)</span></span>;</span><br><span class="line">        <span class="built_in">assert</span>(connection_ == conn);</span><br><span class="line">        connection_.<span class="built_in">reset</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    loop_-&gt;<span class="built_in">queueInLoop</span>(std::<span class="built_in">bind</span>(&amp;TcpConnection::connectDestroyed, conn));</span><br><span class="line">    <span class="keyword">if</span> (retry_ &amp;&amp; connect_)</span><br><span class="line">    &#123;</span><br><span class="line">        connector_-&gt;<span class="built_in">restart</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">TcpConnection::connectDestroyed</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    loop_-&gt;<span class="built_in">assertInLoopThread</span>();</span><br><span class="line">    <span class="keyword">if</span> (state_ == kConnected)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">setState</span>(kDisconnected);</span><br><span class="line">        channel_-&gt;<span class="built_in">disableAll</span>();</span><br><span class="line"></span><br><span class="line">        <span class="built_in">connectionCallback_</span>(<span class="built_in">shared_from_this</span>());</span><br><span class="line">    &#125;</span><br><span class="line">    channel_-&gt;<span class="built_in">remove</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>释放对 <code>TcpConnection</code> 对象的引用。<code>TcpConnection</code> 对象会在其所在的 I&#x2F;O 线程中被安全地销毁。</li>
+<li>检查retry_和connect_标志判断是否重试</li>
+</ol>
+<p><strong>阶段五：执行重试</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">Connector::restart</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    loop_-&gt;<span class="built_in">assertInLoopThread</span>();</span><br><span class="line">    <span class="built_in">setState</span>(kDisconnected);</span><br><span class="line">    retryDelayMs_ = kInitRetryDelayMs;</span><br><span class="line">    connect_ = <span class="literal">true</span>;</span><br><span class="line">    <span class="built_in">startInLoop</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Connector::startInLoop</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    loop_-&gt;<span class="built_in">assertInLoopThread</span>();</span><br><span class="line">    <span class="built_in">assert</span>(state_ == kDisconnected);</span><br><span class="line">    <span class="keyword">if</span> (connect_)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">connect</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        LOG_DEBUG &lt;&lt; <span class="string">&quot;do not connect&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Connector::retry</span><span class="params">(<span class="type">int</span> sockfd)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    sockets::<span class="built_in">close</span>(sockfd);</span><br><span class="line">    <span class="built_in">setState</span>(kDisconnected);</span><br><span class="line">    <span class="keyword">if</span> (connect_)</span><br><span class="line">    &#123;</span><br><span class="line">        loop_-&gt;<span class="built_in">runAfter</span>(retryDelayMs_ / <span class="number">1000.0</span>,</span><br><span class="line">                        std::<span class="built_in">bind</span>(&amp;Connector::startInLoop, <span class="built_in">shared_from_this</span>()));</span><br><span class="line">        retryDelayMs_ = std::<span class="built_in">min</span>(retryDelayMs_ * <span class="number">2</span>, kMaxRetryDelayMs);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        LOG_DEBUG &lt;&lt; <span class="string">&quot;do not connect&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>然后重试连接失败，调用retry(sockfd);函数重试，这个过程会一直循环，直到连接成功或用户调用 <code>stop()</code></p>
+<p><strong>阶段六：客户端关闭</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">Connector::stop</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    connect_ = <span class="literal">false</span>;</span><br><span class="line">    loop_-&gt;<span class="built_in">queueInLoop</span>(std::<span class="built_in">bind</span>(&amp;Connector::stopInLoop, <span class="keyword">this</span>)); </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Connector::stopInLoop</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    loop_-&gt;<span class="built_in">assertInLoopThread</span>();</span><br><span class="line">    <span class="keyword">if</span> (state_ == kConnecting)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">setState</span>(kDisconnected);</span><br><span class="line">        <span class="type">int</span> sockfd = <span class="built_in">removeAndResetChannel</span>();</span><br><span class="line">        <span class="built_in">retry</span>(sockfd);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">Connector::removeAndResetChannel</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">//取消监听事件</span></span><br><span class="line">    channel_-&gt;<span class="built_in">disableAll</span>();</span><br><span class="line">    <span class="comment">//删除poller上的监听</span></span><br><span class="line">    channel_-&gt;<span class="built_in">remove</span>();</span><br><span class="line">    <span class="type">int</span> sockfd = channel_-&gt;<span class="built_in">fd</span>();</span><br><span class="line">    loop_-&gt;<span class="built_in">queueInLoop</span>(std::<span class="built_in">bind</span>(&amp;Connector::resetChannel, <span class="keyword">this</span>)); </span><br><span class="line">    <span class="keyword">return</span> sockfd;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Connector::resetChannel</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    channel_.<span class="built_in">reset</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当 <code>TcpClient</code> 对象析构时，它会确保 <code>Connector</code> 被停止，并且如果还存在 <code>TcpConnection</code>，会通过 <code>forceClose()</code> 强制关闭它，保证所有资源被正确释放。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">TcpClient::~<span class="built_in">TcpClient</span>()</span><br><span class="line">&#123;</span><br><span class="line">    LOG_INFO &lt;&lt; <span class="string">&quot;TcpClient::~TcpClient[&quot;</span> &lt;&lt; name_ &lt;&lt; <span class="string">&quot;] - connector &quot;</span> &lt;&lt; <span class="built_in">get_pointer</span>(connector_);</span><br><span class="line">    TcpConnectionPtr conn;</span><br><span class="line">    <span class="type">bool</span> unique = <span class="literal">false</span>;</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function">MutexLockGuard <span class="title">lock</span><span class="params">(mutex_)</span></span>;</span><br><span class="line">        unique = connection_.<span class="built_in">unique</span>();</span><br><span class="line">        conn = connection_;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (conn)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">assert</span>(loop_ == conn-&gt;<span class="built_in">getLoop</span>());</span><br><span class="line">        <span class="comment">// <span class="doctag">FIXME:</span> not 100% safe, if we are in different thread</span></span><br><span class="line">        CloseCallback cb = std::<span class="built_in">bind</span>(&amp;detail::removeConnection, loop_, _1);</span><br><span class="line">        loop_-&gt;<span class="built_in">runInLoop</span>(std::<span class="built_in">bind</span>(&amp;TcpConnection::setCloseCallback, conn, cb));</span><br><span class="line">        <span class="keyword">if</span> (unique)</span><br><span class="line">        &#123;</span><br><span class="line">            conn-&gt;forceClose();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        connector_-&gt;<span class="built_in">stop</span>();</span><br><span class="line">        <span class="comment">// <span class="doctag">FIXME:</span> HACK</span></span><br><span class="line">        loop_-&gt;<span class="built_in">runAfter</span>(<span class="number">1</span>, std::<span class="built_in">bind</span>(&amp;detail::removeConnector, connector_));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://www.228610.xyz/2025/07/31/muduo(8)-Connector/" data-id="cuid4QBGvqs3JrMKf1euB1qCn" data-title="muduo(8)-Connector" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/muduo/" rel="tag">muduo</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-muduo(7)-AsyncLogging" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2025/07/31/muduo(7)-AsyncLogging/" class="article-date">
@@ -128,7 +385,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/07/31/muduo(7)-AsyncLogging/" data-id="cuidrb2KeY0_fvD9_T-paP8h2" data-title="muduo(7)-AsyncLogging" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/07/31/muduo(7)-AsyncLogging/" data-id="cuidoeXfQ5dQL3jmlqQLitTUP" data-title="muduo(7)-AsyncLogging" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -182,7 +439,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/07/29/CentOS%20yum%E8%BD%AF%E4%BB%B6%E6%BA%90/" data-id="cuid6I2AYQu4KsAibXr5fC2gH" data-title="CentOS yum软件源" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/07/29/CentOS%20yum%E8%BD%AF%E4%BB%B6%E6%BA%90/" data-id="cuida0V_aT-KCNaAWHX8bnXeM" data-title="CentOS yum软件源" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -255,7 +512,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/07/29/CentOS%20%E7%BD%91%E7%BB%9C%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/" data-id="cuidBQY-qoOWMom1IFD-r2Y1G" data-title="CentOS 网络环境配置" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/07/29/CentOS%20%E7%BD%91%E7%BB%9C%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/" data-id="cuidr1jFHw8d91kZmweXE893f" data-title="CentOS 网络环境配置" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -328,7 +585,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/07/29/CentOS%20C++%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" data-id="cuid-PKMHuM4N4P29ReicED69" data-title="CentOS C++环境搭建" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/07/29/CentOS%20C++%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" data-id="cuidLKkX_DdzW17HQz3AuciSS" data-title="CentOS C++环境搭建" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -425,7 +682,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/07/29/muduo(6)-EventLoop/" data-id="cuidFutxQ4cQCVVssvD8TH4BH" data-title="muduo(6)-EventLoop" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/07/29/muduo(6)-EventLoop/" data-id="cuidlTxs8lnOcc3ZmOC5FgeRu" data-title="muduo(6)-EventLoop" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -502,7 +759,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/07/29/muduo(5)-Buffer/" data-id="cuid8xhppTuYo3FvLv7rdk2aa" data-title="muduo(5)-Buffer" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/07/29/muduo(5)-Buffer/" data-id="cuidC6KQ-KySDHS4mPtadCS2L" data-title="muduo(5)-Buffer" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -613,7 +870,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/07/29/muduo(4)-TcpConnection/" data-id="cuidihA8ZqvgaGbOgT9VpMTyI" data-title="muduo(4)-TcpConnection" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/07/29/muduo(4)-TcpConnection/" data-id="cuidNGwbMxU48QYqokSZmKDpf" data-title="muduo(4)-TcpConnection" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -701,222 +958,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/07/29/muduo(3)-Channel/" data-id="cuidlnSCGTVDpni8KmIJi0OER" data-title="muduo(3)-Channel" class="article-share-link"><span class="fa fa-share">Share</span></a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/muduo/" rel="tag">muduo</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-muduo(2)-Acceptor" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2025/07/29/muduo(2)-Acceptor/" class="article-date">
-  <time class="dt-published" datetime="2025-07-29T07:35:00.000Z" itemprop="datePublished">2025-07-29</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/muduo/">muduo</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2025/07/29/muduo(2)-Acceptor/">muduo(2)-Acceptor</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>Acceptor类是用于接受新连接的类，它负责监听一个端口，当有新的连接到来时，它负责接受这个连接，并调用回调函数处理这个连接。包含一个Socket对象，一个Channel对象，一个NewConnectionCallback对象。<strong>Socket</strong> 对底层的socket文件描述符（sockfd）进行了面向对象的封装，提供了 bind, listen, accept等接口。</p>
-<h3 id="一、类的初始化"><a href="#一、类的初始化" class="headerlink" title="一、类的初始化"></a>一、类的初始化</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line">Acceptor::<span class="built_in">Acceptor</span>(EventLoop* loop, <span class="type">const</span> InetAddress&amp; listenAddr, <span class="type">bool</span> reuseport)</span><br><span class="line">    : <span class="built_in">loop_</span>(loop),</span><br><span class="line">      <span class="built_in">acceptSocket_</span>(sockets::<span class="built_in">createNonblockingOrDie</span>(listenAddr.<span class="built_in">family</span>())), <span class="comment">// 1. 创建Socket</span></span><br><span class="line">      <span class="built_in">acceptChannel_</span>(loop, acceptSocket_.<span class="built_in">fd</span>()),                            <span class="comment">// 创建Channel</span></span><br><span class="line">      <span class="built_in">listening_</span>(<span class="literal">false</span>),</span><br><span class="line">      <span class="built_in">idleFd_</span>(::<span class="built_in">open</span>(<span class="string">&quot;/dev/null&quot;</span>,</span><br><span class="line">                     O_RDONLY |</span><br><span class="line">                         O_CLOEXEC)) <span class="comment">// 预留一个fd，当accept失败时，释放预留的fd，并重新接受新连接</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">assert</span>(idleFd_ &gt;= <span class="number">0</span>);</span><br><span class="line">    acceptSocket_.<span class="built_in">setReuseAddr</span>(<span class="literal">true</span>);</span><br><span class="line">    acceptSocket_.<span class="built_in">setReusePort</span>(reuseport); <span class="comment">// 设置端口复用</span></span><br><span class="line">    acceptSocket_.<span class="built_in">bindAddress</span>(listenAddr); <span class="comment">// 绑定地址</span></span><br><span class="line">    <span class="comment">// 为 acceptChannel_ 设置一个读回调函数 Acceptor::handleRead。当有新连接到达时，EventLoop</span></span><br><span class="line">    <span class="comment">// 会调用这个函数，handleRead 内部会调用 accept() 来接受连接。</span></span><br><span class="line">    acceptChannel_.<span class="built_in">setReadCallback</span>(std::<span class="built_in">bind</span>(&amp;Acceptor::handleRead, <span class="keyword">this</span>));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 当有新连接到来时，epoll会返回监听描述符，然后EventLoop会通过之前设置好的Channel来处理这个监听描述符，会调用channel的回调函数，也就是这里的handleRead进行处理，执行accept，并调用TcpServer中的newConnetion函数。</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Acceptor::handleRead</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    loop_-&gt;<span class="built_in">assertInLoopThread</span>();</span><br><span class="line">    InetAddress peerAddr;</span><br><span class="line">    <span class="type">int</span> connfd = acceptSocket_.<span class="built_in">accept</span>(&amp;peerAddr);</span><br><span class="line">    <span class="keyword">if</span> (connfd &gt;= <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 在TcpServer的构造函数中设置好了newConnectionCallback_，当有新连接到来时，会调用TcpServer的newConnection函数</span></span><br><span class="line">        <span class="keyword">if</span> (newConnectionCallback_)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">newConnectionCallback_</span>(connfd, peerAddr);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            sockets::<span class="built_in">close</span>(connfd);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (errno == EMFILE)</span><br><span class="line">        &#123;</span><br><span class="line">            ::<span class="built_in">close</span>(idleFd_);                                    <span class="comment">// 1. 释放预留的fd</span></span><br><span class="line">            idleFd_ = ::<span class="built_in">accept</span>(acceptSocket_.<span class="built_in">fd</span>(), <span class="literal">NULL</span>, <span class="literal">NULL</span>);  <span class="comment">// 2. 接受新连接</span></span><br><span class="line">            ::<span class="built_in">close</span>(idleFd_);                                    <span class="comment">// 3. 立即关闭它</span></span><br><span class="line">            idleFd_ = ::<span class="built_in">open</span>(<span class="string">&quot;/dev/null&quot;</span>, O_RDONLY | O_CLOEXEC); <span class="comment">// 4. 重新打开一个fd</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Acceptor建立新连接时，调用TcpServer的newConnection函数，将新连接封装成一个TcpConnectionPtr</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">TcpServer::newConnection</span><span class="params">(<span class="type">int</span> sockfd, <span class="type">const</span> InetAddress&amp; peerAddr)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    loop_-&gt;<span class="built_in">assertInLoopThread</span>();</span><br><span class="line">    EventLoop* ioLoop = threadPool_-&gt;<span class="built_in">getNextLoop</span>();<span class="comment">//获取一个EventLoop线程,将TcpConnection对象放入该线程中</span></span><br><span class="line">    <span class="type">char</span> buf[<span class="number">64</span>];</span><br><span class="line">    <span class="built_in">snprintf</span>(buf, <span class="keyword">sizeof</span> buf, <span class="string">&quot;-%s#%d&quot;</span>, ipPort_.<span class="built_in">c_str</span>(), nextConnId_);</span><br><span class="line">    ++nextConnId_;</span><br><span class="line">    string connName = name_ + buf;</span><br><span class="line"></span><br><span class="line">    <span class="function">InetAddress <span class="title">localAddr</span><span class="params">(sockets::getLocalAddr(sockfd))</span></span>;</span><br><span class="line">    <span class="function">TcpConnectionPtr <span class="title">conn</span><span class="params">(<span class="keyword">new</span> TcpConnection(ioLoop, connName, sockfd, localAddr, peerAddr))</span></span>;</span><br><span class="line">    connections_[connName] = conn;</span><br><span class="line">    <span class="comment">//设置TcpConnection的回调函数</span></span><br><span class="line">    conn-&gt;<span class="built_in">setConnectionCallback</span>(connectionCallback_);<span class="comment">// 连接回调</span></span><br><span class="line">    conn-&gt;<span class="built_in">setMessageCallback</span>(messageCallback_);<span class="comment">// 消息回调</span></span><br><span class="line">    conn-&gt;<span class="built_in">setWriteCompleteCallback</span>(writeCompleteCallback_);<span class="comment">// 写完成回调</span></span><br><span class="line">    conn-&gt;<span class="built_in">setCloseCallback</span>(std::<span class="built_in">bind</span>(&amp;TcpServer::removeConnection, <span class="keyword">this</span>, _1)); <span class="comment">// 关闭回调</span></span><br><span class="line">    ioLoop-&gt;<span class="built_in">runInLoop</span>(std::<span class="built_in">bind</span>(&amp;TcpConnection::connectEstablished, conn));<span class="comment">//将TcpConnection对象的连接建立事件放入EventLoop线程中执行</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>宏观上看，Acceptor这个类并不复杂，主要的任务就是负责初始化监听描述符，并设置监听描述符的回调函数handleRead，在新连接到来时，Acceptor会调用Acceptor会调用headleRead建立连接，并调用newConnection回调函数。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (errno == EMFILE)</span><br><span class="line">&#123;</span><br><span class="line">    ::<span class="built_in">close</span>(idleFd_);                                    <span class="comment">// 1. 释放预留的fd</span></span><br><span class="line">    idleFd_ = ::<span class="built_in">accept</span>(acceptSocket_.<span class="built_in">fd</span>(), <span class="literal">NULL</span>, <span class="literal">NULL</span>);  <span class="comment">// 2. 接受新连接</span></span><br><span class="line">    ::<span class="built_in">close</span>(idleFd_);                                    <span class="comment">// 3. 立即关闭它</span></span><br><span class="line">    idleFd_ = ::<span class="built_in">open</span>(<span class="string">&quot;/dev/null&quot;</span>, O_RDONLY | O_CLOEXEC); <span class="comment">// 4. 重新打开一个fd</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>当服务器并发连接数非常高时，可能会耗尽进程可用的文件描述符（fd）。这时，<code>accept()</code> 会失败并返回 <code>EMFILE</code> 错误。如果不处理，服务器将无法接受任何新连接，相当于“假死”。</p>
-<p><strong>muduo 的解决方案：</strong></p>
-<ol>
-<li><code>Acceptor</code> 在构造时，就预先打开一个指向 <code>/dev/null</code> 的文件描述符 <code>idleFd_</code>。它就像一个“备用座位”。</li>
-<li>当 <code>accept</code> 因 <code>EMFILE</code> 失败时，<code>Acceptor</code> 会<strong>立即关闭这个备用的 <code>idleFd_</code></strong>，从而释放出一个文件描述符名额。</li>
-<li>有了这个名额，<code>Acceptor</code> 就能成功 <code>accept()</code> 那个等待中的新连接。</li>
-<li>为了避免新连接因为没有被处理而丢失，<code>Acceptor</code> <strong>会立即 <code>close()</code> 这个刚刚接受的连接</strong>。这虽然拒绝了客户端，但保证了服务器自身不会卡死，并且向客户端发出了一个明确的拒绝信号（<code>RST</code>），客户端可以稍后重试。</li>
-<li>最后，<code>Acceptor</code> 会再次打开 <code>/dev/null</code> 来重新占用 <code>idleFd_</code>，为下一次 <code>EMFILE</code> 危机做好准备。</li>
-</ol>
-<p>这个技巧确保了即使在 fd 耗尽的极端情况下，<code>Acceptor</code> 所在的 <code>EventLoop</code> 也能正常运转，不会因为 <code>accept</code> 不断失败而陷入死循环</p>
-<p><strong>SO_RESUCEADDR和SO_RESUCEPORT的区别</strong></p>
-<table>
-<thead>
-<tr>
-<th>特性</th>
-<th><code>SO_REUSEADDR</code> (地址复用)</th>
-<th><code>SO_REUSEPORT</code> (端口复用)</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>核心目的</strong></td>
-<td><strong>服务器快速重启</strong></td>
-<td><strong>性能扩展 (负载均衡)</strong></td>
-</tr>
-<tr>
-<td><strong>解决问题</strong></td>
-<td>允许新启动的服务器立即绑定一个处于 <code>TIME_WAIT</code> 状态的端口</td>
-<td>允许多个独立的监听套接字绑定到完全相同的 IP 和端口。</td>
-</tr>
-<tr>
-<td><strong>工作模式</strong></td>
-<td>一个端口在同一时间<strong>仍然只能被一个</strong>监听套接字绑定。</td>
-<td>一个端口可以被<strong>多个</strong>监听套接字同时绑定。</td>
-</tr>
-<tr>
-<td><strong>适用场景</strong></td>
-<td>几乎所有服务器程序都应该开启，用于开发和运维中的快速迭代和重启。</td>
-<td>面向高性能、高并发连接的服务器，用于在多核 CPU 上扩展 <code>accept</code> 的处理能力。</td>
-</tr>
-<tr>
-<td><strong>在 muduo 中</strong></td>
-<td><strong>默认开启</strong></td>
-<td><strong>默认关闭</strong>，需要显式开启。</td>
-</tr>
-</tbody></table>
-<p>在标准的 <code>TcpServer</code> 模型中，只有一个主线程负责 <code>accept</code> 所有新连接，但当服务器面临<strong>极高的连接建立速率</strong>时就会成为整个系统的<strong>性能瓶颈</strong>。<code>acceptSocket_.setReusePort(reuseport);</code> ,也就是<strong>SO_RESUCEPORT</strong> ，这个选项允许多个线程或进程创建各自的监听套接字，并<strong>全部绑定到同一个 IP 和端口上</strong>。当新连接到来时，<strong>内核</strong>会负责进行负载均衡，将这个连接请求“派发”给其中一个监听套接字。这样一来，<code>accept</code> 的工作就被均匀地分摊到了多个 CPU 核心上。</p>
-<p>更多细节，见：<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/14388706/how-do-so-reuseaddr-and-so-reuseport-differ">https://stackoverflow.com/questions/14388706/how-do-so-reuseaddr-and-so-reuseport-differ</a></p>
-<p>仔细看的话，还能发现建立连接的是一个acceptSocket_，而不是系统的accept函数，这是muduo对系统调用的封装，提高扩展性</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">Socket acceptSocket_;</span><br><span class="line"><span class="comment">/// 对底层的socket文件描述符（sockfd）进行了面向对象的封装，提供了 bind, listen, accept 等接口。</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Socket</span> : noncopyable</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">Socket</span><span class="params">(<span class="type">int</span> sockfd)</span> : sockfd_(sockfd)</span></span><br><span class="line"><span class="function">    &#123;</span></span><br><span class="line">    &#125;</span><br><span class="line">    ~<span class="built_in">Socket</span>();</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">fd</span><span class="params">()</span> <span class="type">const</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> sockfd_;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">getTcpInfo</span><span class="params">(<span class="keyword">struct</span> tcp_info*)</span> <span class="type">const</span></span>;</span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">getTcpInfoString</span><span class="params">(<span class="type">char</span>* buf, <span class="type">int</span> len)</span> <span class="type">const</span></span>;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">bindAddress</span><span class="params">(<span class="type">const</span> InetAddress&amp; localaddr)</span></span>;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">listen</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">accept</span><span class="params">(InetAddress* peeraddr)</span></span>;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">shutdownWrite</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">setTcpNoDelay</span><span class="params">(<span class="type">bool</span> on)</span></span>;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">setReuseAddr</span><span class="params">(<span class="type">bool</span> on)</span></span>;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">setReusePort</span><span class="params">(<span class="type">bool</span> on)</span></span>;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">setKeepAlive</span><span class="params">(<span class="type">bool</span> on)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="type">const</span> <span class="type">int</span> sockfd_;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">//Socket封装socket,利用RAII思想关闭文件描述符，避免忘记关闭</span></span><br><span class="line">Socket::~<span class="built_in">Socket</span>()</span><br><span class="line">&#123;</span><br><span class="line">  sockets::<span class="built_in">close</span>(sockfd_);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//Socket</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Socket::listen</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  sockets::<span class="built_in">listenOrDie</span>(sockfd_);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//sockets</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">sockets::listenOrDie</span><span class="params">(<span class="type">int</span> sockfd)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="comment">//设置等待连接队列的最大长度(SOMAXCONN)。</span></span><br><span class="line">  <span class="type">int</span> ret = ::<span class="built_in">listen</span>(sockfd, SOMAXCONN);</span><br><span class="line">  <span class="keyword">if</span> (ret &lt; <span class="number">0</span>)</span><br><span class="line">  &#123;</span><br><span class="line">    LOG_SYSFATAL &lt;&lt; <span class="string">&quot;sockets::listenOrDie&quot;</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>可以看见，Socket内部的实现都放在一个名为sockets的作用域中，设计思想：<strong>Socket作为一个抽象层，我们在使用的时候不需要考虑不同平台的调用方式，底层的sockets负责实现阔平台逻辑</strong></p>
-<h3 id="二、挂载EventLoop"><a href="#二、挂载EventLoop" class="headerlink" title="二、挂载EventLoop"></a>二、挂载EventLoop</h3><p>我们发现，Acceptor没有调用listen函数进行监听，实际上开始监听的操作是在TcpServer的start函数实现的</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">TcpServer::start</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (started_.<span class="built_in">getAndSet</span>(<span class="number">1</span>) == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//启动EventLoop线程池</span></span><br><span class="line">        threadPool_-&gt;<span class="built_in">start</span>(threadInitCallback_);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">assert</span>(!acceptor_-&gt;<span class="built_in">listening</span>());</span><br><span class="line">        <span class="comment">//将 Acceptor::listen() 的调用任务放入EventLoop 的待执行队列中,这确保了所有和 EventLoop 相关的操作都在同一个I/O线程中执行，避免了锁竞争</span></span><br><span class="line">        loop_-&gt;<span class="built_in">runInLoop</span>(std::<span class="built_in">bind</span>(&amp;Acceptor::listen, <span class="built_in">get_pointer</span>(acceptor_)));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">EventLoop::runInLoop</span><span class="params">(Functor cb)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">isInLoopThread</span>())</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">cb</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">queueInLoop</span>(std::<span class="built_in">move</span>(cb));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Acceptor::listen</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    loop_-&gt;<span class="built_in">assertInLoopThread</span>();</span><br><span class="line">    listening_ = <span class="literal">true</span>;</span><br><span class="line">    <span class="comment">// 将socket设置为监听状态，并设置等待连接队列的最大长度(SOMAXCONN)。</span></span><br><span class="line">    acceptSocket_.<span class="built_in">listen</span>();</span><br><span class="line">    <span class="comment">// 放到epoll树上，注册可读事件</span></span><br><span class="line">    acceptChannel_.<span class="built_in">enableReading</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>在TcpServer::start函数启动后，loop_-&gt;runInLoop(std::bind(&amp;Acceptor::listen, get_pointer(acceptor_)));会将Acceptor::listen函数启动开始监听，并将文件描述符放到主线程的epoll树上监听读实现，当事件触发时，会调用文件描述符的读回调，也就是headleRead函数处理连接。。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/07/29/muduo(2)-Acceptor/" data-id="cuiduTG_rIW2Kb7Z8IZ2FHpxM" data-title="muduo(2)-Acceptor" class="article-share-link"><span class="fa fa-share">Share</span></a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/muduo/" rel="tag">muduo</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-muduo(1)-TcpServer" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2025/07/29/muduo(1)-TcpServer/" class="article-date">
-  <time class="dt-published" datetime="2025-07-29T07:32:00.000Z" itemprop="datePublished">2025-07-29</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/muduo/">muduo</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2025/07/29/muduo(1)-TcpServer/">muduo(1)-TcpServer</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>TcpServer类是用于管理TCP连接的类，它负责管理多个TcpConnection对象，并提供接口来设置连接回调、消息回调、写完成回调等。包含一个Acceptor对象，一个EventLoopThreadPool对象，一个ConnectionMap对象，Acceptor 负责监听新连接，EventLoopThreadPool 负责管理多个EventLoop线程，ConnectionMap 负责管理多个TcpConnection对象。</p>
-<h3 id="一、类的前置声明"><a href="#一、类的前置声明" class="headerlink" title="一、类的前置声明"></a>一、类的前置声明</h3><p>不要直接将一个类作为另一个类的类成员，尽量使用指针，然后通过前置声明减少头文件依赖，加快编译速度</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Acceptor</span>;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">EventLoop</span>;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">EventLoopThreadPool</span>;</span><br></pre></td></tr></table></figure>
-
-<p>作用：</p>
-<ol>
-<li><strong>减少头文件依赖</strong>：如果在头文件里只用到了指针或引用（比如 EventLoop* loop_;），只需要告诉编译器“有这么个类”，不需要知道它的具体实现。这样可以<strong>减少头文件之间的耦合，避免不必要的编译依赖</strong>。</li>
-<li><strong>加快编译速度:</strong> 在C++中，<code>#include</code> 是一个简单粗暴的文本替换操作。如果在一个头文件 <code>A.h</code> 中 <code>#include &quot;B.h&quot;</code>，那么任何 <code>#include &quot;A.h&quot;</code> 的源文件 (<code>.cc</code>) 都会被迫把 <code>B.h</code> 的全部内容也包含进来。如果 <code>B.h</code> 文件有任何一丁点改动，所有包含了 <code>A.h</code> 的源文件，以及包含了那些源文件所生成头文件的其他源文件……全都需要<strong>重新编译</strong>。在一个大型项目中，这可能意味着一次小修改导致数十分钟甚至数小时的编译等待。</li>
-<li><strong>防止循环依赖</strong>：如果两个类互相包含对方的头文件，就会导致循环依赖，编译器会报错。前向声明可以避免这种情况。</li>
-</ol>
-<p>这种设计是如何工作的：</p>
-<p>​	以std::unique_ptr<Acceptor> acceptor_;为例，<code>class Acceptor;</code> 这行代码告诉编译器“有一个类叫Acceptor,你不需要管他怎么实现的”，编译器<strong>不需要</strong>知道 <code>Acceptor</code> 的完整定义就可以处理 <code>std::unique_ptr&lt;Acceptor&gt;</code>。为什么？因为无论 <code>Acceptor</code> 本身多复杂，一个指针（或智能指针）的大小是固定的（在64位系统上是8字节）。编译器知道如何为一个指针分配空间。</p>
-<p>​	<code>TcpServer</code> 只有在它的实现文件 <code>TcpServer.cc</code> 中才需要真正地创建 <code>Acceptor</code> 对象 (<code>new Acceptor(...)</code>) 或者调用它的方法 (<code>acceptor_-&gt;listen()</code>)。因此，<code>#include &quot;muduo/net/Acceptor.h&quot;</code> 这行代码被放在了 <code>TcpServer.cc</code> 的开头，而不是头文件中。</p>
-<p>​	现在，如果 <code>Acceptor.h</code> 或 <code>EventLoopThreadPool.h</code> 的内部实现发生了任何改变，只要 <code>TcpServer.h</code> 的接口不变，<strong>就只有 <code>TcpServer.cc</code> 这一个文件需要重新编译</strong>。所有其他只包含了 <code>TcpServer.h</code> 的文件都安然无恙。编译时间从 O(N) 变成了 O(1)。同时，<code>TcpServer</code> 的使用者完全不知道 <code>Acceptor</code> 的存在，实现细节被完美地隐藏了起来。</p>
-<p>什么时候使用头文件？</p>
-<p>在头文件里用到了类的完整定义（比如<strong>作为成员变量直接存储对象，而不是指针&#x2F;引用，或者需要调用成员函数</strong>），就必须 include 头文件。<strong>如果只是用指针、引用、声明参数类型、返回值类型，只需要前向声明。</strong></p>
-<h3 id="二、禁用拷贝赋值"><a href="#二、禁用拷贝赋值" class="headerlink" title="二、禁用拷贝赋值"></a>二、禁用拷贝赋值</h3><p>通过继承一个禁用掉拷贝和赋值运算符的类实现，避免重复代码，同时，在继承这个类时，可以充当文档告诉其他开发者，这个类时禁止拷贝或者赋值的</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">noncopyable</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">noncopyable</span>(<span class="type">const</span> noncopyable&amp;) = <span class="keyword">delete</span>;</span><br><span class="line">    <span class="type">void</span> <span class="keyword">operator</span>=(<span class="type">const</span> noncopyable&amp;) = <span class="keyword">delete</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    <span class="built_in">noncopyable</span>() = <span class="keyword">default</span>;</span><br><span class="line">    ~<span class="built_in">noncopyable</span>() = <span class="keyword">default</span>;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">TcpServer</span> : noncopyable <span class="comment">//继承noncopyable，class继承默认为private</span></span><br></pre></td></tr></table></figure>
-
-<p>原理：<strong>利用 C++ 的继承和访问控制机制，让编译器在你尝试拷贝或赋值时直接报错。流程：通过private继承noncopyable，意味着 noncopyable 的 public 和 protected 成员在 TcpServer 里是 private 的，外部无法访问。</strong></p>
-<p>1、构造和析构是 protected，这样只能被子类构造和析构，不能在外部直接创建 noncopyable 对象。</p>
-<p>2、拷贝构造函数和赋值运算符被 &#x3D; delete，外部和子类都不能访问。</p>
-<p>编译器行为：</p>
-<ul>
-<li><p>当你写 <strong>TcpServer a; TcpServer b &#x3D; a; 或 b &#x3D; a;</strong> 时，编译器会去找 TcpServer 的拷贝构造和赋值运算符。</p>
-</li>
-<li><p>由于 TcpServer 没有自己实现这两个函数，编译器会去基类 noncopyable 里找。</p>
-</li>
-<li><p>发现基类的这两个函数被 &#x3D; delete，所以编译器直接报错，禁止拷贝和赋值。</p>
-</li>
-</ul>
-<h3 id="三、回调函数声明"><a href="#三、回调函数声明" class="headerlink" title="三、回调函数声明"></a>三、回调函数声明</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Callback.h</span></span><br><span class="line"><span class="keyword">typedef</span> std::function&lt;<span class="type">void</span> (<span class="type">const</span> TcpConnectionPtr&amp;)&gt; ConnectionCallback;</span><br><span class="line"><span class="keyword">typedef</span> std::function&lt;<span class="type">void</span> (<span class="type">const</span> TcpConnectionPtr&amp;)&gt; CloseCallback;</span><br><span class="line"><span class="keyword">typedef</span> std::function&lt;<span class="type">void</span> (<span class="type">const</span> TcpConnectionPtr&amp;)&gt; WriteCompleteCallback;</span><br><span class="line"><span class="comment">//TcpServer.h</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">TcpServer</span> : noncopyable</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">typedef</span> std::function&lt;<span class="type">void</span>(EventLoop*)&gt; ThreadInitCallback;</span><br></pre></td></tr></table></figure>
-
-<p>刚开始很奇怪，为什么ThreadInitCallback生命在TcpServer.h，而其他回调放在统一放在Callback.h文件中，以为是作者忘记了，后来询问ai，发现是有意为之</p>
-<p>原因：</p>
-<ol>
-<li>ThreadInitCallback 这个类型只和 TcpServer 的线程池初始化有关，它的语义非常专用，只在 TcpServer 相关代码中用到。</li>
-<li>Callback.h 里一般放的是通用的回调类型，比如 ConnectionCallback、MessageCallback 这种会被很多类用到的回调。</li>
-<li>如果把所有只在某个类用到的 typedef 都放到 Callback.h，会让 Callback.h 变得很臃肿、不清晰，反而降低了可维护性。</li>
-<li>ThreadInitCallback 依赖于 EventLoop 类型，如果放到 Callback.h，就会让 Callback.h 依赖 EventLoop.h，这样会让头文件之间的依赖变复杂，甚至可能引入循环依赖。</li>
-<li>一般来说，只在某个类&#x2F;模块内部用到的类型定义，直接放在对应的头文件里，而不是放到全局的 callback 头文件中。只有那种全局通用的回调类型，才会放到 Callback.h 这种公共头文件。</li>
-</ol>
-<h3 id="四、变量命名方式"><a href="#四、变量命名方式" class="headerlink" title="四、变量命名方式"></a>四、变量命名方式</h3><p>封装，在muduo库中你几乎看不见直接使用底层API，至少都会都会经过一次封装，封装成一个类，同时，使用typedef重命名，明确每一个类的作用</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> std::map&lt;string, TcpConnectionPtr&gt; ConnectionMap;</span><br><span class="line"><span class="keyword">typedef</span> std::function&lt;<span class="type">void</span>(EventLoop*)&gt; ThreadInitCallback;</span><br><span class="line">AtomicInt32 started_;</span><br><span class="line"><span class="built_in">TcpServer</span>(EventLoop* loop,</span><br><span class="line">          <span class="type">const</span> InetAddress&amp; listenAddr,</span><br><span class="line">          <span class="type">const</span> string&amp; nameArg,</span><br><span class="line">          Option option = kNoReusePort);</span><br></pre></td></tr></table></figure>
-
-<p>目的：</p>
-<p>​	这不仅仅是为了隐藏底层细节，更是为了<strong>创造一个比底层API更强大、更安全、更易用的抽象层</strong>。如后面会看见的，<strong>poller</strong>将IO复用模型封装，随时能改变底层的IO复用模型，还有<strong>Socket</strong>同理，不直接使用linux底层的socket函数，这样在移植系统时，无论底层接口是什么，都能直接使用Socket而不需要关心底层，和poller一样，都能随时改变，这种设计的可扩展性就很高。后面还会继续展开muduo库在使用上的各种封装。</p>
-<p>​	还有typedef的使用，<code>std::map&lt;std::string, std::shared_ptr&lt;muduo::net::TcpConnection&gt;&gt;</code> 这样的类型声明又长又复杂。当您读到 <code>ConnectionMap</code> 时，您立刻就能明白它的<strong>意图</strong>——这是一个“存储连接的容器”，而不需要去想着这个复杂map到底是干什么的。</p>
-<h3 id="五、智能指针使用"><a href="#五、智能指针使用" class="headerlink" title="五、智能指针使用"></a>五、智能指针使用</h3><p>在muduo库中，很少能看见裸指针的直接使用，智能指针管理“所有权”，裸指针表示“使用权”</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">EventLoop* loop_; </span><br><span class="line">std::unique_ptr&lt;Acceptor&gt; acceptor_; </span><br><span class="line">std::shared_ptr&lt;EventLoopThreadPool&gt; threadPool_;</span><br></pre></td></tr></table></figure>
-
-<p>muduo中大量使用智能指针，其根本是RAII的编程思想，作者通过大量封装，充分的利用了RAII思想，如后面会介绍的<strong>Socket</strong>，在析构的时候关闭文件描述符，避免忘记关闭文件描述符，如<strong>MutexLockGuard</strong>，<code>MutexLockGuard</code> 类在<strong>构造函数中调用 <code>mutex_.lock()</code></strong>，在**析构函数中调用 <code>mutex_.unlock()</code>**等等。</p>
-<p>虽然裸指针很少使用，但是可以看到，EventLoop就是一个裸指针</p>
-<p><strong>智能指针 (std::unique_ptr, std::shared_ptr)</strong>：当你使用智能指针时，你是在声明：“<strong>我这个对象，对另一个对象的生命周期负有责任</strong>”。</p>
-<ul>
-<li><code>std::unique_ptr&lt;Acceptor&gt; acceptor_</code> 意味着 <code>TcpServer</code> <strong>独占</strong> <code>Acceptor</code>，当 <code>TcpServer</code> 析构时，<code>Acceptor</code> <strong>必须</strong>被销毁。</li>
-<li><code>std::shared_ptr&lt;TcpConnection&gt;</code> 意味着 <code>TcpServer</code> 和其他协作者（如回调函数）<strong>共同拥有</strong> <code>TcpConnection</code> 的生命周期。</li>
-</ul>
-<p><strong>裸指针 (EventLoop*)</strong>：当你使用裸指针时，你是在声明：“<strong>我需要使用那个对象，但我不管它的死活，它的生命周期由别人负责</strong>”。这是一种**非拥有（non-owning）**的、观察性的关系。</p>
-<p>因为在 muduo 的设计中，<strong><code>EventLoop</code> 的生命周期总是长于使用它的 <code>TcpConnection</code> 或 <code>TcpServer</code></strong>。<code>EventLoop</code> 对象是在一个线程的栈上创建的，它的生命周期与整个线程的事件循环 <code>loop.loop()</code> 绑定。只要这个线程在运行，<code>EventLoop</code> 对象就一直存活。<strong>用智能指针明确所有权和生命周期管理，用裸指针表示无所有权的、有生命周期保障的引用。</strong></p>
-<p>RAII思想：</p>
-<p><strong>将任何一种“资源”（文件描述符、内存、锁、线程、甚至是更复杂的对象）的生命周期，与一个栈上对象的生命周期绑定。通过 “对象离开作用域时析构函数必被调用”的特性，来实现资源的自动、安全、无遗漏的释放。</strong></p>
-<h3 id="六、类初始化处理"><a href="#六、类初始化处理" class="headerlink" title="六、类初始化处理"></a>六、类初始化处理</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">TcpServer::<span class="built_in">TcpServer</span>(EventLoop* loop,</span><br><span class="line">                     <span class="type">const</span> InetAddress&amp; listenAddr,</span><br><span class="line">                     <span class="type">const</span> string&amp; nameArg,</span><br><span class="line">                     Option option)</span><br><span class="line">    : <span class="built_in">loop_</span>(<span class="built_in">CHECK_NOTNULL</span>(loop)),<span class="comment">//主EventLoop</span></span><br><span class="line">      <span class="built_in">ipPort_</span>(listenAddr.<span class="built_in">toIpPort</span>()),<span class="comment">//监听地址</span></span><br><span class="line">      <span class="built_in">name_</span>(nameArg),<span class="comment">//服务器名称</span></span><br><span class="line">      <span class="built_in">acceptor_</span>(<span class="keyword">new</span> <span class="built_in">Acceptor</span>(loop, listenAddr, option == kReusePort)),<span class="comment">//Acceptor 负责监听新连接</span></span><br><span class="line">      <span class="built_in">threadPool_</span>(<span class="keyword">new</span> <span class="built_in">EventLoopThreadPool</span>(loop, name_)),<span class="comment">//EventLoopThreadPool 负责管理多个EventLoop线程</span></span><br><span class="line">      <span class="built_in">connectionCallback_</span>(defaultConnectionCallback),<span class="comment">//默认连接回调</span></span><br><span class="line">      <span class="built_in">messageCallback_</span>(defaultMessageCallback),<span class="comment">//默认消息回调</span></span><br><span class="line">      <span class="built_in">nextConnId_</span>(<span class="number">1</span>)<span class="comment">//连接计数器，为每一个新到来的 TcpConnection 生成一个独一无二的、递增的ID号。</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 设置Acceptor的回调函数，当有新连接到来时，Acceptor会调用TcpServer的newConnection函数,将新连接封装成一个TcpConnectionPtr</span></span><br><span class="line">    acceptor_-&gt;<span class="built_in">setNewConnectionCallback</span>(std::<span class="built_in">bind</span>(&amp;TcpServer::newConnection, <span class="keyword">this</span>, _1, _2));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Acceptor建立新连接时，调用TcpServer的newConnection函数，将新连接封装成一个TcpConnectionPtr</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">TcpServer::newConnection</span><span class="params">(<span class="type">int</span> sockfd, <span class="type">const</span> InetAddress&amp; peerAddr)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    loop_-&gt;<span class="built_in">assertInLoopThread</span>();</span><br><span class="line">    EventLoop* ioLoop = threadPool_-&gt;<span class="built_in">getNextLoop</span>();<span class="comment">//获取一个EventLoop线程,将TcpConnection对象放入该线程中</span></span><br><span class="line">    <span class="type">char</span> buf[<span class="number">64</span>];</span><br><span class="line">    <span class="built_in">snprintf</span>(buf, <span class="keyword">sizeof</span> buf, <span class="string">&quot;-%s#%d&quot;</span>, ipPort_.<span class="built_in">c_str</span>(), nextConnId_);</span><br><span class="line">    ++nextConnId_;<span class="comment">//连接计数器，为每一个新到来的 TcpConnection 生成一个独一无二的、递增的ID号。</span></span><br><span class="line">    string connName = name_ + buf;</span><br><span class="line"></span><br><span class="line">    <span class="function">InetAddress <span class="title">localAddr</span><span class="params">(sockets::getLocalAddr(sockfd))</span></span>;</span><br><span class="line">    <span class="function">TcpConnectionPtr <span class="title">conn</span><span class="params">(<span class="keyword">new</span> TcpConnection(ioLoop, connName, sockfd, localAddr, peerAddr))</span></span>;</span><br><span class="line">    connections_[connName] = conn;</span><br><span class="line">    <span class="comment">//设置TcpConnection的回调函数</span></span><br><span class="line">    conn-&gt;<span class="built_in">setConnectionCallback</span>(connectionCallback_);<span class="comment">// 连接回调</span></span><br><span class="line">    conn-&gt;<span class="built_in">setMessageCallback</span>(messageCallback_);<span class="comment">// 消息回调</span></span><br><span class="line">    conn-&gt;<span class="built_in">setWriteCompleteCallback</span>(writeCompleteCallback_);<span class="comment">// 写完成回调</span></span><br><span class="line">    conn-&gt;<span class="built_in">setCloseCallback</span>(std::<span class="built_in">bind</span>(&amp;TcpServer::removeConnection, <span class="keyword">this</span>, _1)); <span class="comment">// 关闭回调</span></span><br><span class="line">    ioLoop-&gt;<span class="built_in">runInLoop</span>(std::<span class="built_in">bind</span>(&amp;TcpConnection::connectEstablished, conn)); <span class="comment">////将TcpConnection对象的连接建立事件放入EventLoop线程中执行</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>TcpServer在建立连接阶段的作用：</p>
-<p>开始的时候，TcpServer在构造函数那里初始化Acceptor,并设置Acceptor建立连接后的回调，这个回调用于将fd封装成一个TcpConnnection并放入到一个EventLoop中，由该EventLoop负责后续的监听。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://www.228610.xyz/2025/07/29/muduo(1)-TcpServer/" data-id="cuiduraMMg8XzwzJFzjyI_9nP" data-title="muduo(1)-TcpServer" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://www.228610.xyz/2025/07/29/muduo(3)-Channel/" data-id="cuidi1uG1dAMiuuIe36rS8Ras" data-title="muduo(3)-Channel" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -974,7 +1016,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/02/">February 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/12/">December 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/11/">November 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/10/">October 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/09/">September 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/08/">August 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/07/">July 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/05/">May 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/04/">April 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/03/">March 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/02/">February 2025</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/03/">March 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/02/">February 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/12/">December 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/11/">November 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/10/">October 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/09/">September 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/08/">August 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/07/">July 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/05/">May 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/04/">April 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/03/">March 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/02/">February 2025</a></li></ul>
     </div>
   </div>
 
@@ -987,7 +1029,15 @@
       <ul>
         
           <li>
-            <a href="/2026/02/22/hello-world/">Hello World</a>
+            <a href="/2026/03/04/Ubuntu%20Linux%20%E7%AC%94%E8%AE%B0%E6%9C%AC%20120Hz%20%E5%88%B7/">Ubuntu Linux 笔记本 120Hz 刷</a>
+          </li>
+        
+          <li>
+            <a href="/2026/03/04/GNOME%20%E9%A1%B6%E9%83%A8%E6%A0%8F%E4%BC%98%E5%8C%96%20-%20%E8%A7%A3%E5%86%B3%E5%86%85%E5%AE%B9%E9%87%8D%E5%8F%A0%E9%97%AE%E9%A2%98/">GNOME 顶部栏优化 - 解决内容重叠问题</a>
+          </li>
+        
+          <li>
+            <a href="/2026/03/04/hello-world/">Hello World</a>
           </li>
         
           <li>
@@ -996,14 +1046,6 @@
         
           <li>
             <a href="/2026/02/08/Ubuntu%2025%20%E4%B8%8B%20Flameshot%20%E5%BF%AB%E6%8D%B7%E9%94%AE%E6%88%AA%E5%9B%BE%E5%A4%B1%E8%B4%A5%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/">Ubuntu 25 下 Flameshot 快捷键截图失败解决方案</a>
-          </li>
-        
-          <li>
-            <a href="/2026/02/05/%E9%80%9A%E8%BF%87%E7%BD%91%E7%BA%BF%E4%BC%A0%E8%BE%93%E6%95%B0%E6%8D%AE/">通过网线传输数据</a>
-          </li>
-        
-          <li>
-            <a href="/2026/02/04/ctypes%E5%B0%81%E8%A3%85C++%E6%8E%A5%E5%8F%A3%E7%BB%99Python%E4%BD%BF%E7%94%A8/">ctypes封装C++接口给Python使用</a>
           </li>
         
       </ul>
