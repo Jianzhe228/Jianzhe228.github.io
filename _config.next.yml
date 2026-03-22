@@ -106,6 +106,13 @@ font:
 # ---------------------------------------------------------------
 index_with_subtitle: false
 
+# Auto encode external URLs with Base64 for SEO (nofollow)
+exturl: true
+
+# Open Graph
+open_graph:
+  enable: true
+
 # ---------------------------------------------------------------
 # Animation Settings
 # ---------------------------------------------------------------
