@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 8.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.228610.xyz","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.27.0","exturl":true,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"flat"},"fold":{"enable":true,"height":500},"language":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":3,"unescape":true,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="Acceptor类是用于接受新连接的类，它负责监听一个端口，当有新的连接到来时，它负责接受这个连接，并调用回调函数处理这个连接。包含一个Socket对象，一个Channel对象，一个NewConnectionCallback对象。Socket 对底层的socket文件描述符（sockfd）进行了面向对象的封装，提供了 bind, listen, accept等接口。 一、类的初始化12345678">
+<meta property="og:type" content="article">
+<meta property="og:title" content="muduo(2)-Acceptor">
+<meta property="og:url" content="https://www.228610.xyz/2025/07/28/muduo(2)-Acceptor/">
+<meta property="og:site_name" content="228610">
+<meta property="og:description" content="Acceptor类是用于接受新连接的类，它负责监听一个端口，当有新的连接到来时，它负责接受这个连接，并调用回调函数处理这个连接。包含一个Socket对象，一个Channel对象，一个NewConnectionCallback对象。Socket 对底层的socket文件描述符（sockfd）进行了面向对象的封装，提供了 bind, listen, accept等接口。 一、类的初始化12345678">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-07-28T23:35:00.000Z">
+<meta property="article:modified_time" content="2026-03-22T14:04:42.014Z">
+<meta property="article:author" content="zjz">
+<meta property="article:tag" content="muduo">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://www.228610.xyz/2025/07/28/muduo(2)-Acceptor/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.228610.xyz/2025/07/28/muduo(2)-Acceptor/","path":"2025/07/28/muduo(2)-Acceptor/","title":"muduo(2)-Acceptor"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>muduo(2)-Acceptor | 228610</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">228610</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">10</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">105</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">49</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E7%B1%BB%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">1.</span> <span class="nav-text">一、类的初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E6%8C%82%E8%BD%BDEventLoop"><span class="nav-number">2.</span> <span class="nav-text">二、挂载EventLoop</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">zjz</p>
+  <div class="site-description" itemprop="description">zjz 的个人技术博客，分享 Linux、数据库、网络、算法、开发调优等技术笔记与实践经验。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">105</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">49</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.228610.xyz/2025/07/28/muduo(2)-Acceptor/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="zjz">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="228610">
+      <meta itemprop="description" content="zjz 的个人技术博客，分享 Linux、数据库、网络、算法、开发调优等技术笔记与实践经验。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="muduo(2)-Acceptor | 228610">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          muduo(2)-Acceptor
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-07-29 07:35:00" itemprop="dateCreated datePublished" datetime="2025-07-29T07:35:00+08:00">2025-07-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2026-03-22 22:04:42" itemprop="dateModified" datetime="2026-03-22T22:04:42+08:00">2026-03-22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/muduo/" itemprop="url" rel="index"><span itemprop="name">muduo</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>Acceptor类是用于接受新连接的类，它负责监听一个端口，当有新的连接到来时，它负责接受这个连接，并调用回调函数处理这个连接。包含一个Socket对象，一个Channel对象，一个NewConnectionCallback对象。<strong>Socket</strong> 对底层的socket文件描述符（sockfd）进行了面向对象的封装，提供了 bind, listen, accept等接口。</p>
+<h3 id="一、类的初始化"><a href="#一、类的初始化" class="headerlink" title="一、类的初始化"></a>一、类的初始化</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line">Acceptor::<span class="built_in">Acceptor</span>(EventLoop* loop, <span class="type">const</span> InetAddress&amp; listenAddr, <span class="type">bool</span> reuseport)</span><br><span class="line">    : <span class="built_in">loop_</span>(loop),</span><br><span class="line">      <span class="built_in">acceptSocket_</span>(sockets::<span class="built_in">createNonblockingOrDie</span>(listenAddr.<span class="built_in">family</span>())), <span class="comment">// 1. 创建Socket</span></span><br><span class="line">      <span class="built_in">acceptChannel_</span>(loop, acceptSocket_.<span class="built_in">fd</span>()),                            <span class="comment">// 创建Channel</span></span><br><span class="line">      <span class="built_in">listening_</span>(<span class="literal">false</span>),</span><br><span class="line">      <span class="built_in">idleFd_</span>(::<span class="built_in">open</span>(<span class="string">&quot;/dev/null&quot;</span>,</span><br><span class="line">                     O_RDONLY |</span><br><span class="line">                         O_CLOEXEC)) <span class="comment">// 预留一个fd，当accept失败时，释放预留的fd，并重新接受新连接</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">assert</span>(idleFd_ &gt;= <span class="number">0</span>);</span><br><span class="line">    acceptSocket_.<span class="built_in">setReuseAddr</span>(<span class="literal">true</span>);</span><br><span class="line">    acceptSocket_.<span class="built_in">setReusePort</span>(reuseport); <span class="comment">// 设置端口复用</span></span><br><span class="line">    acceptSocket_.<span class="built_in">bindAddress</span>(listenAddr); <span class="comment">// 绑定地址</span></span><br><span class="line">    <span class="comment">// 为 acceptChannel_ 设置一个读回调函数 Acceptor::handleRead。当有新连接到达时，EventLoop</span></span><br><span class="line">    <span class="comment">// 会调用这个函数，handleRead 内部会调用 accept() 来接受连接。</span></span><br><span class="line">    acceptChannel_.<span class="built_in">setReadCallback</span>(std::<span class="built_in">bind</span>(&amp;Acceptor::handleRead, <span class="keyword">this</span>));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 当有新连接到来时，epoll会返回监听描述符，然后EventLoop会通过之前设置好的Channel来处理这个监听描述符，会调用channel的回调函数，也就是这里的handleRead进行处理，执行accept，并调用TcpServer中的newConnetion函数。</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Acceptor::handleRead</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    loop_-&gt;<span class="built_in">assertInLoopThread</span>();</span><br><span class="line">    InetAddress peerAddr;</span><br><span class="line">    <span class="type">int</span> connfd = acceptSocket_.<span class="built_in">accept</span>(&amp;peerAddr);</span><br><span class="line">    <span class="keyword">if</span> (connfd &gt;= <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 在TcpServer的构造函数中设置好了newConnectionCallback_，当有新连接到来时，会调用TcpServer的newConnection函数</span></span><br><span class="line">        <span class="keyword">if</span> (newConnectionCallback_)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">newConnectionCallback_</span>(connfd, peerAddr);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            sockets::<span class="built_in">close</span>(connfd);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (errno == EMFILE)</span><br><span class="line">        &#123;</span><br><span class="line">            ::<span class="built_in">close</span>(idleFd_);                                    <span class="comment">// 1. 释放预留的fd</span></span><br><span class="line">            idleFd_ = ::<span class="built_in">accept</span>(acceptSocket_.<span class="built_in">fd</span>(), <span class="literal">NULL</span>, <span class="literal">NULL</span>);  <span class="comment">// 2. 接受新连接</span></span><br><span class="line">            ::<span class="built_in">close</span>(idleFd_);                                    <span class="comment">// 3. 立即关闭它</span></span><br><span class="line">            idleFd_ = ::<span class="built_in">open</span>(<span class="string">&quot;/dev/null&quot;</span>, O_RDONLY | O_CLOEXEC); <span class="comment">// 4. 重新打开一个fd</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Acceptor建立新连接时，调用TcpServer的newConnection函数，将新连接封装成一个TcpConnectionPtr</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">TcpServer::newConnection</span><span class="params">(<span class="type">int</span> sockfd, <span class="type">const</span> InetAddress&amp; peerAddr)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    loop_-&gt;<span class="built_in">assertInLoopThread</span>();</span><br><span class="line">    EventLoop* ioLoop = threadPool_-&gt;<span class="built_in">getNextLoop</span>();<span class="comment">//获取一个EventLoop线程,将TcpConnection对象放入该线程中</span></span><br><span class="line">    <span class="type">char</span> buf[<span class="number">64</span>];</span><br><span class="line">    <span class="built_in">snprintf</span>(buf, <span class="keyword">sizeof</span> buf, <span class="string">&quot;-%s#%d&quot;</span>, ipPort_.<span class="built_in">c_str</span>(), nextConnId_);</span><br><span class="line">    ++nextConnId_;</span><br><span class="line">    string connName = name_ + buf;</span><br><span class="line"></span><br><span class="line">    <span class="function">InetAddress <span class="title">localAddr</span><span class="params">(sockets::getLocalAddr(sockfd))</span></span>;</span><br><span class="line">    <span class="function">TcpConnectionPtr <span class="title">conn</span><span class="params">(<span class="keyword">new</span> TcpConnection(ioLoop, connName, sockfd, localAddr, peerAddr))</span></span>;</span><br><span class="line">    connections_[connName] = conn;</span><br><span class="line">    <span class="comment">//设置TcpConnection的回调函数</span></span><br><span class="line">    conn-&gt;<span class="built_in">setConnectionCallback</span>(connectionCallback_);<span class="comment">// 连接回调</span></span><br><span class="line">    conn-&gt;<span class="built_in">setMessageCallback</span>(messageCallback_);<span class="comment">// 消息回调</span></span><br><span class="line">    conn-&gt;<span class="built_in">setWriteCompleteCallback</span>(writeCompleteCallback_);<span class="comment">// 写完成回调</span></span><br><span class="line">    conn-&gt;<span class="built_in">setCloseCallback</span>(std::<span class="built_in">bind</span>(&amp;TcpServer::removeConnection, <span class="keyword">this</span>, _1)); <span class="comment">// 关闭回调</span></span><br><span class="line">    ioLoop-&gt;<span class="built_in">runInLoop</span>(std::<span class="built_in">bind</span>(&amp;TcpConnection::connectEstablished, conn));<span class="comment">//将TcpConnection对象的连接建立事件放入EventLoop线程中执行</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>宏观上看，Acceptor这个类并不复杂，主要的任务就是负责初始化监听描述符，并设置监听描述符的回调函数handleRead，在新连接到来时，Acceptor会调用Acceptor会调用headleRead建立连接，并调用newConnection回调函数。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (errno == EMFILE)</span><br><span class="line">&#123;</span><br><span class="line">    ::<span class="built_in">close</span>(idleFd_);                                    <span class="comment">// 1. 释放预留的fd</span></span><br><span class="line">    idleFd_ = ::<span class="built_in">accept</span>(acceptSocket_.<span class="built_in">fd</span>(), <span class="literal">NULL</span>, <span class="literal">NULL</span>);  <span class="comment">// 2. 接受新连接</span></span><br><span class="line">    ::<span class="built_in">close</span>(idleFd_);                                    <span class="comment">// 3. 立即关闭它</span></span><br><span class="line">    idleFd_ = ::<span class="built_in">open</span>(<span class="string">&quot;/dev/null&quot;</span>, O_RDONLY | O_CLOEXEC); <span class="comment">// 4. 重新打开一个fd</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当服务器并发连接数非常高时，可能会耗尽进程可用的文件描述符（fd）。这时，<code>accept()</code> 会失败并返回 <code>EMFILE</code> 错误。如果不处理，服务器将无法接受任何新连接，相当于“假死”。</p>
+<p><strong>muduo 的解决方案：</strong></p>
+<ol>
+<li><code>Acceptor</code> 在构造时，就预先打开一个指向 <code>/dev/null</code> 的文件描述符 <code>idleFd_</code>。它就像一个“备用座位”。</li>
+<li>当 <code>accept</code> 因 <code>EMFILE</code> 失败时，<code>Acceptor</code> 会<strong>立即关闭这个备用的 <code>idleFd_</code></strong>，从而释放出一个文件描述符名额。</li>
+<li>有了这个名额，<code>Acceptor</code> 就能成功 <code>accept()</code> 那个等待中的新连接。</li>
+<li>为了避免新连接因为没有被处理而丢失，<code>Acceptor</code> <strong>会立即 <code>close()</code> 这个刚刚接受的连接</strong>。这虽然拒绝了客户端，但保证了服务器自身不会卡死，并且向客户端发出了一个明确的拒绝信号（<code>RST</code>），客户端可以稍后重试。</li>
+<li>最后，<code>Acceptor</code> 会再次打开 <code>/dev/null</code> 来重新占用 <code>idleFd_</code>，为下一次 <code>EMFILE</code> 危机做好准备。</li>
+</ol>
+<p>这个技巧确保了即使在 fd 耗尽的极端情况下，<code>Acceptor</code> 所在的 <code>EventLoop</code> 也能正常运转，不会因为 <code>accept</code> 不断失败而陷入死循环</p>
+<p><strong>SO_RESUCEADDR和SO_RESUCEPORT的区别</strong></p>
+<table>
+<thead>
+<tr>
+<th>特性</th>
+<th><code>SO_REUSEADDR</code> (地址复用)</th>
+<th><code>SO_REUSEPORT</code> (端口复用)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>核心目的</strong></td>
+<td><strong>服务器快速重启</strong></td>
+<td><strong>性能扩展 (负载均衡)</strong></td>
+</tr>
+<tr>
+<td><strong>解决问题</strong></td>
+<td>允许新启动的服务器立即绑定一个处于 <code>TIME_WAIT</code> 状态的端口</td>
+<td>允许多个独立的监听套接字绑定到完全相同的 IP 和端口。</td>
+</tr>
+<tr>
+<td><strong>工作模式</strong></td>
+<td>一个端口在同一时间<strong>仍然只能被一个</strong>监听套接字绑定。</td>
+<td>一个端口可以被<strong>多个</strong>监听套接字同时绑定。</td>
+</tr>
+<tr>
+<td><strong>适用场景</strong></td>
+<td>几乎所有服务器程序都应该开启，用于开发和运维中的快速迭代和重启。</td>
+<td>面向高性能、高并发连接的服务器，用于在多核 CPU 上扩展 <code>accept</code> 的处理能力。</td>
+</tr>
+<tr>
+<td><strong>在 muduo 中</strong></td>
+<td><strong>默认开启</strong></td>
+<td><strong>默认关闭</strong>，需要显式开启。</td>
+</tr>
+</tbody></table>
+<p>在标准的 <code>TcpServer</code> 模型中，只有一个主线程负责 <code>accept</code> 所有新连接，但当服务器面临<strong>极高的连接建立速率</strong>时就会成为整个系统的<strong>性能瓶颈</strong>。<code>acceptSocket_.setReusePort(reuseport);</code> ,也就是<strong>SO_RESUCEPORT</strong> ，这个选项允许多个线程或进程创建各自的监听套接字，并<strong>全部绑定到同一个 IP 和端口上</strong>。当新连接到来时，<strong>内核</strong>会负责进行负载均衡，将这个连接请求“派发”给其中一个监听套接字。这样一来，<code>accept</code> 的工作就被均匀地分摊到了多个 CPU 核心上。</p>
+<p>更多细节，见：<span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS9xdWVzdGlvbnMvMTQzODg3MDYvaG93LWRvLXNvLXJldXNlYWRkci1hbmQtc28tcmV1c2Vwb3J0LWRpZmZlcg==">https://stackoverflow.com/questions/14388706/how-do-so-reuseaddr-and-so-reuseport-differ<i class="fa fa-external-link-alt"></i></span></p>
+<p>仔细看的话，还能发现建立连接的是一个acceptSocket_，而不是系统的accept函数，这是muduo对系统调用的封装，提高扩展性</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">Socket acceptSocket_;</span><br><span class="line"><span class="comment">/// 对底层的socket文件描述符（sockfd）进行了面向对象的封装，提供了 bind, listen, accept 等接口。</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Socket</span> : noncopyable</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">Socket</span><span class="params">(<span class="type">int</span> sockfd)</span> : sockfd_(sockfd)</span></span><br><span class="line"><span class="function">    &#123;</span></span><br><span class="line">    &#125;</span><br><span class="line">    ~<span class="built_in">Socket</span>();</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">fd</span><span class="params">()</span> <span class="type">const</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> sockfd_;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">getTcpInfo</span><span class="params">(<span class="keyword">struct</span> tcp_info*)</span> <span class="type">const</span></span>;</span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">getTcpInfoString</span><span class="params">(<span class="type">char</span>* buf, <span class="type">int</span> len)</span> <span class="type">const</span></span>;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">bindAddress</span><span class="params">(<span class="type">const</span> InetAddress&amp; localaddr)</span></span>;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">listen</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">accept</span><span class="params">(InetAddress* peeraddr)</span></span>;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">shutdownWrite</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">setTcpNoDelay</span><span class="params">(<span class="type">bool</span> on)</span></span>;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">setReuseAddr</span><span class="params">(<span class="type">bool</span> on)</span></span>;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">setReusePort</span><span class="params">(<span class="type">bool</span> on)</span></span>;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">setKeepAlive</span><span class="params">(<span class="type">bool</span> on)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="type">const</span> <span class="type">int</span> sockfd_;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">//Socket封装socket,利用RAII思想关闭文件描述符，避免忘记关闭</span></span><br><span class="line">Socket::~<span class="built_in">Socket</span>()</span><br><span class="line">&#123;</span><br><span class="line">  sockets::<span class="built_in">close</span>(sockfd_);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//Socket</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Socket::listen</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  sockets::<span class="built_in">listenOrDie</span>(sockfd_);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//sockets</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">sockets::listenOrDie</span><span class="params">(<span class="type">int</span> sockfd)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="comment">//设置等待连接队列的最大长度(SOMAXCONN)。</span></span><br><span class="line">  <span class="type">int</span> ret = ::<span class="built_in">listen</span>(sockfd, SOMAXCONN);</span><br><span class="line">  <span class="keyword">if</span> (ret &lt; <span class="number">0</span>)</span><br><span class="line">  &#123;</span><br><span class="line">    LOG_SYSFATAL &lt;&lt; <span class="string">&quot;sockets::listenOrDie&quot;</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>可以看见，Socket内部的实现都放在一个名为sockets的作用域中，设计思想：<strong>Socket作为一个抽象层，我们在使用的时候不需要考虑不同平台的调用方式，底层的sockets负责实现阔平台逻辑</strong></p>
+<h3 id="二、挂载EventLoop"><a href="#二、挂载EventLoop" class="headerlink" title="二、挂载EventLoop"></a>二、挂载EventLoop</h3><p>我们发现，Acceptor没有调用listen函数进行监听，实际上开始监听的操作是在TcpServer的start函数实现的</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">TcpServer::start</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (started_.<span class="built_in">getAndSet</span>(<span class="number">1</span>) == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//启动EventLoop线程池</span></span><br><span class="line">        threadPool_-&gt;<span class="built_in">start</span>(threadInitCallback_);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">assert</span>(!acceptor_-&gt;<span class="built_in">listening</span>());</span><br><span class="line">        <span class="comment">//将 Acceptor::listen() 的调用任务放入EventLoop 的待执行队列中,这确保了所有和 EventLoop 相关的操作都在同一个I/O线程中执行，避免了锁竞争</span></span><br><span class="line">        loop_-&gt;<span class="built_in">runInLoop</span>(std::<span class="built_in">bind</span>(&amp;Acceptor::listen, <span class="built_in">get_pointer</span>(acceptor_)));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">EventLoop::runInLoop</span><span class="params">(Functor cb)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">isInLoopThread</span>())</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">cb</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">queueInLoop</span>(std::<span class="built_in">move</span>(cb));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Acceptor::listen</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    loop_-&gt;<span class="built_in">assertInLoopThread</span>();</span><br><span class="line">    listening_ = <span class="literal">true</span>;</span><br><span class="line">    <span class="comment">// 将socket设置为监听状态，并设置等待连接队列的最大长度(SOMAXCONN)。</span></span><br><span class="line">    acceptSocket_.<span class="built_in">listen</span>();</span><br><span class="line">    <span class="comment">// 放到epoll树上，注册可读事件</span></span><br><span class="line">    acceptChannel_.<span class="built_in">enableReading</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>在TcpServer::start函数启动后，loop_-&gt;runInLoop(std::bind(&amp;Acceptor::listen, get_pointer(acceptor_)));会将Acceptor::listen函数启动开始监听，并将文件描述符放到主线程的epoll树上监听读实现，当事件触发时，会调用文件描述符的读回调，也就是headleRead函数处理连接。。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/muduo/" rel="tag"><i class="fa fa-tag"></i> muduo</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/07/28/muduo(1)-TcpServer/" rel="prev" title="muduo(1)-TcpServer">
+                  <i class="fa fa-angle-left"></i> muduo(1)-TcpServer
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/07/28/muduo(3)-Channel/" rel="next" title="muduo(3)-Channel">
+                  muduo(3)-Channel <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">zjz</span>
+  </div>
+  <div class="powered-by">由 <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>
